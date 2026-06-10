@@ -31,6 +31,10 @@ whoami:
 httpRoute:
   # httpRoute.enabled enables a Gateway API HTTPRoute resource
   enabled: false
+  # httpRoute.annotations are extra annotations added to the HTTPRoute
+  annotations: {}
+  # httpRoute.labels are extra labels added to the HTTPRoute
+  labels: {}
   # httpRoute.parentRefs is the list of Gateways this route attaches to
   parentRefs: []
   # httpRoute.hostnames is the list of hostnames this route matches
@@ -63,7 +67,6 @@ resources:
     cpu: 10m
     memory: 16Mi
   limits:
-    cpu: 100m
     memory: 64Mi
 
 # podAnnotations are extra annotations added to the whoami pod

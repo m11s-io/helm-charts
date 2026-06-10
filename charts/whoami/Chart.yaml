@@ -1,8 +1,15 @@
 apiVersion: v2
 name: whoami
-description: Helm chart for whoami — a tiny HTTP server that prints OS info and HTTP request details
+description: Helm chart for whoami, a tiny HTTP server that prints OS info and HTTP request details
 type: application
-version: 0.1.0
+version: 0.1.1
 # renovate: datasource=docker depName=traefik/whoami
 appVersion: "v1.11.0"
+home: https://github.com/traefik/whoami
 icon: https://www.gravatar.com/avatar/27caca9bcd7fd7f7412ca5255c9ae2d0?s=120&r=g&d=404
+sources:
+  - https://github.com/traefik/whoami
+  - https://github.com/m11s-io/charts
+maintainers:
+  - name: m11s
+    url: https://m11s.io

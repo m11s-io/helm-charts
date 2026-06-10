@@ -2,7 +2,14 @@ apiVersion: v2
 name: fider
 description: Helm chart for Fider self-hosted user feedback platform
 type: application
-version: 0.3.1
+version: 0.3.2
 # renovate: datasource=docker depName=getfider/fider
 appVersion: "v0.35.0"
+home: https://fider.io
 icon: https://raw.githubusercontent.com/getfider/fider/main/favicon.png
+sources:
+  - https://github.com/getfider/fider
+  - https://github.com/m11s-io/charts
+maintainers:
+  - name: m11s
+    url: https://m11s.io

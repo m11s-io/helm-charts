@@ -148,6 +148,10 @@ oauth:
 httpRoute:
   # httpRoute.enabled enables a Gateway API HTTPRoute resource
   enabled: false
+  # httpRoute.annotations are extra annotations added to the HTTPRoute
+  annotations: {}
+  # httpRoute.labels are extra labels added to the HTTPRoute
+  labels: {}
   # httpRoute.parentRefs is the list of Gateways this route attaches to
   parentRefs: []
   # httpRoute.hostnames is the list of hostnames this route matches
@@ -160,6 +164,8 @@ networkPolicy:
   gatewayNamespace: ""
   # networkPolicy.databaseNamespace is the namespace of the database pods Fider may reach
   databaseNamespace: ""
+  # networkPolicy.databasePort is the PostgreSQL port Fider may reach
+  databasePort: 5432
   internetEgress:
     # networkPolicy.internetEgress.enabled allows egress to the internet (for OAuth, email, webhooks)
     enabled: true
@@ -170,6 +176,9 @@ networkPolicy:
       - 10.0.0.0/8
       - 172.16.0.0/12
       - 192.168.0.0/16
+  dnsEgress:
+    # networkPolicy.dnsEgress.enabled allows DNS lookups on TCP/UDP port 53
+    enabled: true
 
 serviceAccount:
   # serviceAccount.create specifies whether a ServiceAccount should be created
@@ -197,7 +206,6 @@ resources:
     cpu: 100m
     memory: 128Mi
   limits:
-    cpu: 500m
     memory: 512Mi
 
 # env is a map of additional non-sensitive environment variables to inject

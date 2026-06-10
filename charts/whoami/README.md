@@ -21,8 +21,11 @@ helm install whoami m11s/whoami -n whoami --create-namespace
 | `service.type` | Kubernetes Service type | `ClusterIP` |
 | `service.port` | Port the Service listens on | `80` |
 | `httpRoute.enabled` | Enable a Gateway API HTTPRoute | `false` |
-| `httpRoute.parentRefs` | Gateways the HTTPRoute attaches to | `[]` |
+| `httpRoute.parentRefs` | Gateways the HTTPRoute attaches to; required when enabled | `[]` |
 | `httpRoute.hostnames` | Hostnames the HTTPRoute matches | `[]` |
+| `resources.requests.cpu` | Default CPU request | `10m` |
+| `resources.requests.memory` | Default memory request | `16Mi` |
+| `resources.limits.memory` | Default memory limit | `64Mi` |
 
 ## Endpoints
 
@@ -59,6 +62,8 @@ httpRoute:
   hostnames:
     - whoami.example.com
 ```
+
+The chart creates only an HTTPRoute. It does not create a Gateway, because Gateways are usually owned by the cluster/platform layer. If the Gateway is in another namespace, its listener must allow routes from the whoami namespace with Gateway API `allowedRoutes`.
 
 ### Manipulate the health check for testing
 

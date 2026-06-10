@@ -18,18 +18,31 @@ spec:
         - namespaceSelector:
             matchLabels:
               kubernetes.io/metadata.name: {{ .Values.networkPolicy.gatewayNamespace }}
-        {{- end }}
+        {{- else }}
         - podSelector: {}
+        {{- end }}
       ports:
         - port: 3000
+          protocol: TCP
   egress:
+    {{- if .Values.networkPolicy.dnsEgress.enabled }}
+    - ports:
+        - port: 53
+          protocol: UDP
+        - port: 53
+          protocol: TCP
+    {{- end }}
     - to:
         {{- if .Values.networkPolicy.databaseNamespace }}
         - namespaceSelector:
             matchLabels:
               kubernetes.io/metadata.name: {{ .Values.networkPolicy.databaseNamespace }}
-        {{- end }}
+        {{- else }}
         - podSelector: {}
+        {{- end }}
+      ports:
+        - port: {{ .Values.networkPolicy.databasePort }}
+          protocol: TCP
     {{- if .Values.networkPolicy.internetEgress.enabled }}
     - to:
         - ipBlock:
