@@ -1,6 +1,28 @@
 apiVersion: v1
 entries:
   fider:
+  - annotations:
+      artifacthub.io/signKey: |
+        fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
+        url: https://keys.openpgp.org/search?q=hello%40m11s.io
+    apiVersion: v2
+    appVersion: v0.35.0
+    created: "2026-06-10T16:48:41.540363722Z"
+    description: Helm chart for Fider self-hosted user feedback platform
+    digest: a2fd203ad8a629dcaf58ab1bdc0af819e6359959a152cec5f3abd00d5ad0664f
+    home: https://fider.io
+    icon: https://raw.githubusercontent.com/getfider/fider/main/favicon.png
+    maintainers:
+    - name: m11s
+      url: https://m11s.io
+    name: fider
+    sources:
+    - https://github.com/getfider/fider
+    - https://github.com/m11s-io/charts
+    type: application
+    urls:
+    - https://github.com/m11s-io/charts/releases/download/fider-0.3.6/fider-0.3.6.tgz
+    version: 0.3.6
   - apiVersion: v2
     appVersion: v0.35.0
     created: "2026-06-10T16:15:27.519511432Z"
@@ -100,6 +122,29 @@ entries:
     - https://github.com/m11s-io/charts/releases/download/fider-0.1.0/fider-0.1.0.tgz
     version: 0.1.0
   whoami:
+  - annotations:
+      artifacthub.io/signKey: |
+        fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
+        url: https://keys.openpgp.org/search?q=hello%40m11s.io
+    apiVersion: v2
+    appVersion: v1.11.0
+    created: "2026-06-10T16:48:41.706610993Z"
+    description: Helm chart for whoami, a tiny HTTP server that prints OS info and
+      HTTP request details
+    digest: fd492d24ad63fb95de9f14e3aabff2ad896e5a50a1635a4638ee82abacae7c3a
+    home: https://github.com/traefik/whoami
+    icon: https://www.gravatar.com/avatar/27caca9bcd7fd7f7412ca5255c9ae2d0?s=120&r=g&d=404
+    maintainers:
+    - name: m11s
+      url: https://m11s.io
+    name: whoami
+    sources:
+    - https://github.com/traefik/whoami
+    - https://github.com/m11s-io/charts
+    type: application
+    urls:
+    - https://github.com/m11s-io/charts/releases/download/whoami-0.1.4/whoami-0.1.4.tgz
+    version: 0.1.4
   - apiVersion: v2
     appVersion: v1.11.0
     created: "2026-06-10T16:15:27.763115859Z"
@@ -150,4 +195,4 @@ entries:
     urls:
     - https://github.com/m11s-io/charts/releases/download/whoami-0.1.0/whoami-0.1.0.tgz
     version: 0.1.0
-generated: "2026-06-10T16:15:27.763165603Z"
+generated: "2026-06-10T16:48:41.706653381Z"
