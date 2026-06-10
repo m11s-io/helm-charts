@@ -3,6 +3,24 @@ entries:
   fider:
   - apiVersion: v2
     appVersion: v0.35.0
+    created: "2026-06-10T15:41:41.347074073Z"
+    description: Helm chart for Fider self-hosted user feedback platform
+    digest: 0fa467ece3146afb41a017113b7f0e22cf0bf1278e025bd7bc791b876a483820
+    home: https://fider.io
+    icon: https://raw.githubusercontent.com/getfider/fider/main/favicon.png
+    maintainers:
+    - name: m11s
+      url: https://m11s.io
+    name: fider
+    sources:
+    - https://github.com/getfider/fider
+    - https://github.com/m11s-io/charts
+    type: application
+    urls:
+    - https://github.com/m11s-io/charts/releases/download/fider-0.3.3/fider-0.3.3.tgz
+    version: 0.3.3
+  - apiVersion: v2
+    appVersion: v0.35.0
     created: "2026-06-10T15:28:39.550300563Z"
     description: Helm chart for Fider self-hosted user feedback platform
     digest: 3084a77ab273dfd7bc045ab9a83fcac2c96b075696b6463d0b0f54e283f1361e
@@ -95,4 +113,4 @@ entries:
     urls:
     - https://github.com/m11s-io/charts/releases/download/whoami-0.1.0/whoami-0.1.0.tgz
     version: 0.1.0
-generated: "2026-06-10T15:28:39.792810183Z"
+generated: "2026-06-10T15:41:41.347100132Z"
