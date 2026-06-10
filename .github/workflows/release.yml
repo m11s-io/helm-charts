@@ -6,7 +6,6 @@ on:
       - main
     paths:
       - 'charts/**'
-      - 'artifacthub-repo.yml'
 
 jobs:
   release:
@@ -29,13 +28,3 @@ jobs:
           skip_existing: true
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-
-      - name: Copy artifacthub-repo.yml to gh-pages
-        run: |
-          git fetch origin gh-pages
-          git worktree add /tmp/gh-pages gh-pages
-          cp artifacthub-repo.yml /tmp/gh-pages/artifacthub-repo.yml
-          cd /tmp/gh-pages
-          git add artifacthub-repo.yml
-          git diff --cached --quiet || git commit -m "chore: sync artifacthub-repo.yml"
-          git push origin gh-pages
