@@ -3,6 +3,17 @@ entries:
   fider:
   - apiVersion: v2
     appVersion: v0.35.0
+    created: "2026-06-10T10:22:01.880365431Z"
+    description: Helm chart for Fider self-hosted user feedback platform
+    digest: e5a46763553ae9799664d6445294dc5c6599f4b7ab4bbcb69d1ad2e9731fbe1e
+    icon: https://raw.githubusercontent.com/getfider/fider/main/favicon.png
+    name: fider
+    type: application
+    urls:
+    - https://github.com/m11s-io/charts/releases/download/fider-0.3.0/fider-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: v0.35.0
     created: "2026-06-10T10:18:23.99856982Z"
     description: Helm chart for Fider self-hosted user feedback platform
     digest: 101d88cdf9497a2059d815206ac9dacd4df18cd625f7b410e12c91ccf5570aad
@@ -23,4 +34,4 @@ entries:
     urls:
     - https://github.com/m11s-io/charts/releases/download/fider-0.1.0/fider-0.1.0.tgz
     version: 0.1.0
-generated: "2026-06-10T10:18:23.998578366Z"
+generated: "2026-06-10T10:22:01.880379467Z"
