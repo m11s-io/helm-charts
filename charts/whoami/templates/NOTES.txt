@@ -1,0 +1,15 @@
+whoami {{ .Chart.AppVersion }} has been deployed.
+
+  Service: {{ include "whoami.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
+
+  To test from inside the cluster:
+    kubectl run -it --rm --restart=Never curl --image=curlimages/curl -- \
+      curl http://{{ include "whoami.fullname" . }}.{{ .Release.Namespace }}/
+
+{{- if .Values.httpRoute.enabled }}
+
+  HTTPRoute is enabled.
+  {{- with .Values.httpRoute.hostnames }}
+  Hostnames: {{ join ", " . }}
+  {{- end }}
+{{- end }}

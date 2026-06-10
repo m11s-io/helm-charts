@@ -1,0 +1,8 @@
+apiVersion: v2
+name: whoami
+description: Helm chart for whoami — a tiny HTTP server that prints OS info and HTTP request details
+type: application
+version: 0.1.0
+# renovate: datasource=docker depName=traefik/whoami
+appVersion: "v1.11.0"
+icon: https://raw.githubusercontent.com/traefik/whoami/master/traefik.logo.png

@@ -1,0 +1,76 @@
+image:
+  # image.repository is the container image repository
+  repository: traefik/whoami
+  # image.tag overrides the image tag; defaults to the chart appVersion
+  tag: ""
+  # image.pullPolicy is the image pull policy
+  pullPolicy: IfNotPresent
+
+# nameOverride overrides the chart name portion of the release name
+nameOverride: ""
+# fullnameOverride overrides the full release name used for all resources
+fullnameOverride: ""
+
+# replicaCount is the number of whoami pod replicas
+replicaCount: 1
+
+service:
+  # service.type is the Kubernetes Service type
+  type: ClusterIP
+  # service.port is the port the Service listens on
+  port: 80
+
+whoami:
+  # whoami.port is the port whoami listens on inside the container
+  port: 80
+  # whoami.verbose enables verbose output (prints full request body)
+  verbose: false
+  # whoami.name sets a display name printed in responses; useful when running multiple instances
+  name: ""
+
+httpRoute:
+  # httpRoute.enabled enables a Gateway API HTTPRoute resource
+  enabled: false
+  # httpRoute.parentRefs is the list of Gateways this route attaches to
+  parentRefs: []
+  # httpRoute.hostnames is the list of hostnames this route matches
+  hostnames: []
+
+serviceAccount:
+  # serviceAccount.create specifies whether a ServiceAccount should be created
+  create: true
+  # serviceAccount.name is the name of the ServiceAccount; defaults to fullname if empty
+  name: ""
+  # serviceAccount.annotations are extra annotations added to the ServiceAccount
+  annotations: {}
+
+# podSecurityContext sets the security context for the whoami pod
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 65534
+
+# securityContext sets the security context for the whoami container
+securityContext:
+  capabilities:
+    drop:
+      - ALL
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+
+# resources sets the CPU and memory requests and limits for the whoami container
+resources:
+  requests:
+    cpu: 10m
+    memory: 16Mi
+  limits:
+    cpu: 100m
+    memory: 64Mi
+
+# podAnnotations are extra annotations added to the whoami pod
+podAnnotations: {}
+# nodeSelector constrains the whoami pod to nodes matching the given labels
+nodeSelector: {}
+# tolerations allow the whoami pod to be scheduled on tainted nodes
+tolerations: []
+# affinity sets pod affinity and anti-affinity rules
+affinity: {}
