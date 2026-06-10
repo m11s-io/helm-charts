@@ -22,9 +22,28 @@ jobs:
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
-      - name: Run chart-releaser
-        uses: helm/chart-releaser-action@v1.6.0
+      - name: Import GPG key
+        uses: crazy-max/ghaction-import-gpg@v6
+        id: import_gpg
         with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
+
+      - name: Write GPG passphrase file
+        run: echo "${{ secrets.GPG_PASSPHRASE }}" > /tmp/passphrase.txt
+
+      - name: Export legacy GPG keyring
+        run: gpg --export-secret-keys > ~/.gnupg/secring.gpg
+
+      - name: Run chart-releaser
+        uses: helm/chart-releaser-action@v1.7.0
+        with:
+          version: v1.8.1
           skip_existing: true
+          config: cr.yaml
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          CR_SIGN: "true"
+          CR_KEY: "${{ steps.import_gpg.outputs.email }}"
+          CR_KEYRING: "$HOME/.gnupg/secring.gpg"
+          CR_PASSPHRASE_FILE: "/tmp/passphrase.txt"
