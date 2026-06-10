@@ -2,7 +2,7 @@ apiVersion: v2
 name: whoami
 description: Helm chart for whoami, a tiny HTTP server that prints OS info and HTTP request details
 type: application
-version: 0.1.2
+version: 0.1.3
 # renovate: datasource=docker depName=traefik/whoami
 appVersion: "v1.11.0"
 home: https://github.com/traefik/whoami
@@ -13,3 +13,7 @@ sources:
 maintainers:
   - name: m11s
     url: https://m11s.io
+annotations:
+  artifacthub.io/signKey: |
+    fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
+    url: https://keys.openpgp.org/search?q=hello%40m11s.io
