@@ -45,4 +45,17 @@ entries:
     urls:
     - https://github.com/m11s-io/charts/releases/download/fider-0.1.0/fider-0.1.0.tgz
     version: 0.1.0
-generated: "2026-06-10T13:08:09.106448374Z"
+  whoami:
+  - apiVersion: v2
+    appVersion: v1.11.0
+    created: "2026-06-10T15:01:02.144575972Z"
+    description: Helm chart for whoami — a tiny HTTP server that prints OS info and
+      HTTP request details
+    digest: 9b5594de64f2aaac94a038b53bd42730887a304cf113b99c339feb554a10b0de
+    icon: https://raw.githubusercontent.com/traefik/whoami/master/traefik.logo.png
+    name: whoami
+    type: application
+    urls:
+    - https://github.com/m11s-io/charts/releases/download/whoami-0.1.0/whoami-0.1.0.tgz
+    version: 0.1.0
+generated: "2026-06-10T15:01:02.144592613Z"
