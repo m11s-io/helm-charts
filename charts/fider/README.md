@@ -43,7 +43,7 @@ fider:
   baseURL: https://feedback.mycompany.com
 ```
 
-The `fider.hostDomain` field is ignored in single mode.
+`fider.hostDomain` is not used in single mode.
 
 ### Multi-tenant (`hostMode: multi`)
 
