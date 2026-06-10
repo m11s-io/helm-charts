@@ -45,5 +45,5 @@ jobs:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
           CR_SIGN: "true"
           CR_KEY: "${{ steps.import_gpg.outputs.email }}"
-          CR_KEYRING: "$HOME/.gnupg/secring.gpg"
+          CR_KEYRING: "~/.gnupg/secring.gpg"
           CR_PASSPHRASE_FILE: "/tmp/passphrase.txt"
