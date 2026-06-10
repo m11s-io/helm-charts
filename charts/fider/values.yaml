@@ -1,0 +1,219 @@
+# image.repository is the container image repository
+image:
+  repository: getfider/fider
+  # image.tag overrides the image tag; defaults to the chart appVersion
+  tag: ""
+  # image.pullPolicy is the image pull policy
+  pullPolicy: IfNotPresent
+
+# nameOverride overrides the chart name portion of the release name
+nameOverride: ""
+# fullnameOverride overrides the full release name used for all resources
+fullnameOverride: ""
+
+# replicaCount is the number of Fider pod replicas
+replicaCount: 1
+
+service:
+  # service.type is the Kubernetes Service type
+  type: ClusterIP
+  # service.port is the port the Service listens on
+  port: 3000
+
+fider:
+  # fider.baseURL is the public URL of this Fider instance (required), e.g. https://feedback.mysite.com
+  baseURL: ""
+  # fider.hostMode controls single vs multi-tenant mode; valid values: single, multi
+  hostMode: single
+  # fider.hostDomain is the root domain for subdomain-per-tenant routing; required when hostMode is multi
+  hostDomain: ""
+  # fider.logLevel sets the log verbosity; valid values: DEBUG, INFO, WARN, ERROR
+  logLevel: INFO
+  existingSecret:
+    # fider.existingSecret.name is the name of the Secret containing the JWT secret key (required)
+    name: ""
+    # fider.existingSecret.jwtSecretKey is the key within the Secret that holds JWT_SECRET
+    jwtSecretKey: jwt-secret
+
+db:
+  existingSecret:
+    # db.existingSecret.name is the name of the Secret containing the database URL (required)
+    name: ""
+    # db.existingSecret.urlKey is the key within the Secret that holds DATABASE_URL
+    # Value format: postgres://user:pass@host:5432/dbname?sslmode=disable
+    urlKey: database-url
+  # db.maxIdleConns is the maximum number of idle database connections
+  maxIdleConns: 2
+  # db.maxOpenConns is the maximum number of open database connections
+  maxOpenConns: 4
+
+blobStorage:
+  # blobStorage.type selects where uploaded files are stored; valid values: sql, s3, fs
+  # sql stores blobs in Postgres (default, simplest); s3 is recommended for production
+  type: sql
+  s3:
+    # blobStorage.s3.endpointURL is the S3-compatible endpoint URL (e.g. https://minio.example.com for MinIO)
+    endpointURL: ""
+    # blobStorage.s3.region is the S3 region
+    region: ""
+    # blobStorage.s3.bucket is the S3 bucket name (required when type is s3)
+    bucket: ""
+    existingSecret:
+      # blobStorage.s3.existingSecret.name is the name of the Secret with S3 credentials (required when type is s3)
+      name: ""
+      # blobStorage.s3.existingSecret.accessKeyIDKey is the key for BLOB_STORAGE_S3_ACCESS_KEY_ID
+      accessKeyIDKey: access-key-id
+      # blobStorage.s3.existingSecret.secretAccessKeyKey is the key for BLOB_STORAGE_S3_SECRET_ACCESS_KEY
+      secretAccessKeyKey: secret-access-key
+  fs:
+    # blobStorage.fs.path is the filesystem path for blob storage (required when type is fs)
+    path: ""
+
+email:
+  # email.noreply is the from address used for outgoing emails (required)
+  noreply: ""
+  smtp:
+    # email.smtp.enabled enables SMTP as the email transport
+    enabled: false
+    # email.smtp.host is the SMTP server hostname
+    host: ""
+    # email.smtp.port is the SMTP server port; 587 for STARTTLS, 465 for implicit TLS
+    port: 587
+    existingSecret:
+      # email.smtp.existingSecret.enabled enables loading SMTP credentials from a Secret
+      enabled: false
+      # email.smtp.existingSecret.name is the name of the Secret with SMTP credentials
+      name: ""
+      # email.smtp.existingSecret.usernameKey is the key for EMAIL_SMTP_USERNAME
+      usernameKey: username
+      # email.smtp.existingSecret.passwordKey is the key for EMAIL_SMTP_PASSWORD
+      passwordKey: password
+  mailgun:
+    # email.mailgun.enabled enables Mailgun as the email transport
+    enabled: false
+    # email.mailgun.domain is the Mailgun sending domain
+    domain: ""
+    # email.mailgun.region is the Mailgun API region; valid values: US, EU
+    region: US
+    existingSecret:
+      # email.mailgun.existingSecret.name is the name of the Secret with the Mailgun API key
+      name: ""
+      # email.mailgun.existingSecret.apiKeyKey is the key for EMAIL_MAILGUN_API
+      apiKeyKey: api-key
+  awsses:
+    # email.awsses.enabled enables AWS SES as the email transport
+    enabled: false
+    # email.awsses.region is the AWS region where SES is configured
+    region: ""
+    existingSecret:
+      # email.awsses.existingSecret.name is the name of the Secret with AWS SES credentials
+      name: ""
+      # email.awsses.existingSecret.accessKeyIDKey is the key for EMAIL_AWSSES_ACCESS_KEY_ID
+      accessKeyIDKey: access-key-id
+      # email.awsses.existingSecret.secretAccessKeyKey is the key for EMAIL_AWSSES_SECRET_ACCESS_KEY
+      secretAccessKeyKey: secret-access-key
+
+oauth:
+  google:
+    existingSecret:
+      # oauth.google.existingSecret.enabled enables Google OAuth login
+      enabled: false
+      # oauth.google.existingSecret.name is the name of the Secret with Google OAuth credentials
+      name: ""
+      # oauth.google.existingSecret.clientIDKey is the key for OAUTH_GOOGLE_CLIENTID
+      clientIDKey: client-id
+      # oauth.google.existingSecret.clientSecretKey is the key for OAUTH_GOOGLE_SECRET
+      clientSecretKey: client-secret
+  github:
+    existingSecret:
+      # oauth.github.existingSecret.enabled enables GitHub OAuth login
+      enabled: false
+      # oauth.github.existingSecret.name is the name of the Secret with GitHub OAuth credentials
+      name: ""
+      # oauth.github.existingSecret.clientIDKey is the key for OAUTH_GITHUB_CLIENTID
+      clientIDKey: client-id
+      # oauth.github.existingSecret.clientSecretKey is the key for OAUTH_GITHUB_SECRET
+      clientSecretKey: client-secret
+  facebook:
+    existingSecret:
+      # oauth.facebook.existingSecret.enabled enables Facebook OAuth login
+      enabled: false
+      # oauth.facebook.existingSecret.name is the name of the Secret with Facebook OAuth credentials
+      name: ""
+      # oauth.facebook.existingSecret.clientIDKey is the key for OAUTH_FACEBOOK_APPID
+      clientIDKey: client-id
+      # oauth.facebook.existingSecret.clientSecretKey is the key for OAUTH_FACEBOOK_SECRET
+      clientSecretKey: client-secret
+
+httpRoute:
+  # httpRoute.enabled enables a Gateway API HTTPRoute resource
+  enabled: false
+  # httpRoute.parentRefs is the list of Gateways this route attaches to
+  parentRefs: []
+  # httpRoute.hostnames is the list of hostnames this route matches
+  hostnames: []
+
+networkPolicy:
+  # networkPolicy.enabled enables a NetworkPolicy restricting pod ingress and egress
+  enabled: false
+  # networkPolicy.gatewayNamespace is the namespace of the Gateway allowed to reach Fider
+  gatewayNamespace: ""
+  # networkPolicy.databaseNamespace is the namespace of the database pods Fider may reach
+  databaseNamespace: ""
+  internetEgress:
+    # networkPolicy.internetEgress.enabled allows egress to the internet (for OAuth, email, webhooks)
+    enabled: true
+    # networkPolicy.internetEgress.cidr is the allowed egress CIDR
+    cidr: 0.0.0.0/0
+    # networkPolicy.internetEgress.except lists CIDRs excluded from internet egress (private ranges)
+    except:
+      - 10.0.0.0/8
+      - 172.16.0.0/12
+      - 192.168.0.0/16
+
+serviceAccount:
+  # serviceAccount.create specifies whether a ServiceAccount should be created
+  create: true
+  # serviceAccount.name is the name of the ServiceAccount; defaults to fullname if empty
+  name: ""
+  # serviceAccount.annotations are extra annotations added to the ServiceAccount
+  annotations: {}
+
+# podSecurityContext sets the security context for the Fider pod
+podSecurityContext:
+  fsGroup: 1000
+
+# securityContext sets the security context for the Fider container
+securityContext:
+  capabilities:
+    drop:
+      - ALL
+  runAsNonRoot: true
+  runAsUser: 1000
+
+# resources sets the CPU and memory requests and limits for the Fider container
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+# env is a map of additional non-sensitive environment variables to inject
+env: {}
+
+# extraEnv is a list of additional env var objects (name/value or name/valueFrom) to inject
+extraEnv: []
+
+# extraEnvFrom is a list of envFrom sources (configMapRef, secretRef) to inject
+extraEnvFrom: []
+
+# podAnnotations are extra annotations added to the Fider pod
+podAnnotations: {}
+# nodeSelector constrains the Fider pod to nodes matching the given labels
+nodeSelector: {}
+# tolerations allow the Fider pod to be scheduled on tainted nodes
+tolerations: []
+# affinity sets pod affinity and anti-affinity rules
+affinity: {}

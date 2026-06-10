@@ -1,0 +1,21 @@
+Fider has been deployed as release {{ .Release.Name }} in namespace {{ .Release.Namespace }}.
+
+1. Get the application URL:
+{{- if .Values.httpRoute.enabled }}
+{{- range .Values.httpRoute.hostnames }}
+  https://{{ . }}
+{{- end }}
+{{- else }}
+  kubectl port-forward -n {{ .Release.Namespace }} svc/{{ include "fider.fullname" . }} 3000:3000
+  Then visit http://localhost:3000
+{{- end }}
+
+2. First-run setup:
+   Visit <base-url>/signup to create the first administrator account.
+   After setup, disable public sign-up if needed:
+     helm upgrade {{ .Release.Name }} m11s/fider --set env.SIGNUP_DISABLED=true
+
+3. Useful commands:
+   helm status {{ .Release.Name }} -n {{ .Release.Namespace }}
+   helm get values {{ .Release.Name }} -n {{ .Release.Namespace }}
+   kubectl logs -n {{ .Release.Namespace }} deploy/{{ include "fider.fullname" . }} -f

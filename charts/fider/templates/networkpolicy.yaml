@@ -1,0 +1,42 @@
+{{- if .Values.networkPolicy.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "fider.fullname" . }}
+  labels:
+    {{- include "fider.labels" . | nindent 4 }}
+spec:
+  podSelector:
+    matchLabels:
+      {{- include "fider.selectorLabels" . | nindent 6 }}
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+        {{- if .Values.networkPolicy.gatewayNamespace }}
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: {{ .Values.networkPolicy.gatewayNamespace }}
+        {{- end }}
+        - podSelector: {}
+      ports:
+        - port: 3000
+  egress:
+    - to:
+        {{- if .Values.networkPolicy.databaseNamespace }}
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: {{ .Values.networkPolicy.databaseNamespace }}
+        {{- end }}
+        - podSelector: {}
+    {{- if .Values.networkPolicy.internetEgress.enabled }}
+    - to:
+        - ipBlock:
+            cidr: {{ .Values.networkPolicy.internetEgress.cidr }}
+            {{- with .Values.networkPolicy.internetEgress.except }}
+            except:
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
+    {{- end }}
+{{- end }}
