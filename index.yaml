@@ -2,6 +2,24 @@ apiVersion: v1
 entries:
   fider:
   - apiVersion: v2
+    appVersion: v0.35.0
+    created: "2026-06-10T15:28:39.550300563Z"
+    description: Helm chart for Fider self-hosted user feedback platform
+    digest: 3084a77ab273dfd7bc045ab9a83fcac2c96b075696b6463d0b0f54e283f1361e
+    home: https://fider.io
+    icon: https://raw.githubusercontent.com/getfider/fider/main/favicon.png
+    maintainers:
+    - name: m11s
+      url: https://m11s.io
+    name: fider
+    sources:
+    - https://github.com/getfider/fider
+    - https://github.com/m11s-io/charts
+    type: application
+    urls:
+    - https://github.com/m11s-io/charts/releases/download/fider-0.3.2/fider-0.3.2.tgz
+    version: 0.3.2
+  - apiVersion: v2
     appVersion: v0.35.0-m11s.1
     created: "2026-06-10T13:08:09.106430541Z"
     description: Helm chart for Fider self-hosted user feedback platform
@@ -48,6 +66,25 @@ entries:
   whoami:
   - apiVersion: v2
     appVersion: v1.11.0
+    created: "2026-06-10T15:28:39.792786978Z"
+    description: Helm chart for whoami, a tiny HTTP server that prints OS info and
+      HTTP request details
+    digest: 8970042b06ed029f79c11e613b1cbd725e6715630e22b061c6ec03356521d773
+    home: https://github.com/traefik/whoami
+    icon: https://www.gravatar.com/avatar/27caca9bcd7fd7f7412ca5255c9ae2d0?s=120&r=g&d=404
+    maintainers:
+    - name: m11s
+      url: https://m11s.io
+    name: whoami
+    sources:
+    - https://github.com/traefik/whoami
+    - https://github.com/m11s-io/charts
+    type: application
+    urls:
+    - https://github.com/m11s-io/charts/releases/download/whoami-0.1.1/whoami-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
+    appVersion: v1.11.0
     created: "2026-06-10T15:01:02.144575972Z"
     description: Helm chart for whoami — a tiny HTTP server that prints OS info and
       HTTP request details
@@ -58,4 +95,4 @@ entries:
     urls:
     - https://github.com/m11s-io/charts/releases/download/whoami-0.1.0/whoami-0.1.0.tgz
     version: 0.1.0
-generated: "2026-06-10T15:01:02.144592613Z"
+generated: "2026-06-10T15:28:39.792810183Z"
