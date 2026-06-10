@@ -1,0 +1,207 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "fider.fullname" . }}
+  labels:
+    {{- include "fider.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "fider.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      labels:
+        {{- include "fider.selectorLabels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "fider.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: fider
+          image: {{ include "fider.image" . }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          ports:
+            - name: http
+              containerPort: 3000
+              protocol: TCP
+          startupProbe:
+            httpGet:
+              path: /_health
+              port: http
+            failureThreshold: 30
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /_health
+              port: http
+            periodSeconds: 15
+          readinessProbe:
+            httpGet:
+              path: /_health
+              port: http
+            periodSeconds: 10
+          env:
+            - name: BASE_URL
+              value: {{ required "fider.baseURL is required" .Values.fider.baseURL | quote }}
+            - name: GO_ENV
+              value: production
+            - name: HOST_MODE
+              value: {{ .Values.fider.hostMode | quote }}
+            {{- if eq .Values.fider.hostMode "multi" }}
+            - name: HOST_DOMAIN
+              value: {{ required "fider.hostDomain is required when hostMode is multi" .Values.fider.hostDomain | quote }}
+            {{- end }}
+            - name: LOG_LEVEL
+              value: {{ .Values.fider.logLevel | quote }}
+            - name: LOG_CONSOLE
+              value: "true"
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ required "fider.existingSecret.name is required" .Values.fider.existingSecret.name }}
+                  key: {{ .Values.fider.existingSecret.jwtSecretKey }}
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ required "db.existingSecret.name is required" .Values.db.existingSecret.name }}
+                  key: {{ .Values.db.existingSecret.urlKey }}
+            - name: DATABASE_MAX_IDLE_CONNS
+              value: {{ .Values.db.maxIdleConns | quote }}
+            - name: DATABASE_MAX_OPEN_CONNS
+              value: {{ .Values.db.maxOpenConns | quote }}
+            - name: BLOB_STORAGE
+              value: {{ .Values.blobStorage.type | quote }}
+            {{- if eq .Values.blobStorage.type "s3" }}
+            - name: BLOB_STORAGE_S3_ENDPOINT_URL
+              value: {{ .Values.blobStorage.s3.endpointURL | quote }}
+            - name: BLOB_STORAGE_S3_REGION
+              value: {{ .Values.blobStorage.s3.region | quote }}
+            - name: BLOB_STORAGE_S3_BUCKET
+              value: {{ .Values.blobStorage.s3.bucket | quote }}
+            - name: BLOB_STORAGE_S3_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ required "blobStorage.s3.existingSecret.name is required when blobStorage.type is s3" .Values.blobStorage.s3.existingSecret.name }}
+                  key: {{ .Values.blobStorage.s3.existingSecret.accessKeyIDKey }}
+            - name: BLOB_STORAGE_S3_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ required "blobStorage.s3.existingSecret.name is required when blobStorage.type is s3" .Values.blobStorage.s3.existingSecret.name }}
+                  key: {{ .Values.blobStorage.s3.existingSecret.secretAccessKeyKey }}
+            {{- else if eq .Values.blobStorage.type "fs" }}
+            - name: BLOB_STORAGE_FS_PATH
+              value: {{ .Values.blobStorage.fs.path | quote }}
+            {{- end }}
+            - name: EMAIL_NOREPLY
+              value: {{ required "email.noreply is required" .Values.email.noreply | quote }}
+            {{- if .Values.email.smtp.enabled }}
+            - name: EMAIL_SMTP_HOST
+              value: {{ .Values.email.smtp.host | quote }}
+            - name: EMAIL_SMTP_PORT
+              value: {{ .Values.email.smtp.port | quote }}
+            {{- if .Values.email.smtp.existingSecret.enabled }}
+            - name: EMAIL_SMTP_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.email.smtp.existingSecret.name }}
+                  key: {{ .Values.email.smtp.existingSecret.usernameKey }}
+            - name: EMAIL_SMTP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.email.smtp.existingSecret.name }}
+                  key: {{ .Values.email.smtp.existingSecret.passwordKey }}
+            {{- end }}
+            {{- end }}
+            {{- if .Values.email.awsses.enabled }}
+            - name: EMAIL_AWSSES_REGION
+              value: {{ .Values.email.awsses.region | quote }}
+            - name: EMAIL_AWSSES_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.email.awsses.existingSecret.name }}
+                  key: {{ .Values.email.awsses.existingSecret.accessKeyIDKey }}
+            - name: EMAIL_AWSSES_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.email.awsses.existingSecret.name }}
+                  key: {{ .Values.email.awsses.existingSecret.secretAccessKeyKey }}
+            {{- end }}
+            {{- if .Values.email.mailgun.enabled }}
+            - name: EMAIL_MAILGUN_API
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.email.mailgun.existingSecret.name }}
+                  key: {{ .Values.email.mailgun.existingSecret.apiKeyKey }}
+            - name: EMAIL_MAILGUN_DOMAIN
+              value: {{ .Values.email.mailgun.domain | quote }}
+            - name: EMAIL_MAILGUN_REGION
+              value: {{ .Values.email.mailgun.region | quote }}
+            {{- end }}
+            {{- if .Values.oauth.google.existingSecret.enabled }}
+            - name: OAUTH_GOOGLE_CLIENTID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.oauth.google.existingSecret.name }}
+                  key: {{ .Values.oauth.google.existingSecret.clientIDKey }}
+            - name: OAUTH_GOOGLE_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.oauth.google.existingSecret.name }}
+                  key: {{ .Values.oauth.google.existingSecret.clientSecretKey }}
+            {{- end }}
+            {{- if .Values.oauth.github.existingSecret.enabled }}
+            - name: OAUTH_GITHUB_CLIENTID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.oauth.github.existingSecret.name }}
+                  key: {{ .Values.oauth.github.existingSecret.clientIDKey }}
+            - name: OAUTH_GITHUB_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.oauth.github.existingSecret.name }}
+                  key: {{ .Values.oauth.github.existingSecret.clientSecretKey }}
+            {{- end }}
+            {{- if .Values.oauth.facebook.existingSecret.enabled }}
+            - name: OAUTH_FACEBOOK_APPID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.oauth.facebook.existingSecret.name }}
+                  key: {{ .Values.oauth.facebook.existingSecret.clientIDKey }}
+            - name: OAUTH_FACEBOOK_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.oauth.facebook.existingSecret.name }}
+                  key: {{ .Values.oauth.facebook.existingSecret.clientSecretKey }}
+            {{- end }}
+            {{- range $key, $val := .Values.env }}
+            - name: {{ $key }}
+              value: {{ $val | quote }}
+            {{- end }}
+            {{- with .Values.extraEnv }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          {{- with .Values.extraEnvFrom }}
+          envFrom:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
