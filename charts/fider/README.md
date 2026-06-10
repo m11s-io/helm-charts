@@ -91,6 +91,7 @@ To route a custom domain (e.g. `feedback.acme.io`) to the right tenant, point th
 #### Wildcard ingress for subdomain tenants
 
 For subdomain tenants, configure a wildcard hostname (e.g. `*.feedback.example.com`) on your HTTPRoute or Ingress so all subdomain requests reach Fider.
+When `fider.hostMode` is `multi` and chart-managed `httpRoute` is enabled, the chart automatically adds `login.<fider.hostDomain>` to the HTTPRoute hostnames for upstream Fider's host-wide signup/OAuth flow.
 
 ```yaml
 httpRoute:
