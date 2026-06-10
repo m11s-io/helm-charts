@@ -15,6 +15,7 @@ helm install fider m11s/fider -n fider --create-namespace -f values.yaml
 | Parameter | Description | Default |
 |---|---|---|
 | `fider.hostMode` | Host mode: `single` or `multi` | `single` |
+| `fider.baseURL` | Public URL of this Fider instance (required when `hostMode=single`) | `""` |
 | `fider.hostDomain` | Base domain for multi-tenant subdomain routing (required when `hostMode=multi`) | `""` |
 | `fider.logLevel` | Log level | `INFO` |
 | `fider.existingSecret.name` | Secret containing JWT secret | `""` |
@@ -56,7 +57,7 @@ Fider uses `hostDomain` to distinguish two tenant types:
 | **Subdomain tenant** | `<slug>.<hostDomain>` | `acme.feedback.example.com` |
 | **Custom domain tenant** | anything else | `feedback.acme.io` |
 
-When a request arrives, Fider checks: does the hostname end with `.hostDomain`? If yes → subdomain tenant. If no → custom domain tenant. The `baseURL` field is not used in multi mode; Fider derives the tenant from the incoming request host.
+When a request arrives, Fider checks: does the hostname end with `.hostDomain`? If yes → subdomain tenant. If no → custom domain tenant. The `baseURL` field is not required in multi mode; Fider derives the tenant from the incoming request host.
 
 ```yaml
 fider:

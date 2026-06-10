@@ -1,6 +1,6 @@
 # image.repository is the container image repository
 image:
-  repository: getfider/fider
+  repository: m11s/fider
   # image.tag overrides the image tag; defaults to the chart appVersion
   tag: ""
   # image.pullPolicy is the image pull policy
@@ -21,7 +21,7 @@ service:
   port: 3000
 
 fider:
-  # fider.baseURL is the public URL of this Fider instance (required), e.g. https://feedback.mysite.com
+  # fider.baseURL is the public URL of this Fider instance. Required only when hostMode is single.
   baseURL: ""
   # fider.hostMode controls single vs multi-tenant mode; valid values: single, multi
   hostMode: single
