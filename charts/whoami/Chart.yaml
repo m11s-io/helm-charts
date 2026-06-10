@@ -5,4 +5,4 @@ type: application
 version: 0.1.0
 # renovate: datasource=docker depName=traefik/whoami
 appVersion: "v1.11.0"
-icon: https://raw.githubusercontent.com/traefik/whoami/master/traefik.logo.png
+icon: https://www.gravatar.com/avatar/27caca9bcd7fd7f7412ca5255c9ae2d0?s=120&r=g&d=404
