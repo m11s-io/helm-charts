@@ -1,0 +1,23 @@
+suite: whoami service
+templates:
+  - service.yaml
+
+tests:
+  - it: renders a ClusterIP service on port 80 by default
+    asserts:
+      - isKind:
+          of: Service
+      - equal:
+          path: spec.type
+          value: ClusterIP
+      - equal:
+          path: spec.ports[0].port
+          value: 80
+
+  - it: respects service.port override
+    set:
+      service.port: 8080
+    asserts:
+      - equal:
+          path: spec.ports[0].port
+          value: 8080

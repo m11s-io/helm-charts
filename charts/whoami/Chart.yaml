@@ -23,3 +23,6 @@ annotations:
   artifacthub.io/links: |
     - name: source
       url: https://github.com/traefik/whoami
+  artifacthub.io/changes: |-
+    - kind: added
+      description: "Add helm-unittest tests and ci values"
