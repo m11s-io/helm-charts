@@ -7,14 +7,21 @@ on:
     paths:
       - 'charts/**'
   workflow_dispatch:
+    inputs:
+      skip_release:
+        description: 'Dry-run: skip publishing (useful for testing the workflow)'
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   release:
+    if: github.event.inputs.skip_release != 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 0
 
@@ -24,7 +31,7 @@ jobs:
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
       - name: Import GPG key
-        uses: crazy-max/ghaction-import-gpg@v6
+        uses: crazy-max/ghaction-import-gpg@v6 # pinned by dependabot
         id: import_gpg
         with:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
@@ -37,7 +44,7 @@ jobs:
         run: gpg --export-secret-keys > ~/.gnupg/secring.gpg
 
       - name: Run chart-releaser
-        uses: helm/chart-releaser-action@v1.7.0
+        uses: helm/chart-releaser-action@cae68fefc6b5f367a0275617c9f83181ba54714f # v1.7.0
         with:
           version: v1.8.1
           skip_existing: true
@@ -47,3 +54,7 @@ jobs:
           CR_KEY: "${{ steps.import_gpg.outputs.email }}"
           CR_KEYRING: "~/.gnupg/secring.gpg"
           CR_PASSPHRASE_FILE: "/tmp/passphrase.txt"
+
+      - name: Cleanup
+        if: always()
+        run: rm -f /tmp/passphrase.txt
