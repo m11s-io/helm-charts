@@ -1,0 +1,85 @@
+name: "Generate values.schema.json"
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "charts/**/values.yaml"
+  workflow_dispatch:
+    inputs:
+      charts:
+        description: 'Charts to regenerate (comma-separated, e.g. "whoami,fider"). Leave empty for all.'
+        required: false
+        type: string
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  generate-schema:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    if: github.actor != 'github-actions[bot]'
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ github.head_ref || github.ref }}
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Helm
+        uses: azure/setup-helm@1a275c3b69536ee54be43f2070a358922e12c8d4 # v4.3.1
+
+      - name: Install helm-values-schema-json plugin
+        run: helm plugin install https://github.com/losisin/helm-values-schema-json.git --version v2.3.1
+
+      - name: Determine charts to process
+        id: charts
+        env:
+          INPUT_CHARTS: ${{ github.event.inputs.charts || '' }}
+        run: |
+          if [[ -n "$INPUT_CHARTS" ]]; then
+            echo "charts=$INPUT_CHARTS" >> $GITHUB_OUTPUT
+          else
+            # Detect from changed values.yaml files in the PR
+            BASE_SHA="${{ github.event.pull_request.base.sha }}"
+            changed=$(git diff --name-only "$BASE_SHA" HEAD -- 'charts/**/values.yaml' \
+              | grep -o 'charts/[^/]*' | cut -d/ -f2 | sort -u | tr '\n' ',' | sed 's/,$//')
+            echo "charts=$changed" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Generate schemas
+        if: steps.charts.outputs.charts != ''
+        run: |
+          IFS=',' read -ra CHARTS <<< "${{ steps.charts.outputs.charts }}"
+          for chart in "${CHARTS[@]}"; do
+            chart=$(echo "$chart" | xargs)
+            [[ -z "$chart" ]] && continue
+            dir="charts/$chart"
+            if [[ ! -f "$dir/values.yaml" ]]; then
+              echo "Skipping $chart: no values.yaml"
+              continue
+            fi
+            echo "Generating schema for $chart..."
+            helm schema --values "$dir/values.yaml" --output "$dir/values.schema.json" --draft 7
+          done
+
+      - name: Commit schema changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add charts/*/values.schema.json
+          if git diff --staged --quiet; then
+            echo "No schema changes to commit"
+          else
+            git commit -m "chore: auto-generate values.schema.json [skip ci]"
+            git push
+          fi

@@ -7,16 +7,43 @@ on:
     paths:
       - 'charts/**'
   workflow_dispatch:
+    inputs:
+      chart_name:
+        description: 'Chart to release (e.g. "whoami"). Leave empty to process all changed charts.'
+        required: false
+        type: string
+      force_release:
+        description: 'Force re-release (deletes and recreates the existing version tag)'
+        required: false
+        type: boolean
+        default: false
+      skip_release:
+        description: 'Dry-run: detect and annotate without publishing'
+        required: false
+        type: boolean
+        default: false
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
 
 jobs:
   release:
+    name: Release Charts
+    if: github.event.inputs.skip_release != 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       contents: write
+      packages: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 0
+          ref: main
 
       - name: Configure Git
         run: |
@@ -36,14 +63,181 @@ jobs:
       - name: Export legacy GPG keyring
         run: gpg --export-secret-keys > ~/.gnupg/secring.gpg
 
+      - name: Set up Helm
+        uses: azure/setup-helm@1a275c3b69536ee54be43f2070a358922e12c8d4 # v4.3.1
+
+      - name: Install tools
+        run: |
+          sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          sudo chmod +x /usr/local/bin/yq
+          pip install pyyaml
+
+      - name: Detect changed charts
+        id: detect
+        env:
+          INPUT_CHART: ${{ github.event.inputs.chart_name || '' }}
+          FORCE: ${{ github.event.inputs.force_release || 'false' }}
+        run: |
+          set -euo pipefail
+          CHANGED=""
+
+          # Force-release a specific chart: delete its tag so chart-releaser will re-release it
+          if [[ "$FORCE" == "true" && -n "$INPUT_CHART" ]]; then
+            VERSION=$(yq eval '.version' "charts/$INPUT_CHART/Chart.yaml")
+            TAG="${INPUT_CHART}-${VERSION}"
+            echo "Force release: deleting tag $TAG"
+            git tag -d "$TAG" 2>/dev/null || true
+            git push origin ":refs/tags/$TAG" 2>/dev/null || true
+            CHANGED="$INPUT_CHART"
+            echo "changed_charts=$CHANGED" >> "$GITHUB_OUTPUT"
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # Specific chart requested via workflow_dispatch (no force)
+          if [[ -n "$INPUT_CHART" ]]; then
+            CHART_DIRS="charts/$INPUT_CHART"
+          else
+            CHART_DIRS="charts/*"
+          fi
+
+          for dir in $CHART_DIRS; do
+            [[ ! -f "$dir/Chart.yaml" ]] && continue
+            NAME=$(basename "$dir")
+            VERSION=$(yq eval '.version' "$dir/Chart.yaml")
+            TAG="${NAME}-${VERSION}"
+
+            # Already released — skip
+            if git tag -l | grep -q "^${TAG}$"; then
+              echo "✓ $TAG already released"
+              continue
+            fi
+
+            # Has anything in the chart directory changed since the last tag?
+            LAST_TAG=$(git tag -l "${NAME}-*" | sort -V | tail -1)
+            if [[ -n "$LAST_TAG" ]]; then
+              DIFF=$(git diff --name-only "$LAST_TAG" HEAD -- "$dir/" 2>/dev/null || echo "")
+              [[ -z "$DIFF" ]] && continue
+            fi
+
+            CHANGED="${CHANGED:+$CHANGED,}$NAME"
+            echo "Will release: $TAG"
+          done
+
+          echo "changed_charts=$CHANGED" >> "$GITHUB_OUTPUT"
+          [[ -n "$CHANGED" ]] && echo "has_changes=true" >> "$GITHUB_OUTPUT" || echo "has_changes=false" >> "$GITHUB_OUTPUT"
+
+      - name: Auto-generate artifacthub.io/changes annotation
+        if: steps.detect.outputs.has_changes == 'true'
+        env:
+          CHANGED_CHARTS: ${{ steps.detect.outputs.changed_charts }}
+          REPO_URL: https://github.com/${{ github.repository }}
+        run: |
+          set -euo pipefail
+          KINDS='{"feat":"added","fix":"fixed","chore":"changed","refactor":"changed","docs":"changed","sec":"security"}'
+
+          for NAME in ${CHANGED_CHARTS//,/ }; do
+            dir="charts/$NAME"
+            VERSION=$(yq eval '.version' "$dir/Chart.yaml")
+            LAST_TAG=$(git tag -l "${NAME}-*" | sort -V | tail -1)
+            [[ -z "$LAST_TAG" ]] && { echo "No previous tag for $NAME, skipping annotation"; continue; }
+
+            CHANGES_YAML=$(git log --pretty=format:"%s" "${LAST_TAG}..HEAD" -- "$dir/" \
+              | grep -v "^Merge " | grep -v "^chore: update CHANGELOG" \
+              | REPO_URL="$REPO_URL" KINDS="$KINDS" python3 -c "
+          import os, sys, re, yaml, json
+          kinds = json.loads(os.environ['KINDS'])
+          repo_url = os.environ['REPO_URL']
+          changes = []
+          for msg in sys.stdin:
+              msg = msg.strip()
+              if not msg:
+                  continue
+              m = re.match(r'^(\w+)(?:\([^)]*\))?!?:\s*(.+)', msg)
+              kind = kinds.get(m.group(1), 'changed') if m else 'changed'
+              desc = m.group(2) if m else msg
+              entry = {'kind': kind, 'description': desc}
+              pr = re.search(r'\(#(\d+)\)', desc)
+              if pr:
+                  entry['links'] = [{'name': 'Pull Request', 'url': f'{repo_url}/pull/{pr.group(1)}'}]
+              changes.append(entry)
+          if changes:
+              print(yaml.safe_dump(changes, default_flow_style=False, allow_unicode=True, sort_keys=False).rstrip())
+          " || true)
+
+            if [[ -n "$CHANGES_YAML" ]]; then
+              export CHANGES_YAML
+              yq eval '.annotations["artifacthub.io/changes"] = strenv(CHANGES_YAML)' -i "$dir/Chart.yaml"
+              echo "Updated artifacthub.io/changes for $NAME"
+            fi
+          done
+
       - name: Run chart-releaser
-        uses: helm/chart-releaser-action@v1.7.0
+        if: steps.detect.outputs.has_changes == 'true'
+        uses: helm/chart-releaser-action@cae68fefc6b5f367a0275617c9f83181ba54714f # v1.7.0
         with:
-          version: v1.8.1
           skip_existing: true
+          charts_dir: charts
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
           CR_SIGN: "true"
           CR_KEY: "${{ steps.import_gpg.outputs.email }}"
           CR_KEYRING: "~/.gnupg/secring.gpg"
           CR_PASSPHRASE_FILE: "/tmp/passphrase.txt"
+
+      - name: Install cosign
+        if: steps.detect.outputs.has_changes == 'true'
+        uses: sigstore/cosign-installer@d7543c93d881b35a8faa02e8e3605f69b7a1ce62 # v3.10.0
+
+      - name: Push to GHCR and sign with cosign
+        if: steps.detect.outputs.has_changes == 'true'
+        env:
+          CHANGED_CHARTS: ${{ steps.detect.outputs.changed_charts }}
+          COSIGN_KEY: ${{ secrets.COSIGN_KEY }}
+          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
+        run: |
+          set -euo pipefail
+          OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          REGISTRY="ghcr.io/${OWNER}/helm-charts"
+
+          echo "${{ secrets.GITHUB_TOKEN }}" | helm registry login ghcr.io \
+            --username "${{ github.actor }}" --password-stdin
+
+          for NAME in ${CHANGED_CHARTS//,/ }; do
+            VERSION=$(yq eval '.version' "charts/$NAME/Chart.yaml")
+            PKG=".cr-release-packages/${NAME}-${VERSION}.tgz"
+
+            if [[ ! -f "$PKG" ]]; then
+              echo "Package $PKG not found, skipping GHCR push for $NAME"
+              continue
+            fi
+
+            echo "Pushing $NAME:$VERSION to ghcr.io..."
+            if helm push "$PKG" "oci://${REGISTRY}" 2>&1 | tee /tmp/push-output.log; then
+              DIGEST=$(grep -oP 'Digest:\s*\K(sha256:[a-f0-9]+)' /tmp/push-output.log || echo "")
+              if [[ -n "$DIGEST" && -n "${COSIGN_KEY:-}" ]]; then
+                echo "Signing ${REGISTRY}/${NAME}:${VERSION}@${DIGEST}"
+                cosign sign --yes --key env://COSIGN_KEY \
+                  "${REGISTRY}/${NAME}:${VERSION}@${DIGEST}"
+              fi
+            fi
+          done
+
+      - name: Job summary
+        if: steps.detect.outputs.has_changes == 'true'
+        env:
+          CHANGED_CHARTS: ${{ steps.detect.outputs.changed_charts }}
+        run: |
+          OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          echo "## Released Charts" >> "$GITHUB_STEP_SUMMARY"
+          for NAME in ${CHANGED_CHARTS//,/ }; do
+            VERSION=$(yq eval '.version' "charts/$NAME/Chart.yaml")
+            echo "- **${NAME}** \`${VERSION}\`" >> "$GITHUB_STEP_SUMMARY"
+          done
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "**GHCR:** \`ghcr.io/${OWNER}/helm-charts\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Helm repo:** \`https://${{ github.repository_owner }}.github.io/helm-charts\`" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Cleanup
+        if: always()
+        run: rm -f /tmp/passphrase.txt
