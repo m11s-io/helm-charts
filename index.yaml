@@ -156,6 +156,35 @@ entries:
         url: https://keys.openpgp.org/search?q=hello%40m11s.io
     apiVersion: v2
     appVersion: v1.11.0
+    created: "2026-06-11T17:04:32.416226316Z"
+    description: Helm chart for whoami, a tiny HTTP server that prints OS info and
+      HTTP request details
+    digest: c289ec82e6d9a4c6a884177c40adb802f9218244784f9a9083ccdf435d0ef867
+    home: https://github.com/traefik/whoami
+    icon: https://www.gravatar.com/avatar/27caca9bcd7fd7f7412ca5255c9ae2d0?s=120&r=g&d=404
+    maintainers:
+    - name: m11s
+      url: https://m11s.io
+    name: whoami
+    sources:
+    - https://github.com/traefik/whoami
+    - https://github.com/m11s-io/charts
+    type: application
+    urls:
+    - https://github.com/m11s-io/charts/releases/download/whoami-0.1.6/whoami-0.1.6.tgz
+    version: 0.1.6
+  - annotations:
+      artifacthub.io/containersImages: |
+        - name: whoami
+          image: traefik/whoami:v1.11.0
+      artifacthub.io/links: |
+        - name: source
+          url: https://github.com/traefik/whoami
+      artifacthub.io/signKey: |
+        fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
+        url: https://keys.openpgp.org/search?q=hello%40m11s.io
+    apiVersion: v2
+    appVersion: v1.11.0
     created: "2026-06-11T16:19:30.161402773Z"
     description: Helm chart for whoami, a tiny HTTP server that prints OS info and
       HTTP request details
@@ -246,4 +275,4 @@ entries:
     urls:
     - https://github.com/m11s-io/charts/releases/download/whoami-0.1.0/whoami-0.1.0.tgz
     version: 0.1.0
-generated: "2026-06-11T16:19:30.161431115Z"
+generated: "2026-06-11T17:04:32.416287109Z"
