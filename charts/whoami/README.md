@@ -1,5 +1,8 @@
 # whoami Helm Chart
 
+[![Docker Pulls](https://img.shields.io/docker/pulls/traefik/whoami.svg)](https://hub.docker.com/r/traefik/whoami/)
+[![Build Status](https://github.com/traefik/whoami/workflows/Main/badge.svg?branch=master)](https://github.com/traefik/whoami/actions)
+
 [whoami](https://github.com/traefik/whoami) is a tiny HTTP server that prints OS information and HTTP request details. Useful for testing ingress, routing, and load balancing.
 
 ## Installation
