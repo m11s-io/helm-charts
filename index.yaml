@@ -1,5 +1,35 @@
 apiVersion: v1
 entries:
+  decap-cms:
+  - annotations:
+      artifacthub.io/changes: |-
+        - kind: added
+          description: "Add initial multi-tenant Decap CMS chart"
+      artifacthub.io/containersImages: |
+        - name: decap-cms
+          image: m11s/decap-cms:0.2.0-s3
+      artifacthub.io/signKey: |
+        fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
+        url: https://keys.openpgp.org/search?q=hello%40m11s.io
+    apiVersion: v2
+    appVersion: 0.2.0-s3
+    created: "2026-06-12T09:52:39.170254066Z"
+    description: Helm chart for multi-tenant Decap CMS served by hostname
+    digest: c90aa71533fb2de497d8866d5e5aa4bcd046cb2eeedc16ce6b43b62f75aebba7
+    home: https://decapcms.org
+    icon: https://decapcms.org/img/decap-logo.svg
+    maintainers:
+    - name: m11s
+      url: https://m11s.io
+    name: decap-cms
+    sources:
+    - https://github.com/decaporg/decap-cms
+    - https://github.com/m11s-io/docker-images
+    - https://github.com/m11s-io/helm-charts
+    type: application
+    urls:
+    - https://github.com/m11s-io/helm-charts/releases/download/decap-cms-0.1.0/decap-cms-0.1.0.tgz
+    version: 0.1.0
   fider:
   - annotations:
       artifacthub.io/signKey: |
@@ -275,4 +305,4 @@ entries:
     urls:
     - https://github.com/m11s-io/charts/releases/download/whoami-0.1.0/whoami-0.1.0.tgz
     version: 0.1.0
-generated: "2026-06-11T17:04:32.416287109Z"
+generated: "2026-06-12T09:52:39.390062065Z"
