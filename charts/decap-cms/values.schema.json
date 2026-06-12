@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "image": {
+      "type": "object",
+      "properties": {
+        "repository": { "type": "string", "minLength": 1 },
+        "tag": { "type": "string" },
+        "pullPolicy": {
+          "type": "string",
+          "enum": ["Always", "IfNotPresent", "Never"]
+        }
+      }
+    },
+    "replicaCount": { "type": "integer", "minimum": 0 },
+    "service": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["ClusterIP", "NodePort", "LoadBalancer", "ExternalName"]
+        },
+        "port": { "type": "integer", "minimum": 1, "maximum": 65535 }
+      }
+    },
+    "decapCms": {
+      "type": "object",
+      "properties": {
+        "port": { "type": "integer", "minimum": 1, "maximum": 65535 },
+        "tenantsFile": { "type": "string", "minLength": 1 }
+      }
+    },
+    "tenants": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["hostname", "gitlabRepo", "gitlabBranch", "gitlabAppId", "uploadUrl"],
+        "properties": {
+          "hostname": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9]([A-Za-z0-9.-]*[A-Za-z0-9])?$"
+          },
+          "gitlabRepo": { "type": "string", "minLength": 1 },
+          "gitlabBranch": { "type": "string", "minLength": 1 },
+          "gitlabAppId": { "type": "string", "minLength": 1 },
+          "uploadUrl": { "type": "string", "minLength": 1 }
+        },
+        "additionalProperties": false
+      }
+    },
+    "existingTenantsConfigMap": { "type": "string" },
+    "httpRoute": {
+      "type": "object",
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "annotations": {
+          "type": "object",
+          "additionalProperties": { "type": "string" }
+        },
+        "labels": {
+          "type": "object",
+          "additionalProperties": { "type": "string" }
+        },
+        "parentRefs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name"],
+            "properties": {
+              "group": { "type": "string" },
+              "kind": { "type": "string" },
+              "namespace": { "type": "string" },
+              "name": { "type": "string", "minLength": 1 },
+              "sectionName": { "type": "string" },
+              "port": { "type": "integer", "minimum": 1, "maximum": 65535 }
+            },
+            "additionalProperties": true
+          }
+        },
+        "hostnames": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        }
+      },
+      "if": {
+        "properties": {
+          "enabled": { "const": true }
+        }
+      },
+      "then": {
+        "required": ["parentRefs"],
+        "properties": {
+          "parentRefs": { "minItems": 1 }
+        }
+      }
+    },
+    "resources": {
+      "type": "object",
+      "properties": {
+        "requests": { "type": "object" },
+        "limits": { "type": "object" }
+      }
+    }
+  }
+}

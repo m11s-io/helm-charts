@@ -1,0 +1,8 @@
+Decap CMS has been deployed.
+
+{{- if .Values.httpRoute.enabled }}
+HTTPRoute hostnames:
+{{ include "decap-cms.httpRouteHostnames" . }}
+{{- else }}
+Expose the service with an HTTPRoute or Ingress that preserves the tenant Host header.
+{{- end }}

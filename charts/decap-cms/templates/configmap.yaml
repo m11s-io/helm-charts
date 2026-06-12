@@ -1,0 +1,14 @@
+{{- if not .Values.existingTenantsConfigMap }}
+{{- if not .Values.tenants }}
+{{- fail "tenants must contain at least one tenant unless existingTenantsConfigMap is set" }}
+{{- end }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "decap-cms.tenantsConfigMapName" . }}
+  labels:
+    {{- include "decap-cms.labels" . | nindent 4 }}
+data:
+  tenants.json: |
+    {{- .Values.tenants | toJson | nindent 4 }}
+{{- end }}

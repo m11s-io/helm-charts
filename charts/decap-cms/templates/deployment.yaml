@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "decap-cms.fullname" . }}
+  labels:
+    {{- include "decap-cms.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "decap-cms.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        checksum/tenants: {{ .Values.tenants | toJson | sha256sum }}
+        {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      labels:
+        {{- include "decap-cms.selectorLabels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "decap-cms.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: decap-cms
+          image: {{ include "decap-cms.image" . }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          env:
+            - name: TENANTS_FILE
+              value: {{ .Values.decapCms.tenantsFile | quote }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.decapCms.port }}
+              protocol: TCP
+          livenessProbe:
+            tcpSocket:
+              port: http
+            periodSeconds: 15
+          readinessProbe:
+            tcpSocket:
+              port: http
+            periodSeconds: 10
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: tenants-config
+              mountPath: {{ .Values.decapCms.tenantsFile }}
+              subPath: tenants.json
+              readOnly: true
+            - name: generated-html
+              mountPath: /usr/share/nginx/html/tenants
+            - name: nginx-cache
+              mountPath: /var/cache/nginx
+            - name: nginx-run
+              mountPath: /var/run
+      volumes:
+        - name: tenants-config
+          configMap:
+            name: {{ include "decap-cms.tenantsConfigMapName" . }}
+        - name: generated-html
+          emptyDir: {}
+        - name: nginx-cache
+          emptyDir: {}
+        - name: nginx-run
+          emptyDir: {}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

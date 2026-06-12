@@ -1,0 +1,93 @@
+image:
+  # image.repository is the container image repository
+  repository: m11s/decap-cms
+  # image.tag overrides the image tag; defaults to the chart appVersion
+  tag: ""
+  # image.pullPolicy is the image pull policy
+  pullPolicy: IfNotPresent
+
+# nameOverride overrides the chart name portion of the release name
+nameOverride: ""
+# fullnameOverride overrides the full release name used for all resources
+fullnameOverride: ""
+
+# replicaCount is the number of Decap CMS pod replicas
+replicaCount: 1
+
+service:
+  # service.type is the Kubernetes Service type
+  type: ClusterIP
+  # service.port is the port the Service listens on
+  port: 80
+
+decapCms:
+  # decapCms.port is the port nginx listens on inside the container
+  port: 80
+  # decapCms.tenantsFile is the path read by the image entrypoint
+  tenantsFile: /etc/decap/tenants.json
+
+# tenants configures one Decap CMS instance per hostname.
+# Ignored when existingTenantsConfigMap is set.
+tenants:
+  - hostname: localhost
+    gitlabRepo: m11s/example
+    gitlabBranch: main
+    gitlabAppId: change-me
+    uploadUrl: https://example.com/upload
+
+# existingTenantsConfigMap mounts an existing ConfigMap containing tenants.json.
+# Use this when tenant values are managed outside this chart.
+existingTenantsConfigMap: ""
+
+httpRoute:
+  # httpRoute.enabled enables a Gateway API HTTPRoute resource
+  enabled: false
+  # httpRoute.annotations are extra annotations added to the HTTPRoute
+  annotations: {}
+  # httpRoute.labels are extra labels added to the HTTPRoute
+  labels: {}
+  # httpRoute.parentRefs is the list of Gateways this route attaches to
+  parentRefs: []
+  # httpRoute.hostnames is the list of hostnames this route matches.
+  # Defaults to tenants[*].hostname when omitted.
+  hostnames: []
+
+serviceAccount:
+  # serviceAccount.create specifies whether a ServiceAccount should be created
+  create: true
+  # serviceAccount.name is the name of the ServiceAccount; defaults to fullname if empty
+  name: ""
+  # serviceAccount.annotations are extra annotations added to the ServiceAccount
+  annotations: {}
+
+# podSecurityContext sets the security context for the Decap CMS pod
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 101
+  runAsGroup: 101
+  fsGroup: 101
+
+# securityContext sets the security context for the Decap CMS container
+securityContext:
+  capabilities:
+    drop:
+      - ALL
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+
+# resources sets the CPU and memory requests and limits for the Decap CMS container
+resources:
+  requests:
+    cpu: 10m
+    memory: 32Mi
+  limits:
+    memory: 128Mi
+
+# podAnnotations are extra annotations added to the Decap CMS pod
+podAnnotations: {}
+# nodeSelector constrains the Decap CMS pod to nodes matching the given labels
+nodeSelector: {}
+# tolerations allow the Decap CMS pod to be scheduled on tainted nodes
+tolerations: []
+# affinity sets pod affinity and anti-affinity rules
+affinity: {}

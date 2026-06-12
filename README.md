@@ -10,6 +10,7 @@ A collection of production-ready Helm charts for m11s platform services, publish
 
 | Chart | Description | Version |
 |-------|-------------|---------|
+| [decap-cms](./charts/decap-cms) | Multi-tenant Decap CMS served by hostname | ![Version](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/m11s-io/helm-charts/main/charts/decap-cms/Chart.yaml&label=&query=version&prefix=v) |
 | [fider](./charts/fider) | Self-hosted user feedback platform | ![Version](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/m11s-io/helm-charts/main/charts/fider/Chart.yaml&label=&query=version&prefix=v) |
 | [whoami](./charts/whoami) | Tiny HTTP server that prints OS info and HTTP request details | ![Version](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/m11s-io/helm-charts/main/charts/whoami/Chart.yaml&label=&query=version&prefix=v) |
 

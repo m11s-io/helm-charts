@@ -1,0 +1,26 @@
+apiVersion: v2
+name: decap-cms
+description: Helm chart for multi-tenant Decap CMS served by hostname
+type: application
+version: 0.1.0
+# renovate: datasource=docker depName=m11s/decap-cms
+appVersion: "0.2.0-s3"
+home: https://decapcms.org
+icon: https://decapcms.org/img/decap-logo.svg
+sources:
+  - https://github.com/decaporg/decap-cms
+  - https://github.com/m11s-io/docker-images
+  - https://github.com/m11s-io/helm-charts
+maintainers:
+  - name: m11s
+    url: https://m11s.io
+annotations:
+  artifacthub.io/signKey: |
+    fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
+    url: https://keys.openpgp.org/search?q=hello%40m11s.io
+  artifacthub.io/containersImages: |
+    - name: decap-cms
+      image: m11s/decap-cms:0.2.0-s3
+  artifacthub.io/changes: |-
+    - kind: added
+      description: "Add initial multi-tenant Decap CMS chart"
