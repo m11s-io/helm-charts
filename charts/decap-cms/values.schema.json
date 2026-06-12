@@ -45,7 +45,11 @@
           "gitlabRepo": { "type": "string", "minLength": 1 },
           "gitlabBranch": { "type": "string", "minLength": 1 },
           "gitlabAppId": { "type": "string", "minLength": 1 },
-          "uploadUrl": { "type": "string", "minLength": 1 }
+          "uploadUrl": { "type": "string", "minLength": 1 },
+          "publishMode": {
+            "type": "string",
+            "enum": ["simple", "editorial_workflow"]
+          }
         },
         "additionalProperties": false
       }

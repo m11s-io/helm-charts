@@ -34,6 +34,8 @@ tenants:
     gitlabBranch: main
     gitlabAppId: change-me
     uploadUrl: https://example.com/upload
+    # publishMode enables the editorial workflow; omit or set to "simple" for direct publish
+    # publishMode: editorial_workflow
 
 # existingTenantsConfigMap mounts an existing ConfigMap containing tenants.json.
 # Use this when tenant values are managed outside this chart.
