@@ -13,6 +13,44 @@ entries:
           description: "Tenant field renamed from hostname to slug; httpRoute.hostnames is now required when httpRoute.enabled is true"
       artifacthub.io/containersImages: |
         - name: decap-cms
+          image: m11s/decap-cms:0.2.3-s3
+        - name: s3-upload-proxy
+          image: m11s/s3-upload-proxy:0.1.2
+      artifacthub.io/signKey: |
+        fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
+        url: https://keys.openpgp.org/search?q=hello%40m11s.io
+    apiVersion: v2
+    appVersion: 0.2.3-s3
+    created: "2026-06-12T14:16:10.969088447Z"
+    description: Multi-tenant Decap CMS with optional S3/MinIO upload proxy, served
+      by path prefix
+    digest: 47a82955dbf4b4e9cf2083a79b7905a2c45af4ff14999165c2574ce767d31d91
+    home: https://decapcms.org
+    icon: https://decapcms.org/img/decap-logo.svg
+    maintainers:
+    - name: m11s
+      url: https://m11s.io
+    name: decap-cms
+    sources:
+    - https://github.com/decaporg/decap-cms
+    - https://github.com/m11s-io/docker-images
+    - https://github.com/m11s-io/helm-charts
+    type: application
+    urls:
+    - https://github.com/m11s-io/helm-charts/releases/download/decap-cms-0.3.5/decap-cms-0.3.5.tgz
+    version: 0.3.5
+  - annotations:
+      artifacthub.io/changes: |-
+        - kind: added
+          description: "Optional S3/MinIO upload proxy (uploadProxy.enabled) deploys alongside the CMS and mounts at /upload on the same hostname — no second ingress needed"
+        - kind: added
+          description: "uploadProxy.s3.{endpoint,bucket,region,keyPrefix,publicUrl} configure the proxy; uploadProxy.existingSecret names a Secret with access_key and secret_key"
+        - kind: changed
+          description: "Tenants are now served at /<slug>/ path prefix on a single hostname instead of per-tenant subdomains"
+        - kind: changed
+          description: "Tenant field renamed from hostname to slug; httpRoute.hostnames is now required when httpRoute.enabled is true"
+      artifacthub.io/containersImages: |
+        - name: decap-cms
           image: m11s/decap-cms:0.2.2-s3
         - name: s3-upload-proxy
           image: m11s/s3-upload-proxy:0.1.2
@@ -547,4 +585,4 @@ entries:
     urls:
     - https://github.com/m11s-io/charts/releases/download/whoami-0.1.0/whoami-0.1.0.tgz
     version: 0.1.0
-generated: "2026-06-12T14:07:27.463909733Z"
+generated: "2026-06-12T14:16:10.969161887Z"
