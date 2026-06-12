@@ -2,9 +2,9 @@ apiVersion: v2
 name: decap-cms
 description: Multi-tenant Decap CMS with optional S3/MinIO upload proxy, served by path prefix
 type: application
-version: 0.3.5
+version: 0.3.6
 # renovate: datasource=docker depName=m11s/decap-cms
-appVersion: "0.2.3-s3"
+appVersion: "0.2.4-s3"
 home: https://decapcms.org
 icon: https://decapcms.org/img/decap-logo.svg
 sources:
@@ -20,7 +20,7 @@ annotations:
     url: https://keys.openpgp.org/search?q=hello%40m11s.io
   artifacthub.io/containersImages: |
     - name: decap-cms
-      image: m11s/decap-cms:0.2.3-s3
+      image: m11s/decap-cms:0.2.4-s3
     - name: s3-upload-proxy
       image: m11s/s3-upload-proxy:0.1.2
   artifacthub.io/changes: |-
