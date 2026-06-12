@@ -96,7 +96,7 @@ uploadProxy:
   enabled: false
   image:
     repository: m11s/s3-upload-proxy
-    tag: "0.1.1"
+    tag: "0.1.2"
     pullPolicy: IfNotPresent
   s3:
     # uploadProxy.s3.endpoint is the S3-compatible endpoint URL
