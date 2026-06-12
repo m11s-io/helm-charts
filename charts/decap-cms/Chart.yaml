@@ -2,7 +2,7 @@ apiVersion: v2
 name: decap-cms
 description: Multi-tenant Decap CMS with optional S3/MinIO upload proxy, served by path prefix
 type: application
-version: 0.3.2
+version: 0.3.3
 # renovate: datasource=docker depName=m11s/decap-cms
 appVersion: "0.2.2-s3"
 home: https://decapcms.org
