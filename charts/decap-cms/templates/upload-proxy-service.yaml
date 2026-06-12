@@ -1,18 +1,1 @@
-{{- if .Values.uploadProxy.enabled }}
-apiVersion: v1
-kind: Service
-metadata:
-  name: {{ include "decap-cms.fullname" . }}-upload-proxy
-  labels:
-    {{- include "decap-cms.labels" . | nindent 4 }}
-    app.kubernetes.io/component: upload-proxy
-spec:
-  type: ClusterIP
-  selector:
-    {{- include "decap-cms.selectorLabels" . | nindent 4 }}
-    app.kubernetes.io/component: upload-proxy
-  ports:
-    - port: 80
-      targetPort: http
-      name: http
-{{- end }}
+{{/* upload-proxy runs as a sidecar; no separate Service needed */}}

@@ -1,0 +1,36 @@
+{{- if .Values.uploadProxy.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "decap-cms.fullname" . }}-nginx-config
+  labels:
+    {{- include "decap-cms.labels" . | nindent 4 }}
+data:
+  nginx.conf: |
+    events {}
+
+    http {
+      include /etc/nginx/mime.types;
+
+      server {
+        listen 80;
+        server_name _;
+        root /usr/share/nginx/html;
+
+        location ^~ /upload/ {
+          proxy_pass http://localhost:8082;
+          client_max_body_size 100m;
+        }
+
+        location ~ ^/([a-z0-9][a-z0-9-]*)/config\.yml$ {
+          set $tenant $1;
+          try_files /tenants/$tenant/config.yml =404;
+        }
+
+        location ~ ^/([a-z0-9][a-z0-9-]*)(/|$) {
+          set $tenant $1;
+          try_files /tenants/$tenant/index.html =404;
+        }
+      }
+    }
+{{- end }}

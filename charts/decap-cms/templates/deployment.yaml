@@ -14,12 +14,14 @@ spec:
     metadata:
       annotations:
         checksum/tenants: {{ .Values.tenants | toJson | sha256sum }}
+        {{- if .Values.uploadProxy.enabled }}
+        checksum/nginx-config: {{ include "decap-cms.nginxConfig" . | sha256sum }}
+        {{- end }}
         {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
       labels:
         {{- include "decap-cms.selectorLabels" . | nindent 8 }}
-        app.kubernetes.io/component: cms
     spec:
       serviceAccountName: {{ include "decap-cms.serviceAccountName" . }}
       securityContext:
@@ -58,6 +60,68 @@ spec:
               mountPath: /var/cache/nginx
             - name: nginx-run
               mountPath: /var/run
+            {{- if .Values.uploadProxy.enabled }}
+            - name: nginx-config
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+              readOnly: true
+            {{- end }}
+        {{- if .Values.uploadProxy.enabled }}
+        - name: upload-proxy
+          image: {{ printf "%s:%s" .Values.uploadProxy.image.repository .Values.uploadProxy.image.tag | quote }}
+          imagePullPolicy: {{ .Values.uploadProxy.image.pullPolicy }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 1000
+            capabilities:
+              drop:
+                - ALL
+            seccompProfile:
+              type: RuntimeDefault
+          env:
+            - name: S3_ENDPOINT
+              value: {{ .Values.uploadProxy.s3.endpoint | quote }}
+            - name: S3_BUCKET
+              value: {{ .Values.uploadProxy.s3.bucket | quote }}
+            - name: S3_REGION
+              value: {{ .Values.uploadProxy.s3.region | quote }}
+            - name: S3_KEY_PREFIX
+              value: {{ .Values.uploadProxy.s3.keyPrefix | quote }}
+            - name: S3_PUBLIC_URL
+              value: {{ .Values.uploadProxy.s3.publicUrl | quote }}
+            - name: PORT
+              value: "8082"
+            - name: S3_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.uploadProxy.existingSecret | quote }}
+                  key: access_key
+            - name: S3_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.uploadProxy.existingSecret | quote }}
+                  key: secret_key
+          ports:
+            - name: upload-proxy
+              containerPort: 8082
+          readinessProbe:
+            tcpSocket:
+              port: upload-proxy
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: upload-proxy
+            initialDelaySeconds: 15
+            periodSeconds: 30
+          resources:
+            {{- toYaml .Values.uploadProxy.resources | nindent 12 }}
+          volumeMounts:
+            - name: upload-proxy-tmp
+              mountPath: /tmp
+        {{- end }}
       volumes:
         - name: tenants-config
           {{- if .Values.existingTenantsPersistentVolumeClaim }}
@@ -73,6 +137,13 @@ spec:
           emptyDir: {}
         - name: nginx-run
           emptyDir: {}
+        {{- if .Values.uploadProxy.enabled }}
+        - name: nginx-config
+          configMap:
+            name: {{ include "decap-cms.fullname" . }}-nginx-config
+        - name: upload-proxy-tmp
+          emptyDir: {}
+        {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

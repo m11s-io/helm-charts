@@ -63,6 +63,11 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 {{- end }}
 
+{{/* decap-cms.nginxConfig renders the nginx.conf content for checksum purposes */}}
+{{- define "decap-cms.nginxConfig" -}}
+{{- include (print $.Template.BasePath "/nginx-config.yaml") . }}
+{{- end }}
+
 {{/* decap-cms.httpRouteHostnames returns HTTPRoute hostnames */}}
 {{- define "decap-cms.httpRouteHostnames" -}}
 {{- toYaml .Values.httpRoute.hostnames }}
