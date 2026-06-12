@@ -2,7 +2,7 @@ apiVersion: v2
 name: decap-cms
 description: Helm chart for multi-tenant Decap CMS served by path prefix
 type: application
-version: 0.2.0
+version: 0.3.0
 # renovate: datasource=docker depName=m11s/decap-cms
 appVersion: "0.2.2-s3"
 home: https://decapcms.org
@@ -21,6 +21,8 @@ annotations:
   artifacthub.io/containersImages: |
     - name: decap-cms
       image: m11s/decap-cms:0.2.2-s3
+    - name: s3-upload-proxy
+      image: m11s/s3-upload-proxy:0.1.1
   artifacthub.io/changes: |-
     - kind: changed
       description: "Tenants are now served at /<slug>/ path prefix on a single hostname instead of per-tenant subdomains"

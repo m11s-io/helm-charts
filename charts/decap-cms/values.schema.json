@@ -104,6 +104,56 @@
         "requests": { "type": "object" },
         "limits": { "type": "object" }
       }
+    },
+    "uploadProxy": {
+      "type": "object",
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "image": {
+          "type": "object",
+          "properties": {
+            "repository": { "type": "string", "minLength": 1 },
+            "tag": { "type": "string", "minLength": 1 },
+            "pullPolicy": {
+              "type": "string",
+              "enum": ["Always", "IfNotPresent", "Never"]
+            }
+          }
+        },
+        "s3": {
+          "type": "object",
+          "properties": {
+            "endpoint": { "type": "string" },
+            "bucket": { "type": "string" },
+            "region": { "type": "string" },
+            "keyPrefix": { "type": "string" },
+            "publicUrl": { "type": "string" }
+          }
+        },
+        "existingSecret": { "type": "string" },
+        "resources": {
+          "type": "object",
+          "properties": {
+            "requests": { "type": "object" },
+            "limits": { "type": "object" }
+          }
+        }
+      },
+      "if": { "properties": { "enabled": { "const": true } } },
+      "then": {
+        "required": ["existingSecret"],
+        "properties": {
+          "existingSecret": { "minLength": 1 },
+          "s3": {
+            "required": ["endpoint", "bucket", "publicUrl"],
+            "properties": {
+              "endpoint": { "minLength": 1 },
+              "bucket": { "minLength": 1 },
+              "publicUrl": { "minLength": 1 }
+            }
+          }
+        }
+      }
     }
   }
 }

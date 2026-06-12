@@ -21,6 +21,15 @@ spec:
   hostnames:
     {{- toYaml .Values.httpRoute.hostnames | nindent 4 }}
   rules:
+    {{- if .Values.uploadProxy.enabled }}
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /upload
+      backendRefs:
+        - name: {{ include "decap-cms.fullname" . }}-upload-proxy
+          port: 80
+    {{- end }}
     - matches:
         - path:
             type: PathPrefix

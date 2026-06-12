@@ -1,0 +1,75 @@
+{{- if .Values.uploadProxy.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "decap-cms.fullname" . }}-upload-proxy
+  labels:
+    {{- include "decap-cms.labels" . | nindent 4 }}
+    app.kubernetes.io/component: upload-proxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "decap-cms.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: upload-proxy
+  template:
+    metadata:
+      labels:
+        {{- include "decap-cms.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: upload-proxy
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: upload-proxy
+          image: {{ printf "%s:%s" .Values.uploadProxy.image.repository .Values.uploadProxy.image.tag | quote }}
+          imagePullPolicy: {{ .Values.uploadProxy.image.pullPolicy }}
+          ports:
+            - containerPort: 8082
+              name: http
+          env:
+            - name: S3_ENDPOINT
+              value: {{ .Values.uploadProxy.s3.endpoint | quote }}
+            - name: S3_BUCKET
+              value: {{ .Values.uploadProxy.s3.bucket | quote }}
+            - name: S3_REGION
+              value: {{ .Values.uploadProxy.s3.region | quote }}
+            - name: S3_KEY_PREFIX
+              value: {{ .Values.uploadProxy.s3.keyPrefix | quote }}
+            - name: S3_PUBLIC_URL
+              value: {{ .Values.uploadProxy.s3.publicUrl | quote }}
+            - name: PORT
+              value: "8082"
+            - name: S3_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.uploadProxy.existingSecret | quote }}
+                  key: access_key
+            - name: S3_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.uploadProxy.existingSecret | quote }}
+                  key: secret_key
+          readinessProbe:
+            tcpSocket:
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 30
+          resources:
+            {{- toYaml .Values.uploadProxy.resources | nindent 12 }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+{{- end }}

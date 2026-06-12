@@ -89,6 +89,35 @@ resources:
   limits:
     memory: 128Mi
 
+# uploadProxy deploys the s3-upload-proxy sidecar service alongside Decap CMS,
+# mounted at /upload on the same HTTPRoute hostname.
+uploadProxy:
+  # uploadProxy.enabled enables the upload proxy Deployment, Service, and /upload route
+  enabled: false
+  image:
+    repository: m11s/s3-upload-proxy
+    tag: "0.1.1"
+    pullPolicy: IfNotPresent
+  s3:
+    # uploadProxy.s3.endpoint is the S3-compatible endpoint URL
+    endpoint: ""
+    # uploadProxy.s3.bucket is the bucket name
+    bucket: ""
+    # uploadProxy.s3.region is the S3 region
+    region: "us-east-1"
+    # uploadProxy.s3.keyPrefix is prepended to all uploaded object keys
+    keyPrefix: ""
+    # uploadProxy.s3.publicUrl is the base URL for returned file URLs (e.g. https://minio.example.com/bucket)
+    publicUrl: ""
+  # uploadProxy.existingSecret is the name of a Secret with access_key and secret_key
+  existingSecret: ""
+  resources:
+    requests:
+      cpu: 10m
+      memory: 64Mi
+    limits:
+      memory: 128Mi
+
 # podAnnotations are extra annotations added to the Decap CMS pod
 podAnnotations: {}
 # nodeSelector constrains the Decap CMS pod to nodes matching the given labels
