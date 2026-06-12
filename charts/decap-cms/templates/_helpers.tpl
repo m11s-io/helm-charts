@@ -56,6 +56,13 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- default (include "decap-cms.fullname" .) .Values.existingTenantsConfigMap }}
 {{- end }}
 
+{{/* decap-cms.validateTenantsSource validates tenant config source settings */}}
+{{- define "decap-cms.validateTenantsSource" -}}
+{{- if and .Values.existingTenantsConfigMap .Values.existingTenantsPersistentVolumeClaim }}
+{{- fail "only one of existingTenantsConfigMap or existingTenantsPersistentVolumeClaim can be set" }}
+{{- end }}
+{{- end }}
+
 {{/* decap-cms.httpRouteHostnames returns HTTPRoute hostnames */}}
 {{- define "decap-cms.httpRouteHostnames" -}}
 {{- if .Values.httpRoute.hostnames }}

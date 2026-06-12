@@ -39,6 +39,10 @@ tenants:
 # Use this when tenant values are managed outside this chart.
 existingTenantsConfigMap: ""
 
+# existingTenantsPersistentVolumeClaim mounts tenants.json from an existing PVC.
+# The PVC must contain a tenants.json file at its root.
+existingTenantsPersistentVolumeClaim: ""
+
 httpRoute:
   # httpRoute.enabled enables a Gateway API HTTPRoute resource
   enabled: false

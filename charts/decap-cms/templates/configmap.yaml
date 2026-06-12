@@ -1,6 +1,7 @@
-{{- if not .Values.existingTenantsConfigMap }}
+{{- include "decap-cms.validateTenantsSource" . }}
+{{- if and (not .Values.existingTenantsConfigMap) (not .Values.existingTenantsPersistentVolumeClaim) }}
 {{- if not .Values.tenants }}
-{{- fail "tenants must contain at least one tenant unless existingTenantsConfigMap is set" }}
+{{- fail "tenants must contain at least one tenant unless an existing tenant config source is set" }}
 {{- end }}
 apiVersion: v1
 kind: ConfigMap

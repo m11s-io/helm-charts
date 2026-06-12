@@ -2,7 +2,7 @@ apiVersion: v2
 name: decap-cms
 description: Helm chart for multi-tenant Decap CMS served by hostname
 type: application
-version: 0.1.0
+version: 0.1.1
 # renovate: datasource=docker depName=m11s/decap-cms
 appVersion: "0.2.0-s3"
 home: https://decapcms.org
@@ -23,4 +23,6 @@ annotations:
       image: m11s/decap-cms:0.2.0-s3
   artifacthub.io/changes: |-
     - kind: added
-      description: "Add initial multi-tenant Decap CMS chart"
+      description: "Support tenant configuration from an existing PersistentVolumeClaim"
+    - kind: fixed
+      description: "Allow non-root nginx to bind port 80"

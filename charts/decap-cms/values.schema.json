@@ -51,6 +51,7 @@
       }
     },
     "existingTenantsConfigMap": { "type": "string" },
+    "existingTenantsPersistentVolumeClaim": { "type": "string" },
     "httpRoute": {
       "type": "object",
       "properties": {

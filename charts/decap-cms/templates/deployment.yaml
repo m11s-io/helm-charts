@@ -1,5 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
+{{- include "decap-cms.validateTenantsSource" . }}
 metadata:
   name: {{ include "decap-cms.fullname" . }}
   labels:
@@ -58,8 +59,13 @@ spec:
               mountPath: /var/run
       volumes:
         - name: tenants-config
+          {{- if .Values.existingTenantsPersistentVolumeClaim }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.existingTenantsPersistentVolumeClaim }}
+          {{- else }}
           configMap:
             name: {{ include "decap-cms.tenantsConfigMapName" . }}
+          {{- end }}
         - name: generated-html
           emptyDir: {}
         - name: nginx-cache

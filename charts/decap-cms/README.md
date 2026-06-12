@@ -8,16 +8,16 @@ The chart stores tenant configuration in `tenants.json`, mounts it into the pod,
 
 ```yaml
 tenants:
-  - hostname: cms.m11s.io
-    gitlabRepo: m11s/products/m11s
+  - hostname: cms.example.com
+    gitlabRepo: example/products/site
     gitlabBranch: decap
     gitlabAppId: xxx
-    uploadUrl: https://proxy.m11s.io/upload
-  - hostname: cms.workanoo.io
-    gitlabRepo: m11s/products/workanoo
+    uploadUrl: https://proxy.example.com/upload
+  - hostname: cms-blog.example.com
+    gitlabRepo: example/products/blog
     gitlabBranch: main
     gitlabAppId: yyy
-    uploadUrl: https://proxy.workanoo.io/upload
+    uploadUrl: https://proxy-blog.example.com/upload
 
 httpRoute:
   enabled: true
@@ -27,3 +27,19 @@ httpRoute:
 ```
 
 When `httpRoute.hostnames` is omitted, it defaults to `tenants[*].hostname`.
+
+## Existing ConfigMap
+
+```yaml
+existingTenantsConfigMap: decap-cms-tenants
+```
+
+The ConfigMap must contain a `tenants.json` key.
+
+## Existing PVC
+
+```yaml
+existingTenantsPersistentVolumeClaim: decap-cms-tenants
+```
+
+The PVC must contain a `tenants.json` file at its root.
