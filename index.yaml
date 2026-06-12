@@ -4,6 +4,37 @@ entries:
   - annotations:
       artifacthub.io/changes: |-
         - kind: added
+          description: "Support tenant configuration from an existing PersistentVolumeClaim"
+        - kind: fixed
+          description: "Allow non-root nginx to bind port 80"
+      artifacthub.io/containersImages: |
+        - name: decap-cms
+          image: m11s/decap-cms:0.2.0-s3
+      artifacthub.io/signKey: |
+        fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
+        url: https://keys.openpgp.org/search?q=hello%40m11s.io
+    apiVersion: v2
+    appVersion: 0.2.0-s3
+    created: "2026-06-12T09:54:51.594824055Z"
+    description: Helm chart for multi-tenant Decap CMS served by hostname
+    digest: 1ebfba815fedc473ca19a5ae7c678cdaa5850e91553a92d8ca629fa01e3c37a3
+    home: https://decapcms.org
+    icon: https://decapcms.org/img/decap-logo.svg
+    maintainers:
+    - name: m11s
+      url: https://m11s.io
+    name: decap-cms
+    sources:
+    - https://github.com/decaporg/decap-cms
+    - https://github.com/m11s-io/docker-images
+    - https://github.com/m11s-io/helm-charts
+    type: application
+    urls:
+    - https://github.com/m11s-io/helm-charts/releases/download/decap-cms-0.1.1/decap-cms-0.1.1.tgz
+    version: 0.1.1
+  - annotations:
+      artifacthub.io/changes: |-
+        - kind: added
           description: "Add initial multi-tenant Decap CMS chart"
       artifacthub.io/containersImages: |
         - name: decap-cms
@@ -305,4 +336,4 @@ entries:
     urls:
     - https://github.com/m11s-io/charts/releases/download/whoami-0.1.0/whoami-0.1.0.tgz
     version: 0.1.0
-generated: "2026-06-12T09:52:39.390062065Z"
+generated: "2026-06-12T09:54:51.594864951Z"
