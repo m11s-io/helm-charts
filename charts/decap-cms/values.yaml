@@ -70,6 +70,8 @@ podSecurityContext:
 # securityContext sets the security context for the Decap CMS container
 securityContext:
   capabilities:
+    add:
+      - NET_BIND_SERVICE
     drop:
       - ALL
   allowPrivilegeEscalation: false
