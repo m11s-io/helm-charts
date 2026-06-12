@@ -26,10 +26,10 @@ decapCms:
   # decapCms.tenantsFile is the path read by the image entrypoint
   tenantsFile: /etc/decap/tenants.json
 
-# tenants configures one Decap CMS instance per hostname.
+# tenants configures one Decap CMS instance per path prefix (/<slug>/).
 # Ignored when existingTenantsConfigMap is set.
 tenants:
-  - hostname: localhost
+  - slug: example
     gitlabRepo: m11s/example
     gitlabBranch: main
     gitlabAppId: change-me

@@ -1,10 +1,10 @@
 apiVersion: v2
 name: decap-cms
-description: Helm chart for multi-tenant Decap CMS served by hostname
+description: Helm chart for multi-tenant Decap CMS served by path prefix
 type: application
-version: 0.1.1
+version: 0.2.0
 # renovate: datasource=docker depName=m11s/decap-cms
-appVersion: "0.2.0-s3"
+appVersion: "0.2.2-s3"
 home: https://decapcms.org
 icon: https://decapcms.org/img/decap-logo.svg
 sources:
@@ -20,9 +20,9 @@ annotations:
     url: https://keys.openpgp.org/search?q=hello%40m11s.io
   artifacthub.io/containersImages: |
     - name: decap-cms
-      image: m11s/decap-cms:0.2.0-s3
+      image: m11s/decap-cms:0.2.2-s3
   artifacthub.io/changes: |-
-    - kind: added
-      description: "Support tenant configuration from an existing PersistentVolumeClaim"
-    - kind: fixed
-      description: "Allow non-root nginx to bind port 80"
+    - kind: changed
+      description: "Tenants are now served at /<slug>/ path prefix on a single hostname instead of per-tenant subdomains"
+    - kind: changed
+      description: "Tenant field renamed from hostname to slug; httpRoute.hostnames is now required when httpRoute.enabled is true"

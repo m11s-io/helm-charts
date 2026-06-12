@@ -35,12 +35,12 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["hostname", "gitlabRepo", "gitlabBranch", "gitlabAppId", "uploadUrl"],
+        "required": ["slug", "gitlabRepo", "gitlabBranch", "gitlabAppId", "uploadUrl"],
         "properties": {
-          "hostname": {
+          "slug": {
             "type": "string",
             "minLength": 1,
-            "pattern": "^[A-Za-z0-9]([A-Za-z0-9.-]*[A-Za-z0-9])?$"
+            "pattern": "^[a-z0-9][a-z0-9-]*$"
           },
           "gitlabRepo": { "type": "string", "minLength": 1 },
           "gitlabBranch": { "type": "string", "minLength": 1 },
@@ -91,9 +91,10 @@
         }
       },
       "then": {
-        "required": ["parentRefs"],
+        "required": ["parentRefs", "hostnames"],
         "properties": {
-          "parentRefs": { "minItems": 1 }
+          "parentRefs": { "minItems": 1 },
+          "hostnames": { "minItems": 1 }
         }
       }
     },

@@ -65,11 +65,5 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 
 {{/* decap-cms.httpRouteHostnames returns HTTPRoute hostnames */}}
 {{- define "decap-cms.httpRouteHostnames" -}}
-{{- if .Values.httpRoute.hostnames }}
 {{- toYaml .Values.httpRoute.hostnames }}
-{{- else }}
-{{- range .Values.tenants }}
-- {{ .hostname | quote }}
-{{- end }}
-{{- end }}
 {{- end }}
