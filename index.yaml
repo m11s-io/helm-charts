@@ -4,6 +4,38 @@ entries:
   - annotations:
       artifacthub.io/changes: |-
         - kind: fixed
+          description: "Allow each tenant to configure the repository-relative posts folder"
+      artifacthub.io/containersImages: |
+        - name: decap-cms
+          image: m11s/decap-cms:0.2.11-s3
+        - name: s3-upload-proxy
+          image: m11s/s3-upload-proxy:0.1.2
+      artifacthub.io/signKey: |
+        fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
+        url: https://keys.openpgp.org/search?q=hello%40m11s.io
+    apiVersion: v2
+    appVersion: 0.2.11-s3
+    created: "2026-06-21T08:15:04.358470663Z"
+    description: Multi-tenant Decap CMS with optional S3/MinIO upload proxy, served
+      by path prefix
+    digest: 80d31522f2fbd02f63a031810690a969a37c9cca7646e989067b5f49717d880c
+    home: https://decapcms.org
+    icon: https://decapcms.org/img/decap-logo.svg
+    maintainers:
+    - name: m11s
+      url: https://m11s.io
+    name: decap-cms
+    sources:
+    - https://github.com/decaporg/decap-cms
+    - https://github.com/m11s-io/docker-images
+    - https://github.com/m11s-io/helm-charts
+    type: application
+    urls:
+    - https://github.com/m11s-io/helm-charts/releases/download/decap-cms-0.3.13/decap-cms-0.3.13.tgz
+    version: 0.3.13
+  - annotations:
+      artifacthub.io/changes: |-
+        - kind: fixed
           description: "S3 media library now reads upload_url from Decap CMS v3's options.config initialization contract"
       artifacthub.io/containersImages: |
         - name: decap-cms
@@ -839,4 +871,4 @@ entries:
     urls:
     - https://github.com/m11s-io/charts/releases/download/whoami-0.1.0/whoami-0.1.0.tgz
     version: 0.1.0
-generated: "2026-06-21T07:54:05.142109388Z"
+generated: "2026-06-21T08:15:04.358606149Z"
