@@ -4,6 +4,38 @@ entries:
   - annotations:
       artifacthub.io/changes: |-
         - kind: fixed
+          description: "S3 media library now reads upload_url from Decap CMS v3's options.config initialization contract"
+      artifacthub.io/containersImages: |
+        - name: decap-cms
+          image: m11s/decap-cms:0.2.10-s3
+        - name: s3-upload-proxy
+          image: m11s/s3-upload-proxy:0.1.2
+      artifacthub.io/signKey: |
+        fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
+        url: https://keys.openpgp.org/search?q=hello%40m11s.io
+    apiVersion: v2
+    appVersion: 0.2.10-s3
+    created: "2026-06-21T07:54:05.141952741Z"
+    description: Multi-tenant Decap CMS with optional S3/MinIO upload proxy, served
+      by path prefix
+    digest: 5ce60978b53b83ac23d22718f3cf9b537d0d66b2d728248cdd2984b133a34884
+    home: https://decapcms.org
+    icon: https://decapcms.org/img/decap-logo.svg
+    maintainers:
+    - name: m11s
+      url: https://m11s.io
+    name: decap-cms
+    sources:
+    - https://github.com/decaporg/decap-cms
+    - https://github.com/m11s-io/docker-images
+    - https://github.com/m11s-io/helm-charts
+    type: application
+    urls:
+    - https://github.com/m11s-io/helm-charts/releases/download/decap-cms-0.3.12/decap-cms-0.3.12.tgz
+    version: 0.3.12
+  - annotations:
+      artifacthub.io/changes: |-
+        - kind: fixed
           description: "S3 media library now calls handleInsert with a URL string instead of an object, fixing a TypeError crash when browsing collections in Decap CMS v3"
       artifacthub.io/containersImages: |
         - name: decap-cms
@@ -807,4 +839,4 @@ entries:
     urls:
     - https://github.com/m11s-io/charts/releases/download/whoami-0.1.0/whoami-0.1.0.tgz
     version: 0.1.0
-generated: "2026-06-21T07:13:10.159466794Z"
+generated: "2026-06-21T07:54:05.142109388Z"
