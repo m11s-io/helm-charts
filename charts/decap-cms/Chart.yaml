@@ -2,7 +2,7 @@ apiVersion: v2
 name: decap-cms
 description: Multi-tenant Decap CMS with optional S3/MinIO upload proxy, served by path prefix
 type: application
-version: 0.3.14
+version: 0.3.15
 # renovate: datasource=docker depName=m11s/decap-cms
 appVersion: "0.2.11-s3"
 home: https://decapcms.org
@@ -22,7 +22,7 @@ annotations:
     - name: decap-cms
       image: m11s/decap-cms:0.2.11-s3
     - name: s3-upload-proxy
-      image: m11s/s3-upload-proxy:0.1.2
+      image: m11s/s3-upload-proxy:0.1.3
   artifacthub.io/changes: |-
     - kind: fixed
-      description: "Allow each tenant to configure the repository-relative posts folder"
+      description: "Encode uploaded object URLs so filenames with spaces render correctly in Markdown"
