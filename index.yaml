@@ -15,6 +15,38 @@ entries:
         url: https://keys.openpgp.org/search?q=hello%40m11s.io
     apiVersion: v2
     appVersion: 0.2.11-s3
+    created: "2026-06-21T08:22:52.032285309Z"
+    description: Multi-tenant Decap CMS with optional S3/MinIO upload proxy, served
+      by path prefix
+    digest: 97f4a63671c53ec9f8a1d31c3ff44d8ff51fff746b0def7ec53a473500b8f6be
+    home: https://decapcms.org
+    icon: https://decapcms.org/img/decap-logo.svg
+    maintainers:
+    - name: m11s
+      url: https://m11s.io
+    name: decap-cms
+    sources:
+    - https://github.com/decaporg/decap-cms
+    - https://github.com/m11s-io/docker-images
+    - https://github.com/m11s-io/helm-charts
+    type: application
+    urls:
+    - https://github.com/m11s-io/helm-charts/releases/download/decap-cms-0.3.14/decap-cms-0.3.14.tgz
+    version: 0.3.14
+  - annotations:
+      artifacthub.io/changes: |-
+        - kind: fixed
+          description: "Allow each tenant to configure the repository-relative posts folder"
+      artifacthub.io/containersImages: |
+        - name: decap-cms
+          image: m11s/decap-cms:0.2.11-s3
+        - name: s3-upload-proxy
+          image: m11s/s3-upload-proxy:0.1.2
+      artifacthub.io/signKey: |
+        fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
+        url: https://keys.openpgp.org/search?q=hello%40m11s.io
+    apiVersion: v2
+    appVersion: 0.2.11-s3
     created: "2026-06-21T08:15:04.358470663Z"
     description: Multi-tenant Decap CMS with optional S3/MinIO upload proxy, served
       by path prefix
@@ -871,4 +903,4 @@ entries:
     urls:
     - https://github.com/m11s-io/charts/releases/download/whoami-0.1.0/whoami-0.1.0.tgz
     version: 0.1.0
-generated: "2026-06-21T08:15:04.358606149Z"
+generated: "2026-06-21T08:22:52.032445532Z"
