@@ -8,12 +8,13 @@ The chart stores tenant configuration in `tenants.json`, mounts it into the pod,
 
 ```yaml
 tenants:
-  - hostname: cms.example.com
+  - slug: example
     gitlabRepo: example/products/site
-    gitlabBranch: decap
+    gitlabBranch: main
     gitlabAppId: xxx
     uploadUrl: https://proxy.example.com/upload
-  - hostname: cms-blog.example.com
+    postsFolder: website/src/content/posts
+  - slug: blog
     gitlabRepo: example/products/blog
     gitlabBranch: main
     gitlabAppId: yyy
@@ -26,7 +27,7 @@ httpRoute:
       namespace: gateway
 ```
 
-When `httpRoute.hostnames` is omitted, it defaults to `tenants[*].hostname`.
+`postsFolder` is relative to the Git repository root and defaults to `posts`.
 
 ## Existing ConfigMap
 

@@ -34,6 +34,8 @@ tenants:
     gitlabBranch: main
     gitlabAppId: change-me
     uploadUrl: https://example.com/upload
+    # postsFolder is repository-root-relative; defaults to posts
+    # postsFolder: website/src/content/posts
     # publishMode enables the editorial workflow; omit or set to "simple" for direct publish
     # publishMode: editorial_workflow
 
