@@ -17,3 +17,9 @@ annotations:
   artifacthub.io/signKey: |
     fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
     url: https://keys.openpgp.org/search?q=hello%40m11s.io
+  artifacthub.io/containersImages: |
+    - name: fider
+      image: getfider/fider:v0.35.0
+  artifacthub.io/links: |
+    - name: source
+      url: https://github.com/getfider/fider
