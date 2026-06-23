@@ -821,6 +821,39 @@ entries:
         url: https://keys.openpgp.org/search?q=hello%40m11s.io
     apiVersion: v2
     appVersion: 5.1.5
+    created: "2026-06-23T16:57:28.041653242Z"
+    description: Helm chart for Shlink self-hosted URL shortener
+    digest: be45ad17f439930910d1fbb00c87b11203cc3de283ac243ff8f89d497818d10f
+    home: https://shlink.io
+    icon: https://shlink.io/images/shlink-logo-blue.svg
+    maintainers:
+    - name: m11s
+      url: https://m11s.io
+    name: shlink
+    sources:
+    - https://github.com/shlinkio/shlink
+    - https://github.com/m11s-io/charts
+    type: application
+    urls:
+    - https://github.com/m11s-io/helm-charts/releases/download/shlink-0.1.1/shlink-0.1.1.tgz
+    version: 0.1.1
+  - annotations:
+      artifacthub.io/changes: |-
+        - kind: added
+          description: "Initial chart release"
+      artifacthub.io/containersImages: |
+        - name: shlink
+          image: shlinkio/shlink:5.1.5
+      artifacthub.io/links: |
+        - name: source
+          url: https://github.com/shlinkio/shlink
+        - name: docs
+          url: https://shlink.io/documentation/install-docker-image/
+      artifacthub.io/signKey: |
+        fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
+        url: https://keys.openpgp.org/search?q=hello%40m11s.io
+    apiVersion: v2
+    appVersion: 5.1.5
     created: "2026-06-23T16:24:00.130827335Z"
     description: Helm chart for Shlink self-hosted URL shortener
     digest: 1cfa84d6e89fa14afaea3778e7459dbe9bfa4ba7291f9fdf76f68f8b35ae9db9
@@ -969,4 +1002,4 @@ entries:
     urls:
     - https://github.com/m11s-io/charts/releases/download/whoami-0.1.0/whoami-0.1.0.tgz
     version: 0.1.0
-generated: "2026-06-23T16:24:00.130913748Z"
+generated: "2026-06-23T16:57:28.041740548Z"
