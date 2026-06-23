@@ -13,3 +13,23 @@ spec:
       name: http
   selector:
     {{- include "shlink.selectorLabels" . | nindent 4 }}
+{{- if .Values.webClient.enabled }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "shlink.fullname" . }}-web-client
+  labels:
+    {{- include "shlink.labels" . | nindent 4 }}
+    app.kubernetes.io/component: web-client
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "shlink.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: web-client
+{{- end }}

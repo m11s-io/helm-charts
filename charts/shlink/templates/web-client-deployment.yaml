@@ -1,0 +1,59 @@
+{{- if .Values.webClient.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "shlink.fullname" . }}-web-client
+  labels:
+    {{- include "shlink.labels" . | nindent 4 }}
+    app.kubernetes.io/component: web-client
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "shlink.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: web-client
+  template:
+    metadata:
+      labels:
+        {{- include "shlink.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: web-client
+    spec:
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: web-client
+          image: {{ .Values.webClient.image.repository }}:{{ .Values.webClient.image.tag | default "stable" }}
+          imagePullPolicy: {{ .Values.webClient.image.pullPolicy }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            periodSeconds: 10
+          env:
+            - name: SHLINK_SERVER_URL
+              value: {{ required "webClient.serverUrl is required when webClient.enabled is true" .Values.webClient.serverUrl | quote }}
+            {{- if .Values.webClient.serverName }}
+            - name: SHLINK_SERVER_NAME
+              value: {{ .Values.webClient.serverName | quote }}
+            {{- end }}
+            {{- if .Values.webClient.existingSecret.name }}
+            - name: SHLINK_SERVER_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.webClient.existingSecret.name }}
+                  key: {{ .Values.webClient.existingSecret.key }}
+            {{- end }}
+          resources:
+            {{- toYaml .Values.webClient.resources | nindent 12 }}
+{{- end }}

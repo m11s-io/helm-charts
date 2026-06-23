@@ -138,7 +138,7 @@ redirects:
   invalidShortUrl: ""
   # redirects.regular404 is the URL to redirect to on a regular 404 (non-short-URL path)
   regular404: ""
-  # redirects.baseUrl is the URL to redirect to when the base URL is visited
+  # redirects.baseUrl is the URL to redirect to when the base URL (/) is visited; without this, / returns 404
   baseUrl: ""
   # redirects.statusCode is the HTTP redirect status code; valid values: 301, 302, 307, 308
   statusCode: 302
@@ -182,7 +182,8 @@ cors:
   maxAge: 3600
 
 data:
-  # data.enabled mounts a PersistentVolumeClaim at /etc/shlink/data; when false uses emptyDir (locks/proxies lost on restart)
+  # data.enabled mounts a PersistentVolumeClaim at /etc/shlink/data (GeoLite2 DB, Doctrine proxies, lock files);
+  # when false an emptyDir is used and all data is regenerated on every pod restart
   enabled: true
   # data.storageClass is the StorageClass for the PVC; uses the cluster default when empty
   storageClass: ""
@@ -190,6 +191,37 @@ data:
   accessMode: ReadWriteOnce
   # data.size is the PVC storage request
   size: 1Gi
+
+webClient:
+  # webClient.enabled deploys the Shlink Web Client (React SPA) alongside the Shlink API
+  enabled: false
+  image:
+    repository: shlinkio/shlink-web-client
+    # image.tag defaults to "stable" when empty
+    tag: ""
+    pullPolicy: IfNotPresent
+  # webClient.serverUrl is the public URL of the Shlink API as seen from the user's browser (required when enabled)
+  serverUrl: ""
+  # webClient.serverName is an optional display name shown in the web client UI
+  serverName: ""
+  existingSecret:
+    # webClient.existingSecret.name is the Secret containing a pre-configured API key; leave empty to skip
+    name: ""
+    # webClient.existingSecret.key is the key within the Secret that holds SHLINK_SERVER_API_KEY
+    key: initial-api-key
+  resources:
+    requests:
+      cpu: 10m
+      memory: 32Mi
+    limits:
+      memory: 64Mi
+  httpRoute:
+    # webClient.httpRoute.enabled enables a Gateway API HTTPRoute for the web client
+    enabled: false
+    annotations: {}
+    labels: {}
+    parentRefs: []
+    hostnames: []
 
 httpRoute:
   # httpRoute.enabled enables a Gateway API HTTPRoute resource
