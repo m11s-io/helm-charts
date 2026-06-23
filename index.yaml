@@ -808,6 +808,41 @@ entries:
       artifacthub.io/changes: |-
         - kind: added
           description: "Initial chart release"
+        - kind: changed
+          description: "Rename persistence to data; always mount /etc/shlink/data (emptyDir fallback)"
+      artifacthub.io/containersImages: |
+        - name: shlink
+          image: shlinkio/shlink:5.1.5
+      artifacthub.io/links: |
+        - name: source
+          url: https://github.com/shlinkio/shlink
+        - name: docs
+          url: https://shlink.io/documentation/install-docker-image/
+      artifacthub.io/signKey: |
+        fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
+        url: https://keys.openpgp.org/search?q=hello%40m11s.io
+    apiVersion: v2
+    appVersion: 5.1.5
+    created: "2026-06-23T18:44:24.786939823Z"
+    description: Helm chart for Shlink self-hosted URL shortener
+    digest: 9467c7a7921c689521416bdc9d3c8a22f5b96864ffa001d0a8accd4fecef7884
+    home: https://shlink.io
+    icon: https://shlink.io/images/shlink-logo-blue.svg
+    maintainers:
+    - name: m11s
+      url: https://m11s.io
+    name: shlink
+    sources:
+    - https://github.com/shlinkio/shlink
+    - https://github.com/m11s-io/charts
+    type: application
+    urls:
+    - https://github.com/m11s-io/helm-charts/releases/download/shlink-0.1.2/shlink-0.1.2.tgz
+    version: 0.1.2
+  - annotations:
+      artifacthub.io/changes: |-
+        - kind: added
+          description: "Initial chart release"
       artifacthub.io/containersImages: |
         - name: shlink
           image: shlinkio/shlink:5.1.5
@@ -1002,4 +1037,4 @@ entries:
     urls:
     - https://github.com/m11s-io/charts/releases/download/whoami-0.1.0/whoami-0.1.0.tgz
     version: 0.1.0
-generated: "2026-06-23T16:57:28.041740548Z"
+generated: "2026-06-23T18:44:24.787005013Z"
