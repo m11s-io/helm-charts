@@ -209,6 +209,8 @@ webClient:
     name: ""
     # webClient.existingSecret.key is the key within the Secret that holds SHLINK_SERVER_API_KEY
     key: initial-api-key
+  # webClient.securityContext overrides the container security context; empty uses the image default (nginx needs root to init)
+  securityContext: {}
   resources:
     requests:
       cpu: 10m

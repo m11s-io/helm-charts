@@ -18,14 +18,14 @@ spec:
         {{- include "shlink.selectorLabels" . | nindent 8 }}
         app.kubernetes.io/component: web-client
     spec:
-      securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: web-client
           image: {{ .Values.webClient.image.repository }}:{{ .Values.webClient.image.tag | default "stable" }}
           imagePullPolicy: {{ .Values.webClient.image.pullPolicy }}
+          {{- with .Values.webClient.securityContext }}
           securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           ports:
             - name: http
               containerPort: 8080
