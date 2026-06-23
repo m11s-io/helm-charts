@@ -1,0 +1,215 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "dub.fullname" . }}
+  labels:
+    {{- include "dub.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "dub.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      labels:
+        {{- include "dub.selectorLabels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "dub.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: dub
+          image: {{ include "dub.image" . }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          ports:
+            - name: http
+              containerPort: 3000
+              protocol: TCP
+          livenessProbe:
+            tcpSocket:
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          readinessProbe:
+            tcpSocket:
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          env:
+            - name: NEXTAUTH_URL
+              value: {{ required "dub.appUrl is required" .Values.dub.appUrl | quote }}
+            - name: NEXTAUTH_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ required "auth.existingSecret.name is required" .Values.auth.existingSecret.name }}
+                  key: {{ .Values.auth.existingSecret.nextauthSecretKey }}
+            - name: ENCRYPTION_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.auth.existingSecret.name }}
+                  key: {{ .Values.auth.existingSecret.encryptionKeyKey }}
+            - name: CRON_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.auth.existingSecret.name }}
+                  key: {{ .Values.auth.existingSecret.cronSecretKey }}
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ required "db.existingSecret.name is required" .Values.db.existingSecret.name }}
+                  key: {{ .Values.db.existingSecret.urlKey }}
+            {{- if .Values.redis.srh.enabled }}
+            - name: UPSTASH_REDIS_REST_URL
+              value: "http://localhost:80"
+            - name: UPSTASH_REDIS_REST_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ required "redis.srh.existingSecret.name is required when srh.enabled=true" .Values.redis.srh.existingSecret.name }}
+                  key: {{ .Values.redis.srh.existingSecret.tokenKey }}
+            {{- else }}
+            - name: UPSTASH_REDIS_REST_URL
+              value: {{ .Values.redis.upstash.restUrl | quote }}
+            {{- if .Values.redis.upstash.existingSecret.name }}
+            - name: UPSTASH_REDIS_REST_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.redis.upstash.existingSecret.name }}
+                  key: {{ .Values.redis.upstash.existingSecret.tokenKey }}
+            {{- end }}
+            {{- end }}
+            - name: QSTASH_URL
+              value: {{ .Values.qstash.url | quote }}
+            {{- if .Values.qstash.existingSecret.name }}
+            - name: QSTASH_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.qstash.existingSecret.name }}
+                  key: {{ .Values.qstash.existingSecret.tokenKey }}
+            - name: QSTASH_CURRENT_SIGNING_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.qstash.existingSecret.name }}
+                  key: {{ .Values.qstash.existingSecret.currentSigningKeyKey }}
+            - name: QSTASH_NEXT_SIGNING_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.qstash.existingSecret.name }}
+                  key: {{ .Values.qstash.existingSecret.nextSigningKeyKey }}
+            {{- end }}
+            {{- if .Values.email.resend.existingSecret.name }}
+            - name: RESEND_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.email.resend.existingSecret.name }}
+                  key: {{ .Values.email.resend.existingSecret.apiKeyKey }}
+            {{- end }}
+            {{- if .Values.email.smtp.host }}
+            - name: SMTP_HOST
+              value: {{ .Values.email.smtp.host | quote }}
+            - name: SMTP_PORT
+              value: {{ .Values.email.smtp.port | quote }}
+            {{- if .Values.email.smtp.user }}
+            - name: SMTP_USER
+              value: {{ .Values.email.smtp.user | quote }}
+            {{- end }}
+            {{- if .Values.email.smtp.existingSecret.name }}
+            - name: SMTP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.email.smtp.existingSecret.name }}
+                  key: {{ .Values.email.smtp.existingSecret.passwordKey }}
+            {{- end }}
+            {{- end }}
+            {{- if .Values.storage.endpoint }}
+            - name: STORAGE_ENDPOINT
+              value: {{ .Values.storage.endpoint | quote }}
+            {{- end }}
+            {{- if .Values.storage.baseUrl }}
+            - name: STORAGE_BASE_URL
+              value: {{ .Values.storage.baseUrl | quote }}
+            {{- end }}
+            {{- if .Values.storage.publicBucket }}
+            - name: STORAGE_PUBLIC_BUCKET
+              value: {{ .Values.storage.publicBucket | quote }}
+            {{- end }}
+            {{- if .Values.storage.privateBucket }}
+            - name: STORAGE_PRIVATE_BUCKET
+              value: {{ .Values.storage.privateBucket | quote }}
+            {{- end }}
+            {{- if .Values.storage.existingSecret.name }}
+            - name: STORAGE_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.storage.existingSecret.name }}
+                  key: {{ .Values.storage.existingSecret.accessKeyIdKey }}
+            - name: STORAGE_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.storage.existingSecret.name }}
+                  key: {{ .Values.storage.existingSecret.secretAccessKeyKey }}
+            {{- end }}
+            - name: TINYBIRD_API_URL
+              value: {{ .Values.tinybird.apiUrl | quote }}
+            {{- if .Values.tinybird.existingSecret.name }}
+            - name: TINYBIRD_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.tinybird.existingSecret.name }}
+                  key: {{ .Values.tinybird.existingSecret.apiKeyKey }}
+            {{- end }}
+            {{- range $key, $val := .Values.env }}
+            - name: {{ $key }}
+              value: {{ $val | quote }}
+            {{- end }}
+            {{- with .Values.extraEnv }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          {{- with .Values.extraEnvFrom }}
+          envFrom:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+        {{- if .Values.redis.srh.enabled }}
+        - name: srh
+          image: "{{ .Values.redis.srh.image.repository }}:{{ .Values.redis.srh.image.tag }}"
+          imagePullPolicy: {{ .Values.redis.srh.image.pullPolicy }}
+          ports:
+            - name: srh
+              containerPort: 80
+              protocol: TCP
+          env:
+            - name: TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.redis.srh.existingSecret.name }}
+                  key: {{ .Values.redis.srh.existingSecret.tokenKey }}
+            - name: REDIS_URL
+              value: {{ required "redis.srh.connectionString is required when srh.enabled=true" .Values.redis.srh.connectionString | quote }}
+            - name: PORT
+              value: "80"
+          securityContext:
+            capabilities:
+              drop:
+                - ALL
+            runAsNonRoot: true
+            runAsUser: 1001
+        {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

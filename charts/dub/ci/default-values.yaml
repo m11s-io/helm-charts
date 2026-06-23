@@ -1,0 +1,16 @@
+dub:
+  appUrl: "https://dub.ci-test.example.com"
+
+auth:
+  existingSecret:
+    name: dub-auth
+
+db:
+  existingSecret:
+    name: dub-db
+
+redis:
+  upstash:
+    restUrl: "http://localhost:80"
+    existingSecret:
+      name: dub-redis

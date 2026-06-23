@@ -1,0 +1,29 @@
+suite: dub service
+templates:
+  - service.yaml
+
+tests:
+  - it: renders a ClusterIP service on port 3000 by default
+    asserts:
+      - isKind:
+          of: Service
+      - equal:
+          path: spec.type
+          value: ClusterIP
+      - equal:
+          path: spec.ports[0].port
+          value: 3000
+
+  - it: respects service.port override
+    set:
+      service.port: 9090
+    asserts:
+      - equal:
+          path: spec.ports[0].port
+          value: 9090
+
+  - it: targets the http named port
+    asserts:
+      - equal:
+          path: spec.ports[0].targetPort
+          value: http

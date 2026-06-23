@@ -1,0 +1,217 @@
+# image.repository is the container image repository
+image:
+  repository: m11s/dub
+  # image.tag overrides the image tag; defaults to the chart appVersion
+  tag: ""
+  # image.pullPolicy is the image pull policy
+  pullPolicy: IfNotPresent
+
+# nameOverride overrides the chart name portion of the release name
+nameOverride: ""
+# fullnameOverride overrides the full release name used for all resources
+fullnameOverride: ""
+
+# replicaCount is the number of dub pod replicas
+replicaCount: 1
+
+service:
+  # service.type is the Kubernetes Service type
+  type: ClusterIP
+  # service.port is the port the Service listens on
+  port: 3000
+
+dub:
+  # dub.appUrl is the public URL of this dub instance (required). Example: https://dub.example.com
+  appUrl: ""
+
+auth:
+  existingSecret:
+    # auth.existingSecret.name is the Secret containing NEXTAUTH_SECRET, ENCRYPTION_KEY, CRON_SECRET
+    name: ""
+    # auth.existingSecret.nextauthSecretKey is the key within the Secret that holds NEXTAUTH_SECRET
+    nextauthSecretKey: nextauth-secret
+    # auth.existingSecret.encryptionKeyKey is the key within the Secret that holds ENCRYPTION_KEY
+    encryptionKeyKey: encryption-key
+    # auth.existingSecret.cronSecretKey is the key within the Secret that holds CRON_SECRET
+    cronSecretKey: cron-secret
+
+db:
+  existingSecret:
+    # db.existingSecret.name is the Secret containing DATABASE_URL (full MySQL connection string)
+    name: ""
+    # db.existingSecret.urlKey is the key within the Secret that holds DATABASE_URL
+    urlKey: database-url
+
+redis:
+  # redis.upstash configures direct Upstash (or compatible) REST endpoint — used when srh.enabled=false
+  upstash:
+    # redis.upstash.restUrl is the Upstash Redis REST URL
+    restUrl: ""
+    existingSecret:
+      # redis.upstash.existingSecret.name is the Secret containing the Upstash Redis REST token
+      name: ""
+      # redis.upstash.existingSecret.tokenKey is the key within the Secret that holds UPSTASH_REDIS_REST_TOKEN
+      tokenKey: upstash-redis-token
+  # redis.srh deploys redis-http-proxy as a sidecar to expose a standard Redis via the Upstash REST API
+  srh:
+    # redis.srh.enabled deploys the redis-http-proxy sidecar; when true, UPSTASH_REDIS_REST_URL is set to http://localhost:80
+    enabled: false
+    image:
+      # redis.srh.image.repository is the sidecar image repository
+      repository: m11s/redis-http-proxy
+      # redis.srh.image.tag is the sidecar image tag
+      tag: "0.1.0"
+      # redis.srh.image.pullPolicy is the sidecar image pull policy
+      pullPolicy: IfNotPresent
+    # redis.srh.connectionString is the Redis URL the sidecar connects to. Example: redis://my-redis:6379
+    connectionString: ""
+    existingSecret:
+      # redis.srh.existingSecret.name is the Secret with the SRH auth token (also used as UPSTASH_REDIS_REST_TOKEN)
+      name: ""
+      # redis.srh.existingSecret.tokenKey is the key within the Secret that holds the SRH token
+      tokenKey: srh-token
+    # redis.srh.maxConnections is the maximum number of Redis connections the sidecar may hold
+    maxConnections: 3
+
+qstash:
+  # qstash.url is the QStash server base URL; override to point at a self-hosted implementation
+  url: "https://qstash.upstash.io"
+  existingSecret:
+    # qstash.existingSecret.name is the Secret containing QSTASH_TOKEN, QSTASH_CURRENT_SIGNING_KEY, QSTASH_NEXT_SIGNING_KEY
+    # Leave empty to disable background jobs (webhooks, bulk imports, cron)
+    name: ""
+    # qstash.existingSecret.tokenKey is the key within the Secret that holds QSTASH_TOKEN
+    tokenKey: qstash-token
+    # qstash.existingSecret.currentSigningKeyKey is the key within the Secret that holds QSTASH_CURRENT_SIGNING_KEY
+    currentSigningKeyKey: qstash-current-signing-key
+    # qstash.existingSecret.nextSigningKeyKey is the key within the Secret that holds QSTASH_NEXT_SIGNING_KEY
+    nextSigningKeyKey: qstash-next-signing-key
+
+email:
+  # email.resend configures Resend as the email provider
+  resend:
+    existingSecret:
+      # email.resend.existingSecret.name is the Secret containing the Resend API key; leave empty to disable
+      name: ""
+      # email.resend.existingSecret.apiKeyKey is the key within the Secret that holds RESEND_API_KEY
+      apiKeyKey: resend-api-key
+  # email.smtp configures SMTP fallback (used when resend secret is not set)
+  smtp:
+    # email.smtp.host is the SMTP server hostname
+    host: ""
+    # email.smtp.port is the SMTP server port
+    port: 587
+    # email.smtp.user is the SMTP username
+    user: ""
+    existingSecret:
+      # email.smtp.existingSecret.name is the Secret containing the SMTP password; leave empty to skip
+      name: ""
+      # email.smtp.existingSecret.passwordKey is the key within the Secret that holds SMTP_PASSWORD
+      passwordKey: smtp-password
+
+storage:
+  # storage.endpoint is the S3-compatible storage endpoint URL
+  endpoint: ""
+  # storage.baseUrl is the public base URL for stored assets
+  baseUrl: ""
+  # storage.publicBucket is the name of the public storage bucket
+  publicBucket: ""
+  # storage.privateBucket is the name of the private storage bucket
+  privateBucket: ""
+  existingSecret:
+    # storage.existingSecret.name is the Secret containing STORAGE_ACCESS_KEY_ID and STORAGE_SECRET_ACCESS_KEY
+    name: ""
+    # storage.existingSecret.accessKeyIdKey is the key within the Secret that holds STORAGE_ACCESS_KEY_ID
+    accessKeyIdKey: storage-access-key-id
+    # storage.existingSecret.secretAccessKeyKey is the key within the Secret that holds STORAGE_SECRET_ACCESS_KEY
+    secretAccessKeyKey: storage-secret-access-key
+
+tinybird:
+  # tinybird.apiUrl is the Tinybird API endpoint for your region
+  apiUrl: "https://api.tinybird.co"
+  existingSecret:
+    # tinybird.existingSecret.name is the Secret containing TINYBIRD_API_KEY; leave empty to disable analytics
+    name: ""
+    # tinybird.existingSecret.apiKeyKey is the key within the Secret that holds TINYBIRD_API_KEY
+    apiKeyKey: tinybird-api-key
+
+serviceAccount:
+  # serviceAccount.create specifies whether a ServiceAccount should be created
+  create: true
+  # serviceAccount.name is the name of the ServiceAccount; defaults to fullname if empty
+  name: ""
+  # serviceAccount.annotations are extra annotations added to the ServiceAccount
+  annotations: {}
+
+# podSecurityContext sets the security context for the dub pod
+podSecurityContext:
+  fsGroup: 1001
+
+# securityContext sets the security context for the dub container
+securityContext:
+  capabilities:
+    drop:
+      - ALL
+  runAsNonRoot: true
+  runAsUser: 1001
+
+# resources sets the CPU and memory requests and limits for the dub container
+resources:
+  requests:
+    cpu: 100m
+    memory: 512Mi
+  limits:
+    memory: 1Gi
+
+# env is a map of additional non-sensitive environment variables to inject
+env: {}
+
+# extraEnv is a list of additional env var objects (name/value or name/valueFrom) to inject
+extraEnv: []
+
+# extraEnvFrom is a list of envFrom sources (configMapRef, secretRef) to inject
+extraEnvFrom: []
+
+# podAnnotations are extra annotations added to the dub pod
+podAnnotations: {}
+# nodeSelector constrains the dub pod to nodes matching the given labels
+nodeSelector: {}
+# tolerations allow the dub pod to be scheduled on tainted nodes
+tolerations: []
+# affinity sets pod affinity and anti-affinity rules
+affinity: {}
+
+httpRoute:
+  # httpRoute.enabled enables a Gateway API HTTPRoute resource
+  enabled: false
+  # httpRoute.annotations are extra annotations added to the HTTPRoute
+  annotations: {}
+  # httpRoute.labels are extra labels added to the HTTPRoute
+  labels: {}
+  # httpRoute.parentRefs is the list of Gateways this route attaches to
+  parentRefs: []
+  # httpRoute.hostnames is the list of hostnames this route matches
+  hostnames: []
+
+networkPolicy:
+  # networkPolicy.enabled enables a NetworkPolicy restricting pod ingress and egress
+  enabled: false
+  # networkPolicy.gatewayNamespace is the namespace of the Gateway allowed to reach dub
+  gatewayNamespace: ""
+  # networkPolicy.databaseNamespace is the namespace of the database pods dub may reach
+  databaseNamespace: ""
+  # networkPolicy.databasePort is the database port dub may reach (MySQL default)
+  databasePort: 3306
+  internetEgress:
+    # networkPolicy.internetEgress.enabled allows egress to the internet (Upstash, QStash, Tinybird, etc.)
+    enabled: true
+    # networkPolicy.internetEgress.cidr is the allowed egress CIDR
+    cidr: 0.0.0.0/0
+    # networkPolicy.internetEgress.except lists CIDRs excluded from internet egress (private ranges)
+    except:
+      - 10.0.0.0/8
+      - 172.16.0.0/12
+      - 192.168.0.0/16
+  dnsEgress:
+    # networkPolicy.dnsEgress.enabled allows DNS lookups on TCP/UDP port 53
+    enabled: true
