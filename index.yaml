@@ -825,6 +825,43 @@ entries:
         url: https://keys.openpgp.org/search?q=hello%40m11s.io
     apiVersion: v2
     appVersion: 5.1.5
+    created: "2026-06-23T19:16:55.218654735Z"
+    description: Helm chart for Shlink self-hosted URL shortener
+    digest: c060399dfbdb5c8e9dc1669493021a508b739fb41eeecef7998b04d4a350889d
+    home: https://shlink.io
+    icon: https://shlink.io/images/shlink-logo-blue.svg
+    maintainers:
+    - name: m11s
+      url: https://m11s.io
+    name: shlink
+    sources:
+    - https://github.com/shlinkio/shlink
+    - https://github.com/m11s-io/charts
+    type: application
+    urls:
+    - https://github.com/m11s-io/helm-charts/releases/download/shlink-0.1.4/shlink-0.1.4.tgz
+    version: 0.1.4
+  - annotations:
+      artifacthub.io/changes: |-
+        - kind: added
+          description: "Initial chart release"
+        - kind: changed
+          description: "Rename persistence to data; always mount /etc/shlink/data (emptyDir fallback)"
+        - kind: added
+          description: "webClient: optional Shlink Web Client deployment, service, and HTTPRoute"
+      artifacthub.io/containersImages: |
+        - name: shlink
+          image: shlinkio/shlink:5.1.5
+      artifacthub.io/links: |
+        - name: source
+          url: https://github.com/shlinkio/shlink
+        - name: docs
+          url: https://shlink.io/documentation/install-docker-image/
+      artifacthub.io/signKey: |
+        fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
+        url: https://keys.openpgp.org/search?q=hello%40m11s.io
+    apiVersion: v2
+    appVersion: 5.1.5
     created: "2026-06-23T18:50:36.57667481Z"
     description: Helm chart for Shlink self-hosted URL shortener
     digest: cd397e1ce367c9c1cbbbc75f31d6a6da2889804cbbec48305b7ab47233a48b13
@@ -1074,4 +1111,4 @@ entries:
     urls:
     - https://github.com/m11s-io/charts/releases/download/whoami-0.1.0/whoami-0.1.0.tgz
     version: 0.1.0
-generated: "2026-06-23T18:50:36.576755954Z"
+generated: "2026-06-23T19:16:55.21876313Z"
