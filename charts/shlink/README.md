@@ -20,16 +20,35 @@ helm upgrade --install shlink m11s/shlink \
 
 ### Database
 
-By default Shlink uses SQLite stored in `/etc/shlink/data`. Enable `persistence.enabled=true` to persist SQLite across pod restarts, or switch to an external database:
+Shlink supports two mutually exclusive backends — pick one:
+
+**Option A — SQLite (default, no external DB required)**
+
+SQLite stores data in `/etc/shlink/data` inside the container. Enable persistence
+so the database survives pod restarts:
+
+```yaml
+persistence:
+  enabled: true
+  size: 1Gi
+  storageClass: longhorn
+```
+
+The PVC is annotated `helm.sh/resource-policy: keep` so it survives `helm uninstall`.
+
+**Option B — External database (recommended for production)**
+
+Set `db.driver` to `postgres`, `mysql`, or `mssql` and point at your database server.
+No PVC is needed when using an external database.
 
 ```yaml
 db:
-  driver: postgres      # postgres, mysql, mssql
+  driver: postgres
   host: postgres.dbs.svc
   name: shlink
   user: shlink
   existingSecret:
-    name: shlink-db     # must contain key db-password
+    name: shlink-db      # must contain key db-password
 ```
 
 ### GeoLite
@@ -75,14 +94,3 @@ httpRoute:
   hostnames:
     - s.example.com
 ```
-
-### Persistence (SQLite)
-
-```yaml
-persistence:
-  enabled: true
-  size: 1Gi
-  storageClass: longhorn
-```
-
-The PVC is annotated with `helm.sh/resource-policy: keep` so it survives `helm uninstall`.

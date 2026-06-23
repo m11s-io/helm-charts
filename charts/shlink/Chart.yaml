@@ -2,11 +2,11 @@ apiVersion: v2
 name: shlink
 description: Helm chart for Shlink self-hosted URL shortener
 type: application
-version: 0.1.0
+version: 0.1.1
 # renovate: datasource=docker depName=shlinkio/shlink
 appVersion: "5.1.5"
 home: https://shlink.io
-icon: https://raw.githubusercontent.com/shlinkio/shlink/refs/heads/main/public/favicon.ico
+icon: https://shlink.io/images/shlink-logo-blue.svg
 sources:
   - https://github.com/shlinkio/shlink
   - https://github.com/m11s-io/charts
