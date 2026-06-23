@@ -1,0 +1,267 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "shlink.fullname" . }}
+  labels:
+    {{- include "shlink.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "shlink.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      labels:
+        {{- include "shlink.selectorLabels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "shlink.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: shlink
+          image: {{ include "shlink.image" . }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          startupProbe:
+            httpGet:
+              path: /rest/health
+              port: http
+            failureThreshold: 30
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /rest/health
+              port: http
+            periodSeconds: 15
+          readinessProbe:
+            httpGet:
+              path: /rest/health
+              port: http
+            periodSeconds: 10
+          env:
+            - name: DEFAULT_DOMAIN
+              value: {{ required "shlink.defaultDomain is required" .Values.shlink.defaultDomain | quote }}
+            - name: IS_HTTPS_ENABLED
+              value: {{ .Values.shlink.isHttpsEnabled | quote }}
+            {{- if .Values.shlink.basePath }}
+            - name: BASE_PATH
+              value: {{ .Values.shlink.basePath | quote }}
+            {{- end }}
+            {{- if .Values.shlink.timezone }}
+            - name: TIMEZONE
+              value: {{ .Values.shlink.timezone | quote }}
+            {{- end }}
+            - name: MEMORY_LIMIT
+              value: {{ .Values.shlink.memoryLimit | quote }}
+            {{- if .Values.shlink.trustedProxies }}
+            - name: TRUSTED_PROXIES
+              value: {{ .Values.shlink.trustedProxies | quote }}
+            {{- end }}
+            - name: AUTO_RESOLVE_TITLES
+              value: {{ .Values.shlink.autoResolveTitles | quote }}
+            - name: LOGS_FORMAT
+              value: {{ .Values.shlink.logsFormat | quote }}
+            {{- if .Values.geolite.skipDownload }}
+            - name: SKIP_INITIAL_GEOLITE_DOWNLOAD
+              value: "true"
+            {{- else if .Values.geolite.existingSecret.name }}
+            - name: GEOLITE_LICENSE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.geolite.existingSecret.name }}
+                  key: {{ .Values.geolite.existingSecret.key }}
+            {{- end }}
+            {{- if .Values.initialApiKey.existingSecret.name }}
+            - name: INITIAL_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.initialApiKey.existingSecret.name }}
+                  key: {{ .Values.initialApiKey.existingSecret.key }}
+            {{- end }}
+            - name: DB_DRIVER
+              value: {{ .Values.db.driver | quote }}
+            {{- if ne .Values.db.driver "sqlite" }}
+            - name: DB_HOST
+              value: {{ required "db.host is required when db.driver is not sqlite" .Values.db.host | quote }}
+            {{- if .Values.db.port }}
+            - name: DB_PORT
+              value: {{ .Values.db.port | quote }}
+            {{- end }}
+            - name: DB_NAME
+              value: {{ .Values.db.name | quote }}
+            - name: DB_USER
+              value: {{ required "db.user is required when db.driver is not sqlite" .Values.db.user | quote }}
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ required "db.existingSecret.name is required when db.driver is not sqlite" .Values.db.existingSecret.name }}
+                  key: {{ .Values.db.existingSecret.passwordKey }}
+            {{- if .Values.db.useEncryption }}
+            - name: DB_USE_ENCRYPTION
+              value: "true"
+            {{- end }}
+            {{- end }}
+            {{- if .Values.redis.enabled }}
+            - name: REDIS_SERVERS
+              value: {{ required "redis.servers is required when redis.enabled is true" .Values.redis.servers | quote }}
+            {{- if .Values.redis.sentinelService }}
+            - name: REDIS_SENTINEL_SERVICE
+              value: {{ .Values.redis.sentinelService | quote }}
+            {{- end }}
+            {{- if .Values.redis.existingSecret.name }}
+            - name: REDIS_SERVERS_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.redis.existingSecret.name }}
+                  key: {{ .Values.redis.existingSecret.userKey }}
+            - name: REDIS_SERVERS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.redis.existingSecret.name }}
+                  key: {{ .Values.redis.existingSecret.passwordKey }}
+            {{- end }}
+            - name: REDIS_PUB_SUB_ENABLED
+              value: {{ .Values.redis.pubSubEnabled | quote }}
+            {{- end }}
+            {{- if .Values.mercure.publicHubUrl }}
+            - name: MERCURE_ENABLED
+              value: "true"
+            - name: MERCURE_PUBLIC_HUB_URL
+              value: {{ .Values.mercure.publicHubUrl | quote }}
+            {{- if .Values.mercure.internalHubUrl }}
+            - name: MERCURE_INTERNAL_HUB_URL
+              value: {{ .Values.mercure.internalHubUrl | quote }}
+            {{- end }}
+            - name: MERCURE_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ required "mercure.existingSecret.name is required when mercure.publicHubUrl is set" .Values.mercure.existingSecret.name }}
+                  key: {{ .Values.mercure.existingSecret.jwtSecretKey }}
+            {{- end }}
+            {{- if .Values.rabbitmq.enabled }}
+            - name: RABBITMQ_ENABLED
+              value: "true"
+            - name: RABBITMQ_HOST
+              value: {{ required "rabbitmq.host is required when rabbitmq.enabled is true" .Values.rabbitmq.host | quote }}
+            - name: RABBITMQ_PORT
+              value: {{ .Values.rabbitmq.port | quote }}
+            - name: RABBITMQ_VHOST
+              value: {{ .Values.rabbitmq.vhost | quote }}
+            - name: RABBITMQ_USE_SSL
+              value: {{ .Values.rabbitmq.useSsl | quote }}
+            - name: RABBITMQ_USER
+              value: {{ required "rabbitmq.user is required when rabbitmq.enabled is true" .Values.rabbitmq.user | quote }}
+            - name: RABBITMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ required "rabbitmq.existingSecret.name is required when rabbitmq.enabled is true" .Values.rabbitmq.existingSecret.name }}
+                  key: {{ .Values.rabbitmq.existingSecret.passwordKey }}
+            {{- end }}
+            {{- if .Values.matomo.enabled }}
+            - name: MATOMO_ENABLED
+              value: "true"
+            - name: MATOMO_BASE_URL
+              value: {{ required "matomo.baseUrl is required when matomo.enabled is true" .Values.matomo.baseUrl | quote }}
+            - name: MATOMO_SITE_ID
+              value: {{ required "matomo.siteId is required when matomo.enabled is true" .Values.matomo.siteId | quote }}
+            - name: MATOMO_API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ required "matomo.existingSecret.name is required when matomo.enabled is true" .Values.matomo.existingSecret.name }}
+                  key: {{ .Values.matomo.existingSecret.apiTokenKey }}
+            {{- end }}
+            {{- if .Values.redirects.invalidShortUrl }}
+            - name: DEFAULT_INVALID_SHORT_URL_REDIRECT
+              value: {{ .Values.redirects.invalidShortUrl | quote }}
+            {{- end }}
+            {{- if .Values.redirects.regular404 }}
+            - name: DEFAULT_REGULAR_404_REDIRECT
+              value: {{ .Values.redirects.regular404 | quote }}
+            {{- end }}
+            {{- if .Values.redirects.baseUrl }}
+            - name: DEFAULT_BASE_URL_REDIRECT
+              value: {{ .Values.redirects.baseUrl | quote }}
+            {{- end }}
+            - name: REDIRECT_STATUS_CODE
+              value: {{ .Values.redirects.statusCode | quote }}
+            - name: REDIRECT_CACHE_LIFETIME
+              value: {{ .Values.redirects.cacheLifetime | quote }}
+            - name: SHORT_URL_MODE
+              value: {{ .Values.shortUrls.mode | quote }}
+            - name: DEFAULT_SHORT_CODES_LENGTH
+              value: {{ .Values.shortUrls.defaultCodesLength | quote }}
+            - name: SHORT_URL_TRAILING_SLASH
+              value: {{ .Values.shortUrls.trailingSlash | quote }}
+            - name: MULTI_SEGMENT_SLUGS_ENABLED
+              value: {{ .Values.shortUrls.multiSegmentSlugs | quote }}
+            - name: ANONYMIZE_REMOTE_ADDR
+              value: {{ .Values.tracking.anonymizeRemoteAddr | quote }}
+            - name: TRACK_ORPHAN_VISITS
+              value: {{ .Values.tracking.orphanVisits | quote }}
+            - name: DISABLE_TRACKING
+              value: {{ .Values.tracking.disabled | quote }}
+            - name: DISABLE_IP_TRACKING
+              value: {{ .Values.tracking.disableIp | quote }}
+            - name: DISABLE_REFERRER_TRACKING
+              value: {{ .Values.tracking.disableReferrer | quote }}
+            - name: DISABLE_UA_TRACKING
+              value: {{ .Values.tracking.disableUa | quote }}
+            {{- if .Values.tracking.disableTrackParam }}
+            - name: DISABLE_TRACK_PARAM
+              value: {{ .Values.tracking.disableTrackParam | quote }}
+            {{- end }}
+            {{- if .Values.tracking.disableFrom }}
+            - name: DISABLE_TRACKING_FROM
+              value: {{ .Values.tracking.disableFrom | quote }}
+            {{- end }}
+            - name: CORS_ALLOW_ORIGIN
+              value: {{ .Values.cors.allowOrigin | quote }}
+            - name: CORS_ALLOW_CREDENTIALS
+              value: {{ .Values.cors.allowCredentials | quote }}
+            - name: CORS_MAX_AGE
+              value: {{ .Values.cors.maxAge | quote }}
+            {{- range $key, $val := .Values.env }}
+            - name: {{ $key }}
+              value: {{ $val | quote }}
+            {{- end }}
+            {{- with .Values.extraEnv }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          {{- with .Values.extraEnvFrom }}
+          envFrom:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- if .Values.persistence.enabled }}
+          volumeMounts:
+            - name: data
+              mountPath: /etc/shlink/data
+          {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- if .Values.persistence.enabled }}
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: {{ include "shlink.fullname" . }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

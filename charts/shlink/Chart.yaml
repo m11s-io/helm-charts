@@ -1,0 +1,30 @@
+apiVersion: v2
+name: shlink
+description: Helm chart for Shlink self-hosted URL shortener
+type: application
+version: 0.1.0
+# renovate: datasource=docker depName=shlinkio/shlink
+appVersion: "5.1.5"
+home: https://shlink.io
+icon: https://raw.githubusercontent.com/shlinkio/shlink/refs/heads/main/public/favicon.ico
+sources:
+  - https://github.com/shlinkio/shlink
+  - https://github.com/m11s-io/charts
+maintainers:
+  - name: m11s
+    url: https://m11s.io
+annotations:
+  artifacthub.io/signKey: |
+    fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
+    url: https://keys.openpgp.org/search?q=hello%40m11s.io
+  artifacthub.io/containersImages: |
+    - name: shlink
+      image: shlinkio/shlink:5.1.5
+  artifacthub.io/links: |
+    - name: source
+      url: https://github.com/shlinkio/shlink
+    - name: docs
+      url: https://shlink.io/documentation/install-docker-image/
+  artifacthub.io/changes: |-
+    - kind: added
+      description: "Initial chart release"

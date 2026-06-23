@@ -1,0 +1,5 @@
+shlink:
+  defaultDomain: s.ci-test.example.com
+
+geolite:
+  skipDownload: true

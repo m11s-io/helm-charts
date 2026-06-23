@@ -1,0 +1,147 @@
+suite: shlink deployment
+templates:
+  - deployment.yaml
+
+tests:
+  - it: renders with required values
+    set:
+      shlink.defaultDomain: s.example.com
+      geolite.skipDownload: true
+    asserts:
+      - isKind:
+          of: Deployment
+      - equal:
+          path: spec.replicas
+          value: 1
+      - matchRegex:
+          path: spec.template.spec.containers[0].image
+          pattern: "shlinkio/shlink:[0-9]+\\.[0-9]+\\.[0-9]+"
+
+  - it: sets DEFAULT_DOMAIN from shlink.defaultDomain
+    set:
+      shlink.defaultDomain: s.example.com
+      geolite.skipDownload: true
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: DEFAULT_DOMAIN
+            value: "s.example.com"
+
+  - it: sets IS_HTTPS_ENABLED from shlink.isHttpsEnabled
+    set:
+      shlink.defaultDomain: s.example.com
+      shlink.isHttpsEnabled: false
+      geolite.skipDownload: true
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: IS_HTTPS_ENABLED
+            value: "false"
+
+  - it: sets SKIP_INITIAL_GEOLITE_DOWNLOAD when geolite.skipDownload is true
+    set:
+      shlink.defaultDomain: s.example.com
+      geolite.skipDownload: true
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: SKIP_INITIAL_GEOLITE_DOWNLOAD
+            value: "true"
+
+  - it: sets DB env vars from secret when driver is postgres
+    set:
+      shlink.defaultDomain: s.example.com
+      geolite.skipDownload: true
+      db.driver: postgres
+      db.host: pg.svc
+      db.user: shlink
+      db.existingSecret.name: shlink-db
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: DB_DRIVER
+            value: "postgres"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: DB_HOST
+            value: "pg.svc"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: shlink-db
+                key: db-password
+
+  - it: does not set DB_HOST when driver is sqlite
+    set:
+      shlink.defaultDomain: s.example.com
+      geolite.skipDownload: true
+    asserts:
+      - notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: DB_HOST
+
+  - it: sets redis env vars when redis is enabled
+    set:
+      shlink.defaultDomain: s.example.com
+      geolite.skipDownload: true
+      redis.enabled: true
+      redis.servers: redis://redis:6379
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: REDIS_SERVERS
+            value: "redis://redis:6379"
+
+  - it: mounts persistence volume when persistence is enabled
+    set:
+      shlink.defaultDomain: s.example.com
+      geolite.skipDownload: true
+      persistence.enabled: true
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            name: data
+            mountPath: /etc/shlink/data
+
+  - it: respects replicaCount
+    set:
+      shlink.defaultDomain: s.example.com
+      geolite.skipDownload: true
+      replicaCount: 2
+    asserts:
+      - equal:
+          path: spec.replicas
+          value: 2
+
+  - it: uses fullnameOverride
+    set:
+      shlink.defaultDomain: s.example.com
+      geolite.skipDownload: true
+      fullnameOverride: my-shlink
+    asserts:
+      - equal:
+          path: metadata.name
+          value: my-shlink
+
+  - it: runs as non-root
+    set:
+      shlink.defaultDomain: s.example.com
+      geolite.skipDownload: true
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.runAsNonRoot
+          value: true
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.capabilities.drop[0]
+          value: ALL

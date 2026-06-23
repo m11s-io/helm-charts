@@ -1,0 +1,273 @@
+# image.repository is the container image repository
+image:
+  repository: shlinkio/shlink
+  # image.tag overrides the image tag; defaults to the chart appVersion
+  tag: ""
+  # image.pullPolicy is the image pull policy
+  pullPolicy: IfNotPresent
+
+# nameOverride overrides the chart name portion of the release name
+nameOverride: ""
+# fullnameOverride overrides the full release name used for all resources
+fullnameOverride: ""
+
+# replicaCount is the number of Shlink pod replicas
+replicaCount: 1
+
+service:
+  # service.type is the Kubernetes Service type
+  type: ClusterIP
+  # service.port is the port the Service listens on
+  port: 8080
+
+shlink:
+  # shlink.defaultDomain is the default short domain for this Shlink instance (required). Example: s.example.com
+  defaultDomain: ""
+  # shlink.isHttpsEnabled controls whether Shlink generates https:// short URLs; set to false only behind plain HTTP
+  isHttpsEnabled: true
+  # shlink.basePath is the base path prefix when Shlink is not served at the root (e.g. /shlink)
+  basePath: ""
+  # shlink.timezone is the PHP timezone used for date display; defaults to the system timezone
+  timezone: ""
+  # shlink.memoryLimit is the PHP memory limit (e.g. 512M)
+  memoryLimit: "512M"
+  # shlink.trustedProxies is a comma-separated list of proxy CIDRs/IPs whose X-Forwarded-For header is trusted
+  trustedProxies: ""
+  # shlink.autoResolveTitles controls whether Shlink automatically resolves the page title for new short URLs
+  autoResolveTitles: true
+  # shlink.logsFormat sets the log output format; valid values: console, json
+  logsFormat: "json"
+
+geolite:
+  # geolite.skipDownload skips downloading the GeoLite2 database on startup; set true if you supply your own or don't need geolocation
+  skipDownload: false
+  existingSecret:
+    # geolite.existingSecret.name is the name of the Secret containing the GeoLite license key
+    name: ""
+    # geolite.existingSecret.key is the key within the Secret that holds GEOLITE_LICENSE_KEY
+    key: geolite-license-key
+
+initialApiKey:
+  existingSecret:
+    # initialApiKey.existingSecret.name is the name of the Secret containing the initial API key; leave empty to skip
+    name: ""
+    # initialApiKey.existingSecret.key is the key within the Secret that holds INITIAL_API_KEY
+    key: initial-api-key
+
+db:
+  # db.driver selects the database backend; valid values: sqlite, postgres, mysql, mssql
+  driver: sqlite
+  # db.host is the database server hostname (not needed for sqlite)
+  host: ""
+  # db.port is the database server port; defaults to the driver default if empty
+  port: ""
+  # db.name is the database name
+  name: shlink
+  # db.user is the database username
+  user: ""
+  # db.useEncryption enables TLS for the database connection (supported by postgres and mssql)
+  useEncryption: false
+  existingSecret:
+    # db.existingSecret.name is the name of the Secret containing the database password
+    name: ""
+    # db.existingSecret.passwordKey is the key within the Secret that holds DB_PASSWORD
+    passwordKey: db-password
+
+redis:
+  # redis.enabled enables Redis as the cache and lock backend
+  enabled: false
+  # redis.servers is a comma-separated list of Redis server URLs (redis://host:port)
+  servers: ""
+  # redis.sentinelService is the Sentinel service name when using Redis Sentinel
+  sentinelService: ""
+  # redis.pubSubEnabled enables real-time visit tracking via Redis Pub/Sub
+  pubSubEnabled: false
+  existingSecret:
+    # redis.existingSecret.name is the name of the Secret containing Redis credentials; leave empty if no auth
+    name: ""
+    # redis.existingSecret.userKey is the key within the Secret that holds REDIS_SERVERS_USER
+    userKey: redis-user
+    # redis.existingSecret.passwordKey is the key within the Secret that holds REDIS_SERVERS_PASSWORD
+    passwordKey: redis-password
+
+mercure:
+  # mercure.publicHubUrl is the public URL of the Mercure hub for real-time updates; enables Mercure when set
+  publicHubUrl: ""
+  # mercure.internalHubUrl is the internal URL of the Mercure hub (defaults to publicHubUrl when empty)
+  internalHubUrl: ""
+  existingSecret:
+    # mercure.existingSecret.name is the name of the Secret containing the Mercure JWT secret
+    name: ""
+    # mercure.existingSecret.jwtSecretKey is the key within the Secret that holds MERCURE_JWT_SECRET
+    jwtSecretKey: mercure-jwt-secret
+
+rabbitmq:
+  # rabbitmq.enabled enables RabbitMQ as the async message bus
+  enabled: false
+  # rabbitmq.host is the RabbitMQ server hostname
+  host: ""
+  # rabbitmq.port is the RabbitMQ AMQP port
+  port: 5672
+  # rabbitmq.vhost is the RabbitMQ virtual host
+  vhost: "/"
+  # rabbitmq.useSsl enables SSL/TLS for the RabbitMQ connection
+  useSsl: false
+  # rabbitmq.user is the RabbitMQ username
+  user: ""
+  existingSecret:
+    # rabbitmq.existingSecret.name is the name of the Secret containing the RabbitMQ password
+    name: ""
+    # rabbitmq.existingSecret.passwordKey is the key within the Secret that holds RABBITMQ_PASSWORD
+    passwordKey: rabbitmq-password
+
+matomo:
+  # matomo.enabled enables visit tracking via Matomo
+  enabled: false
+  # matomo.baseUrl is the Matomo instance base URL
+  baseUrl: ""
+  # matomo.siteId is the Matomo site ID to track visits into
+  siteId: ""
+  existingSecret:
+    # matomo.existingSecret.name is the name of the Secret containing the Matomo API token
+    name: ""
+    # matomo.existingSecret.apiTokenKey is the key within the Secret that holds MATOMO_API_TOKEN
+    apiTokenKey: matomo-api-token
+
+redirects:
+  # redirects.invalidShortUrl is the URL to redirect to when an invalid short URL is visited
+  invalidShortUrl: ""
+  # redirects.regular404 is the URL to redirect to on a regular 404 (non-short-URL path)
+  regular404: ""
+  # redirects.baseUrl is the URL to redirect to when the base URL is visited
+  baseUrl: ""
+  # redirects.statusCode is the HTTP redirect status code; valid values: 301, 302, 307, 308
+  statusCode: 302
+  # redirects.cacheLifetime is the redirect cache lifetime in seconds (sent in Cache-Control max-age)
+  cacheLifetime: 30
+
+shortUrls:
+  # shortUrls.mode controls strict vs loose URL matching; valid values: strict, loose
+  mode: strict
+  # shortUrls.defaultCodesLength is the default length for generated short codes
+  defaultCodesLength: 5
+  # shortUrls.trailingSlash allows short URLs to resolve with a trailing slash
+  trailingSlash: false
+  # shortUrls.multiSegmentSlugs enables slugs with multiple path segments (e.g. /foo/bar/baz)
+  multiSegmentSlugs: false
+
+tracking:
+  # tracking.anonymizeRemoteAddr anonymizes visitor IP addresses before storing them
+  anonymizeRemoteAddr: true
+  # tracking.orphanVisits enables tracking of visits to invalid or non-existent short URLs
+  orphanVisits: true
+  # tracking.disabled disables all visit tracking globally
+  disabled: false
+  # tracking.disableIp disables storing visitor IP addresses
+  disableIp: false
+  # tracking.disableReferrer disables storing the HTTP Referer header
+  disableReferrer: false
+  # tracking.disableUa disables storing the User-Agent header
+  disableUa: false
+  # tracking.disableTrackParam is a query parameter name that, when present, suppresses tracking for that visit
+  disableTrackParam: ""
+  # tracking.disableFrom is a comma-separated list of CIDRs/IPs whose visits are never tracked
+  disableFrom: ""
+
+cors:
+  # cors.allowOrigin is the allowed CORS origin; use * to allow all origins
+  allowOrigin: "*"
+  # cors.allowCredentials enables Access-Control-Allow-Credentials
+  allowCredentials: false
+  # cors.maxAge is the preflight cache duration in seconds
+  maxAge: 3600
+
+persistence:
+  # persistence.enabled mounts a PersistentVolumeClaim at /etc/shlink/data for SQLite and file cache
+  enabled: false
+  # persistence.storageClass is the StorageClass for the PVC; uses the cluster default when empty
+  storageClass: ""
+  # persistence.accessMode is the PVC access mode
+  accessMode: ReadWriteOnce
+  # persistence.size is the PVC storage request
+  size: 1Gi
+
+httpRoute:
+  # httpRoute.enabled enables a Gateway API HTTPRoute resource
+  enabled: false
+  # httpRoute.annotations are extra annotations added to the HTTPRoute
+  annotations: {}
+  # httpRoute.labels are extra labels added to the HTTPRoute
+  labels: {}
+  # httpRoute.parentRefs is the list of Gateways this route attaches to
+  parentRefs: []
+  # httpRoute.hostnames is the list of hostnames this route matches
+  hostnames: []
+
+networkPolicy:
+  # networkPolicy.enabled enables a NetworkPolicy restricting pod ingress and egress
+  enabled: false
+  # networkPolicy.gatewayNamespace is the namespace of the Gateway allowed to reach Shlink
+  gatewayNamespace: ""
+  # networkPolicy.databaseNamespace is the namespace of the database pods Shlink may reach
+  databaseNamespace: ""
+  # networkPolicy.databasePort is the database port Shlink may reach
+  databasePort: 5432
+  internetEgress:
+    # networkPolicy.internetEgress.enabled allows egress to the internet (GeoLite download, Mercure, etc.)
+    enabled: true
+    # networkPolicy.internetEgress.cidr is the allowed egress CIDR
+    cidr: 0.0.0.0/0
+    # networkPolicy.internetEgress.except lists CIDRs excluded from internet egress (private ranges)
+    except:
+      - 10.0.0.0/8
+      - 172.16.0.0/12
+      - 192.168.0.0/16
+  dnsEgress:
+    # networkPolicy.dnsEgress.enabled allows DNS lookups on TCP/UDP port 53
+    enabled: true
+
+serviceAccount:
+  # serviceAccount.create specifies whether a ServiceAccount should be created
+  create: true
+  # serviceAccount.name is the name of the ServiceAccount; defaults to fullname if empty
+  name: ""
+  # serviceAccount.annotations are extra annotations added to the ServiceAccount
+  annotations: {}
+
+# podSecurityContext sets the security context for the Shlink pod
+podSecurityContext:
+  fsGroup: 1000
+
+# securityContext sets the security context for the Shlink container
+securityContext:
+  capabilities:
+    drop:
+      - ALL
+  runAsNonRoot: true
+  runAsUser: 1000
+
+# resources sets the CPU and memory requests and limits for the Shlink container
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    memory: 512Mi
+
+# env is a map of additional non-sensitive environment variables to inject
+env: {}
+
+# extraEnv is a list of additional env var objects (name/value or name/valueFrom) to inject
+extraEnv: []
+
+# extraEnvFrom is a list of envFrom sources (configMapRef, secretRef) to inject
+extraEnvFrom: []
+
+# podAnnotations are extra annotations added to the Shlink pod
+podAnnotations: {}
+# nodeSelector constrains the Shlink pod to nodes matching the given labels
+nodeSelector: {}
+# tolerations allow the Shlink pod to be scheduled on tainted nodes
+tolerations: []
+# affinity sets pod affinity and anti-affinity rules
+affinity: {}
