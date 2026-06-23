@@ -240,19 +240,19 @@ spec:
           envFrom:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- if .Values.persistence.enabled }}
           volumeMounts:
             - name: data
               mountPath: /etc/shlink/data
-          {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-      {{- if .Values.persistence.enabled }}
       volumes:
         - name: data
+          {{- if .Values.data.enabled }}
           persistentVolumeClaim:
             claimName: {{ include "shlink.fullname" . }}
-      {{- end }}
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

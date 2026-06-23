@@ -181,14 +181,14 @@ cors:
   # cors.maxAge is the preflight cache duration in seconds
   maxAge: 3600
 
-persistence:
-  # persistence.enabled mounts a PersistentVolumeClaim at /etc/shlink/data for SQLite and file cache
-  enabled: false
-  # persistence.storageClass is the StorageClass for the PVC; uses the cluster default when empty
+data:
+  # data.enabled mounts a PersistentVolumeClaim at /etc/shlink/data; when false uses emptyDir (locks/proxies lost on restart)
+  enabled: true
+  # data.storageClass is the StorageClass for the PVC; uses the cluster default when empty
   storageClass: ""
-  # persistence.accessMode is the PVC access mode
+  # data.accessMode is the PVC access mode
   accessMode: ReadWriteOnce
-  # persistence.size is the PVC storage request
+  # data.size is the PVC storage request
   size: 1Gi
 
 httpRoute:

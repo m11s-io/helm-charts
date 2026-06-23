@@ -2,7 +2,7 @@ apiVersion: v2
 name: shlink
 description: Helm chart for Shlink self-hosted URL shortener
 type: application
-version: 0.1.1
+version: 0.1.2
 # renovate: datasource=docker depName=shlinkio/shlink
 appVersion: "5.1.5"
 home: https://shlink.io
@@ -28,3 +28,5 @@ annotations:
   artifacthub.io/changes: |-
     - kind: added
       description: "Initial chart release"
+    - kind: changed
+      description: "Rename persistence to data; always mount /etc/shlink/data (emptyDir fallback)"
