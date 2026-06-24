@@ -9,6 +9,7 @@ spec:
   selector:
     matchLabels:
       {{- include "shlink.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: api
   template:
     metadata:
       annotations:
@@ -17,6 +18,7 @@ spec:
         {{- end }}
       labels:
         {{- include "shlink.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: api
     spec:
       serviceAccountName: {{ include "shlink.serviceAccountName" . }}
       securityContext:

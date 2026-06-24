@@ -13,6 +13,7 @@ spec:
       name: http
   selector:
     {{- include "shlink.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: api
 {{- if .Values.webClient.enabled }}
 ---
 apiVersion: v1

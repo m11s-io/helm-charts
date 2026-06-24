@@ -2,7 +2,7 @@ apiVersion: v2
 name: shlink
 description: Helm chart for Shlink self-hosted URL shortener
 type: application
-version: 0.1.4
+version: 0.1.5
 # renovate: datasource=docker depName=shlinkio/shlink
 appVersion: "5.1.5"
 home: https://shlink.io
@@ -26,9 +26,5 @@ annotations:
     - name: docs
       url: https://shlink.io/documentation/install-docker-image/
   artifacthub.io/changes: |-
-    - kind: added
-      description: "Initial chart release"
-    - kind: changed
-      description: "Rename persistence to data; always mount /etc/shlink/data (emptyDir fallback)"
-    - kind: added
-      description: "webClient: optional Shlink Web Client deployment, service, and HTTPRoute"
+    - kind: fixed
+      description: "Fix service selector to exclude web-client pods (app.kubernetes.io/component: api)"
