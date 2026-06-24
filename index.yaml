@@ -840,6 +840,39 @@ entries:
   shlink:
   - annotations:
       artifacthub.io/changes: |-
+        - kind: fixed
+          description: "Fix service selector to exclude web-client pods (app.kubernetes.io/component: api)"
+      artifacthub.io/containersImages: |
+        - name: shlink
+          image: shlinkio/shlink:5.1.5
+      artifacthub.io/links: |
+        - name: source
+          url: https://github.com/shlinkio/shlink
+        - name: docs
+          url: https://shlink.io/documentation/install-docker-image/
+      artifacthub.io/signKey: |
+        fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
+        url: https://keys.openpgp.org/search?q=hello%40m11s.io
+    apiVersion: v2
+    appVersion: 5.1.5
+    created: "2026-06-24T07:55:04.682864577Z"
+    description: Helm chart for Shlink self-hosted URL shortener
+    digest: 38ed3845180e61bedd36b14fa45b5df3fbdf0283dde1d9b3aa5f0876bd11973f
+    home: https://shlink.io
+    icon: https://shlink.io/images/shlink-logo-blue.svg
+    maintainers:
+    - name: m11s
+      url: https://m11s.io
+    name: shlink
+    sources:
+    - https://github.com/shlinkio/shlink
+    - https://github.com/m11s-io/charts
+    type: application
+    urls:
+    - https://github.com/m11s-io/helm-charts/releases/download/shlink-0.1.5/shlink-0.1.5.tgz
+    version: 0.1.5
+  - annotations:
+      artifacthub.io/changes: |-
         - kind: added
           description: "Initial chart release"
         - kind: changed
@@ -1145,4 +1178,4 @@ entries:
     urls:
     - https://github.com/m11s-io/charts/releases/download/whoami-0.1.0/whoami-0.1.0.tgz
     version: 0.1.0
-generated: "2026-06-23T19:32:06.162056523Z"
+generated: "2026-06-24T07:55:04.682962218Z"
