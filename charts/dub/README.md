@@ -1,7 +1,7 @@
 # dub Helm Chart
 
 [![Docker Pulls](https://img.shields.io/docker/pulls/m11s/dub.svg)](https://hub.docker.com/r/m11s/dub/)
-[![Build Status](https://github.com/dubinc/dub/workflows/CI/badge.svg?branch=main)](https://github.com/dubinc/dub/actions)
+[![CI](https://img.shields.io/github/checks-status/dubinc/dub/main?label=CI)](https://github.com/dubinc/dub/actions)
 
 [Dub](https://dub.co) is an open-source link management platform — short links, analytics, and team workspaces.
 

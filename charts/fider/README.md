@@ -1,7 +1,7 @@
 # Fider Helm Chart
 
 [![Docker Pulls](https://img.shields.io/docker/pulls/getfider/fider.svg)](https://hub.docker.com/r/getfider/fider/)
-[![Build Status](https://github.com/getfider/fider/workflows/CI/badge.svg?branch=main)](https://github.com/getfider/fider/actions)
+[![CI](https://img.shields.io/github/checks-status/getfider/fider/main?label=CI)](https://github.com/getfider/fider/actions)
 
 [Fider](https://fider.io) is a self-hosted user feedback platform that helps teams collect, organize, and prioritize feedback.
 

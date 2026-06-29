@@ -1,7 +1,7 @@
 # shlink
 
 [![Docker Pulls](https://img.shields.io/docker/pulls/shlinkio/shlink.svg)](https://hub.docker.com/r/shlinkio/shlink/)
-[![Build Status](https://github.com/shlinkio/shlink/workflows/CI/badge.svg?branch=develop)](https://github.com/shlinkio/shlink/actions)
+[![CI](https://img.shields.io/github/checks-status/shlinkio/shlink/develop?label=CI)](https://github.com/shlinkio/shlink/actions)
 
 Helm chart for [Shlink](https://shlink.io) — a self-hosted URL shortener.
 
