@@ -44,6 +44,10 @@ spec:
           env:
             - name: NEXTAUTH_URL
               value: {{ required "dub.appUrl is required" .Values.dub.appUrl | quote }}
+            - name: NEXT_PUBLIC_APP_DOMAIN
+              value: {{ .Values.dub.appDomain | default (.Values.dub.appUrl | trimPrefix "https://" | trimPrefix "http://") | quote }}
+            - name: NEXT_PUBLIC_APP_SHORT_DOMAIN
+              value: {{ .Values.dub.shortDomain | default (.Values.dub.appDomain | default (.Values.dub.appUrl | trimPrefix "https://" | trimPrefix "http://")) | quote }}
             - name: NEXTAUTH_SECRET
               valueFrom:
                 secretKeyRef:

@@ -23,6 +23,10 @@ service:
 dub:
   # dub.appUrl is the public URL of this dub instance (required). Example: https://dub.example.com
   appUrl: ""
+  # dub.appDomain is the hostname of the app dashboard (NEXT_PUBLIC_APP_DOMAIN). Defaults to appUrl host if empty.
+  appDomain: ""
+  # dub.shortDomain is the default short link hostname (NEXT_PUBLIC_APP_SHORT_DOMAIN). Defaults to appDomain if empty.
+  shortDomain: ""
 
 auth:
   existingSecret:
