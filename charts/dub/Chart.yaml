@@ -6,7 +6,7 @@ version: 0.1.1
 # renovate: datasource=docker depName=m11s/dub
 appVersion: "0.1.0"
 home: https://dub.co
-icon: https://dub.co/favicon.ico
+icon: https://assets.dub.co/brand/logo.svg
 sources:
   - https://github.com/dubinc/dub
   - https://github.com/m11s-io/charts

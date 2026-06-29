@@ -1,5 +1,8 @@
 # decap-cms
 
+[![Docker Pulls](https://img.shields.io/docker/pulls/m11s/decap-cms.svg)](https://hub.docker.com/r/m11s/decap-cms/)
+[![Build Status](https://github.com/decaporg/decap-cms/workflows/CI/badge.svg?branch=main)](https://github.com/decaporg/decap-cms/actions)
+
 Helm chart for running the m11s multi-tenant Decap CMS image.
 
 The chart stores tenant configuration in `tenants.json`, mounts it into the pod, and the image generates one `/admin/config.yml` per hostname at startup.
