@@ -64,6 +64,13 @@ spec:
                 secretKeyRef:
                   name: {{ required "db.existingSecret.name is required" .Values.db.existingSecret.name }}
                   key: {{ .Values.db.existingSecret.urlKey }}
+            {{- if .Values.db.existingSecret.planetscaleUrlKey }}
+            - name: PLANETSCALE_DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.db.existingSecret.name }}
+                  key: {{ .Values.db.existingSecret.planetscaleUrlKey }}
+            {{- end }}
             {{- if .Values.redis.srh.enabled }}
             - name: UPSTASH_REDIS_REST_URL
               value: "http://localhost:80"

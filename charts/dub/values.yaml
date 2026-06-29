@@ -41,6 +41,8 @@ db:
     name: ""
     # db.existingSecret.urlKey is the key within the Secret that holds DATABASE_URL
     urlKey: database-url
+    # db.existingSecret.planetscaleUrlKey is the key holding PLANETSCALE_DATABASE_URL (PlanetScale HTTP API URL); leave empty to skip
+    planetscaleUrlKey: ""
 
 redis:
   # redis.upstash configures direct Upstash (or compatible) REST endpoint — used when srh.enabled=false
