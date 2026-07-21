@@ -2,7 +2,7 @@ apiVersion: v2
 name: comfyui
 description: Helm chart for ComfyUI, a node-based, modular visual AI engine for GPU nodes
 type: application
-version: 0.4.1
+version: 0.4.2
 # renovate: datasource=docker depName=m11s/comfyui
 appVersion: "0.3.1"
 home: https://github.com/comfyanonymous/ComfyUI
@@ -29,7 +29,7 @@ annotations:
       url: https://github.com/m11s-io/docker-images
   artifacthub.io/changes: |-
     - kind: fixed
-      description: "Default strategy.type to Recreate: RollingUpdate deadlocks on single-GPU nodes since the new pod can never schedule while the old one holds the only nvidia.com/gpu"
+      description: "Default strategy.type to Recreate (0.4.0-0.4.1 had a broken null-clearing branch for an existing object's leftover rollingUpdate field; a one-time delete+recreate of the live Deployment is the actual fix for that transition)"
     - kind: added
       description: "Add optional nfsModels PVC for splitting model categories (e.g. loras, embeddings) onto shared/NFS storage, wired in via a generated extra_model_paths.yaml"
     - kind: fixed
