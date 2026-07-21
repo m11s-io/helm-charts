@@ -4,6 +4,60 @@ entries:
   - annotations:
       artifacthub.io/category: ai-machine-learning
       artifacthub.io/changes: |-
+        - kind: fixed
+          description: "Default strategy.type to Recreate: RollingUpdate deadlocks on single-GPU nodes since the new pod can never schedule while the old one holds the only nvidia.com/gpu"
+        - kind: added
+          description: "Add optional nfsModels PVC for splitting model categories (e.g. loras, embeddings) onto shared/NFS storage, wired in via a generated extra_model_paths.yaml"
+        - kind: fixed
+          description: "Drop --disable-cuda-malloc (m11s/comfyui:0.3.1): the allocator was never the cause of the startup hang, which was actually a missing NodeLocal DNS Cache on the ai cluster's GPU nodes"
+        - kind: fixed
+          description: "Run with --disable-cuda-malloc (m11s/comfyui:0.3.0) to fix a startup hang caused by torch's cudaMallocAsync allocator on CUDA 13.0 + torch 2.11"
+        - kind: fixed
+          description: "Revert PYTORCH_CUDA_ALLOC_CONF override: it crashes the CUDA 13.0 + torch 2.11 image at import instead of fixing the startup hang"
+        - kind: changed
+          description: "Upgrade image to CUDA 13.0 runtime base (m11s/comfyui:0.2.0)"
+        - kind: added
+          description: "Initial chart release"
+        - kind: fixed
+          description: "Fix broken icon URL (previously pointed at a nonexistent screenshot path)"
+        - kind: changed
+          description: "Broaden description from image/video generation to visual AI, matching upstream's own framing"
+        - kind: added
+          description: "Set artifacthub.io/category to ai-machine-learning"
+      artifacthub.io/containersImages: |
+        - name: comfyui
+          image: m11s/comfyui:0.3.1
+      artifacthub.io/links: |
+        - name: source
+          url: https://github.com/comfyanonymous/ComfyUI
+        - name: image source
+          url: https://github.com/m11s-io/docker-images
+      artifacthub.io/signKey: |
+        fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
+        url: https://keys.openpgp.org/search?q=hello%40m11s.io
+    apiVersion: v2
+    appVersion: 0.3.1
+    created: "2026-07-21T19:57:57.162528026Z"
+    description: Helm chart for ComfyUI, a node-based, modular visual AI engine for
+      GPU nodes
+    digest: 3b56d377311cbd1d9bc6565524576403d507a4f98ecf855cbcf2ee8ff4311c29
+    home: https://github.com/comfyanonymous/ComfyUI
+    icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/comfyui.svg
+    maintainers:
+    - name: m11s
+      url: https://m11s.io
+    name: comfyui
+    sources:
+    - https://github.com/comfyanonymous/ComfyUI
+    - https://github.com/m11s-io/docker-images
+    - https://github.com/m11s-io/charts
+    type: application
+    urls:
+    - https://github.com/m11s-io/helm-charts/releases/download/comfyui-0.4.1/comfyui-0.4.1.tgz
+    version: 0.4.1
+  - annotations:
+      artifacthub.io/category: ai-machine-learning
+      artifacthub.io/changes: |-
         - kind: added
           description: "Add optional nfsModels PVC for splitting model categories (e.g. loras, embeddings) onto shared/NFS storage, wired in via a generated extra_model_paths.yaml"
         - kind: fixed
@@ -1645,4 +1699,4 @@ entries:
     urls:
     - https://github.com/m11s-io/charts/releases/download/whoami-0.1.0/whoami-0.1.0.tgz
     version: 0.1.0
-generated: "2026-07-21T19:02:57.802107213Z"
+generated: "2026-07-21T19:57:57.162662438Z"
