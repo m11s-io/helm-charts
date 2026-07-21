@@ -1,0 +1,23 @@
+suite: comfyui service
+templates:
+  - service.yaml
+
+tests:
+  - it: renders a ClusterIP service on port 8188 by default
+    asserts:
+      - isKind:
+          of: Service
+      - equal:
+          path: spec.type
+          value: ClusterIP
+      - equal:
+          path: spec.ports[0].port
+          value: 8188
+
+  - it: respects service.port override
+    set:
+      service.port: 8080
+    asserts:
+      - equal:
+          path: spec.ports[0].port
+          value: 8080

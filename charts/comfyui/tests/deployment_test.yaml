@@ -1,0 +1,105 @@
+suite: comfyui deployment
+templates:
+  - deployment.yaml
+
+tests:
+  - it: renders with default values
+    asserts:
+      - isKind:
+          of: Deployment
+      - equal:
+          path: spec.replicas
+          value: 1
+      - matchRegex:
+          path: spec.template.spec.containers[0].image
+          pattern: "m11s/comfyui:[0-9]+\\.[0-9]+\\.[0-9]+"
+      - equal:
+          path: spec.template.spec.containers[0].imagePullPolicy
+          value: IfNotPresent
+
+  - it: does not set runtimeClassName by default
+    asserts:
+      - notExists:
+          path: spec.template.spec.runtimeClassName
+
+  - it: sets runtimeClassName when configured
+    set:
+      runtimeClassName: nvidia
+    asserts:
+      - equal:
+          path: spec.template.spec.runtimeClassName
+          value: nvidia
+
+  - it: does not mount a models volume by default
+    asserts:
+      - notExists:
+          path: spec.template.spec.volumes
+      - notExists:
+          path: spec.template.spec.containers[0].volumeMounts
+
+  - it: mounts the models PVC when persistence is enabled
+    set:
+      persistence.enabled: true
+    asserts:
+      - equal:
+          path: spec.template.spec.volumes[0].persistentVolumeClaim.claimName
+          value: RELEASE-NAME-comfyui-models
+      - equal:
+          path: spec.template.spec.containers[0].volumeMounts[0].mountPath
+          value: /app/models
+
+  - it: uses existingClaim for the models volume when set
+    set:
+      persistence.enabled: true
+      persistence.existingClaim: my-existing-pvc
+    asserts:
+      - equal:
+          path: spec.template.spec.volumes[0].persistentVolumeClaim.claimName
+          value: my-existing-pvc
+
+  - it: respects replicaCount
+    set:
+      replicaCount: 2
+    asserts:
+      - equal:
+          path: spec.replicas
+          value: 2
+
+  - it: uses fullnameOverride
+    set:
+      fullnameOverride: custom-name
+    asserts:
+      - equal:
+          path: metadata.name
+          value: custom-name
+
+  - it: drops all capabilities in securityContext
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.capabilities.drop[0]
+          value: ALL
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.allowPrivilegeEscalation
+          value: false
+
+  - it: runs as the comfyui uid by default
+    asserts:
+      - equal:
+          path: spec.template.spec.securityContext.runAsNonRoot
+          value: true
+      - equal:
+          path: spec.template.spec.securityContext.runAsUser
+          value: 10001
+
+  - it: sets nvidia.com/gpu resources when configured
+    set:
+      resources:
+        limits:
+          nvidia.com/gpu: "1"
+        requests:
+          nvidia.com/gpu: "1"
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].resources.limits
+          value:
+            nvidia.com/gpu: "1"

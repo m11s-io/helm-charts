@@ -1,0 +1,130 @@
+image:
+  # image.repository is the container image repository
+  repository: m11s/comfyui
+  # image.tag overrides the image tag; defaults to the chart appVersion
+  tag: ""
+  # image.pullPolicy is the image pull policy
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+# nameOverride overrides the chart name portion of the release name
+nameOverride: ""
+# fullnameOverride overrides the full release name used for all resources
+fullnameOverride: ""
+
+# replicaCount is the number of comfyui pod replicas
+replicaCount: 1
+
+service:
+  # service.type is the Kubernetes Service type
+  type: ClusterIP
+  # service.port is the port the Service listens on
+  port: 8188
+
+serviceAccount:
+  # serviceAccount.create specifies whether a ServiceAccount should be created
+  create: true
+  # serviceAccount.name is the name of the ServiceAccount; defaults to fullname if empty
+  name: ""
+  # serviceAccount.annotations are extra annotations added to the ServiceAccount
+  annotations: {}
+
+# podSecurityContext sets the security context for the comfyui pod.
+# uid/gid match the comfyui user created in m11s-github/docker-images/comfyui.
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 10001
+  runAsGroup: 10001
+  fsGroup: 10001
+  fsGroupChangePolicy: OnRootMismatch
+  seccompProfile:
+    type: RuntimeDefault
+
+# securityContext sets the security context for the comfyui container
+securityContext:
+  allowPrivilegeEscalation: false
+  privileged: false
+  readOnlyRootFilesystem: false
+  capabilities:
+    drop:
+      - ALL
+
+# resources sets the CPU/memory/GPU requests and limits for the comfyui container
+resources: {}
+
+# ComfyUI binds its HTTP listener before models finish loading, so a plain
+# tcpSocket probe would falsely succeed. Probes hit /system_stats instead,
+# and startupProbe absorbs the multi-minute model-load cold start.
+startupProbe:
+  httpGet:
+    path: /system_stats
+    port: http
+  failureThreshold: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+livenessProbe:
+  httpGet:
+    path: /system_stats
+    port: http
+  periodSeconds: 30
+  timeoutSeconds: 5
+  failureThreshold: 3
+readinessProbe:
+  httpGet:
+    path: /system_stats
+    port: http
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+# terminationGracePeriodSeconds gives in-flight generations time to finish before SIGKILL
+terminationGracePeriodSeconds: 90
+lifecycle:
+  preStop:
+    exec:
+      command: ["/bin/sh", "-c", "sleep 15"]
+
+# persistence configures a single PVC for ComfyUI's models directory.
+# Sized for one replica on one dedicated GPU node (ReadWriteOnce).
+persistence:
+  # persistence.enabled creates (or reuses) a PVC and mounts it at persistence.mountPath
+  enabled: false
+  # persistence.existingClaim reuses an existing PVC instead of creating one
+  existingClaim: ""
+  # persistence.storageClassName is the StorageClass for the created PVC
+  storageClassName: ""
+  # persistence.accessMode is the PVC access mode
+  accessMode: ReadWriteOnce
+  # persistence.size is the PVC storage request
+  size: 200Gi
+  # persistence.mountPath is where the models volume is mounted in the container
+  mountPath: /app/models
+
+# environment sets extra environment variables on the comfyui container
+environment: {}
+
+# runtimeClassName sets the pod's RuntimeClass; required on clusters where
+# NVIDIA GPU access isn't the container runtime default (e.g. set to "nvidia")
+runtimeClassName: ""
+
+# httpRoute configures a Gateway API HTTPRoute resource
+httpRoute:
+  # httpRoute.enabled enables a Gateway API HTTPRoute resource
+  enabled: false
+  # httpRoute.annotations are extra annotations added to the HTTPRoute
+  annotations: {}
+  # httpRoute.labels are extra labels added to the HTTPRoute
+  labels: {}
+  # httpRoute.parentRefs is the list of Gateways this route attaches to
+  parentRefs: []
+  # httpRoute.hostnames is the list of hostnames this route matches
+  hostnames: []
+
+# podAnnotations are extra annotations added to the comfyui pod
+podAnnotations: {}
+# nodeSelector constrains the comfyui pod to nodes matching the given labels
+nodeSelector: {}
+# tolerations allow the comfyui pod to be scheduled on tainted (e.g. GPU) nodes
+tolerations: []
+# affinity sets pod affinity and anti-affinity rules
+affinity: {}
