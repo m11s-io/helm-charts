@@ -1,6 +1,7 @@
 # comfyui Helm Chart
 
 [![Docker Pulls](https://img.shields.io/docker/pulls/m11s/comfyui.svg)](https://hub.docker.com/r/m11s/comfyui/)
+[![Build](https://github.com/m11s-io/docker-images/actions/workflows/build.yaml/badge.svg)](https://github.com/m11s-io/docker-images/actions/workflows/build.yaml)
 
 [ComfyUI](https://github.com/comfyanonymous/ComfyUI) is a node-based UI for Stable Diffusion and other image/video generation models. Upstream publishes no official container image, so this chart deploys [m11s/comfyui](https://github.com/m11s-io/docker-images/tree/main/comfyui), built from ComfyUI source on a CUDA runtime base.
 
@@ -9,7 +10,7 @@ This chart targets a single GPU-bound replica per release; it does not include H
 ## Installation
 
 ```bash
-helm repo add m11s https://m11s-io.github.io/charts
+helm repo add m11s https://m11s-io.github.io/helm-charts
 helm repo update
 helm install comfyui m11s/comfyui -n comfyui --create-namespace \
   --set runtimeClassName=nvidia \
