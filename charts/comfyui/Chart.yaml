@@ -2,7 +2,7 @@ apiVersion: v2
 name: comfyui
 description: Helm chart for ComfyUI, a node-based, modular visual AI engine for GPU nodes
 type: application
-version: 0.2.0
+version: 0.2.1
 # renovate: datasource=docker depName=m11s/comfyui
 appVersion: "0.2.0"
 home: https://github.com/comfyanonymous/ComfyUI
@@ -28,6 +28,8 @@ annotations:
     - name: image source
       url: https://github.com/m11s-io/docker-images
   artifacthub.io/changes: |-
+    - kind: fixed
+      description: "Default PYTORCH_CUDA_ALLOC_CONF=backend:native to avoid a cudaMallocAsync hang on CUDA 13.0 + torch 2.11"
     - kind: changed
       description: "Upgrade image to CUDA 13.0 runtime base (m11s/comfyui:0.2.0)"
     - kind: added

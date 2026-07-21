@@ -100,8 +100,11 @@ persistence:
   # persistence.mountPath is where the models volume is mounted in the container
   mountPath: /app/models
 
-# environment sets extra environment variables on the comfyui container
-environment: {}
+# environment sets extra environment variables on the comfyui container.
+# PYTORCH_CUDA_ALLOC_CONF=backend:native disables torch's cudaMallocAsync
+# allocator, which hangs the server unresponsive on CUDA 13.0 + torch 2.11.
+environment:
+  PYTORCH_CUDA_ALLOC_CONF: "backend:native"
 
 # runtimeClassName sets the pod's RuntimeClass; required on clusters where
 # NVIDIA GPU access isn't the container runtime default (e.g. set to "nvidia")
