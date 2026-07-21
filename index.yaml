@@ -5,6 +5,43 @@ entries:
       artifacthub.io/changes: |-
         - kind: added
           description: "Initial chart release"
+        - kind: fixed
+          description: "Fix broken icon URL (previously pointed at a nonexistent screenshot path)"
+      artifacthub.io/containersImages: |
+        - name: comfyui
+          image: m11s/comfyui:0.1.0
+      artifacthub.io/links: |
+        - name: source
+          url: https://github.com/comfyanonymous/ComfyUI
+        - name: image source
+          url: https://github.com/m11s-io/docker-images
+      artifacthub.io/signKey: |
+        fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
+        url: https://keys.openpgp.org/search?q=hello%40m11s.io
+    apiVersion: v2
+    appVersion: 0.1.0
+    created: "2026-07-21T14:45:14.590877611Z"
+    description: Helm chart for ComfyUI, a node-based Stable Diffusion / image-and-video
+      generation UI, on GPU nodes
+    digest: 894e5e1725361eb7bc313b60b55c777177055807f3b9a7a0fffa751ad80a8a92
+    home: https://github.com/comfyanonymous/ComfyUI
+    icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/comfyui.svg
+    maintainers:
+    - name: m11s
+      url: https://m11s.io
+    name: comfyui
+    sources:
+    - https://github.com/comfyanonymous/ComfyUI
+    - https://github.com/m11s-io/docker-images
+    - https://github.com/m11s-io/charts
+    type: application
+    urls:
+    - https://github.com/m11s-io/helm-charts/releases/download/comfyui-0.1.1/comfyui-0.1.1.tgz
+    version: 0.1.1
+  - annotations:
+      artifacthub.io/changes: |-
+        - kind: added
+          description: "Initial chart release"
       artifacthub.io/containersImages: |
         - name: comfyui
           image: m11s/comfyui:0.1.0
@@ -1280,4 +1317,4 @@ entries:
     urls:
     - https://github.com/m11s-io/charts/releases/download/whoami-0.1.0/whoami-0.1.0.tgz
     version: 0.1.0
-generated: "2026-07-21T14:23:11.003721429Z"
+generated: "2026-07-21T14:45:14.590965212Z"
