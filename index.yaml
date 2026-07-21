@@ -5,6 +5,52 @@ entries:
       artifacthub.io/category: ai-machine-learning
       artifacthub.io/changes: |-
         - kind: fixed
+          description: "Revert PYTORCH_CUDA_ALLOC_CONF override: it crashes the CUDA 13.0 + torch 2.11 image at import instead of fixing the startup hang"
+        - kind: changed
+          description: "Upgrade image to CUDA 13.0 runtime base (m11s/comfyui:0.2.0)"
+        - kind: added
+          description: "Initial chart release"
+        - kind: fixed
+          description: "Fix broken icon URL (previously pointed at a nonexistent screenshot path)"
+        - kind: changed
+          description: "Broaden description from image/video generation to visual AI, matching upstream's own framing"
+        - kind: added
+          description: "Set artifacthub.io/category to ai-machine-learning"
+      artifacthub.io/containersImages: |
+        - name: comfyui
+          image: m11s/comfyui:0.2.0
+      artifacthub.io/links: |
+        - name: source
+          url: https://github.com/comfyanonymous/ComfyUI
+        - name: image source
+          url: https://github.com/m11s-io/docker-images
+      artifacthub.io/signKey: |
+        fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
+        url: https://keys.openpgp.org/search?q=hello%40m11s.io
+    apiVersion: v2
+    appVersion: 0.2.0
+    created: "2026-07-21T16:29:13.353690417Z"
+    description: Helm chart for ComfyUI, a node-based, modular visual AI engine for
+      GPU nodes
+    digest: 35cec95e9d469dc2d5b0d4f6a2fe1f9f755d0631af24490ca51edeae2cf6b489
+    home: https://github.com/comfyanonymous/ComfyUI
+    icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/comfyui.svg
+    maintainers:
+    - name: m11s
+      url: https://m11s.io
+    name: comfyui
+    sources:
+    - https://github.com/comfyanonymous/ComfyUI
+    - https://github.com/m11s-io/docker-images
+    - https://github.com/m11s-io/charts
+    type: application
+    urls:
+    - https://github.com/m11s-io/helm-charts/releases/download/comfyui-0.2.2/comfyui-0.2.2.tgz
+    version: 0.2.2
+  - annotations:
+      artifacthub.io/category: ai-machine-learning
+      artifacthub.io/changes: |-
+        - kind: fixed
           description: "Default PYTORCH_CUDA_ALLOC_CONF=backend:native to avoid a cudaMallocAsync hang on CUDA 13.0 + torch 2.11"
         - kind: changed
           description: "Upgrade image to CUDA 13.0 runtime base (m11s/comfyui:0.2.0)"
@@ -1449,4 +1495,4 @@ entries:
     urls:
     - https://github.com/m11s-io/charts/releases/download/whoami-0.1.0/whoami-0.1.0.tgz
     version: 0.1.0
-generated: "2026-07-21T16:19:57.2567845Z"
+generated: "2026-07-21T16:29:13.353805101Z"
