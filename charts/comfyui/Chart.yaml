@@ -2,9 +2,9 @@ apiVersion: v2
 name: comfyui
 description: Helm chart for ComfyUI, a node-based, modular visual AI engine for GPU nodes
 type: application
-version: 0.3.0
+version: 0.3.1
 # renovate: datasource=docker depName=m11s/comfyui
-appVersion: "0.3.0"
+appVersion: "0.3.1"
 home: https://github.com/comfyanonymous/ComfyUI
 icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/comfyui.svg
 sources:
@@ -21,13 +21,15 @@ annotations:
     url: https://keys.openpgp.org/search?q=hello%40m11s.io
   artifacthub.io/containersImages: |
     - name: comfyui
-      image: m11s/comfyui:0.3.0
+      image: m11s/comfyui:0.3.1
   artifacthub.io/links: |
     - name: source
       url: https://github.com/comfyanonymous/ComfyUI
     - name: image source
       url: https://github.com/m11s-io/docker-images
   artifacthub.io/changes: |-
+    - kind: fixed
+      description: "Drop --disable-cuda-malloc (m11s/comfyui:0.3.1): the allocator was never the cause of the startup hang, which was actually a missing NodeLocal DNS Cache on the ai cluster's GPU nodes"
     - kind: fixed
       description: "Run with --disable-cuda-malloc (m11s/comfyui:0.3.0) to fix a startup hang caused by torch's cudaMallocAsync allocator on CUDA 13.0 + torch 2.11"
     - kind: fixed
