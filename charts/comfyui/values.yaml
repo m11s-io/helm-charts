@@ -15,6 +15,14 @@ fullnameOverride: ""
 # replicaCount is the number of comfyui pod replicas
 replicaCount: 1
 
+# strategy controls how the pod is replaced on updates. Recreate is the
+# correct default for this chart's single GPU-bound replica: GPU nodes
+# typically expose exactly one nvidia.com/gpu, so RollingUpdate's
+# create-before-destroy behavior deadlocks (the new pod can never schedule
+# while the old one still holds the only GPU).
+strategy:
+  type: Recreate
+
 service:
   # service.type is the Kubernetes Service type
   type: ClusterIP

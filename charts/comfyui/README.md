@@ -5,7 +5,7 @@
 
 [ComfyUI](https://github.com/comfyanonymous/ComfyUI) is a modular, node-based visual AI engine — image, video, audio, and 3D generation, not just Stable Diffusion. Upstream publishes no official container image, so this chart deploys [m11s/comfyui](https://github.com/m11s-io/docker-images/tree/main/comfyui), built from ComfyUI source on a CUDA runtime base.
 
-This chart targets a single GPU-bound replica per release; it does not include HPA, PodDisruptionBudget, or NetworkPolicy resources.
+This chart targets a single GPU-bound replica per release; it does not include HPA, PodDisruptionBudget, or NetworkPolicy resources. `strategy` defaults to `Recreate` rather than Kubernetes' default `RollingUpdate`, since GPU nodes typically expose exactly one `nvidia.com/gpu` and RollingUpdate's create-before-destroy behavior deadlocks — the new pod can never schedule while the old one still holds the only GPU.
 
 ## Installation
 
@@ -28,6 +28,7 @@ GPU scheduling (`runtimeClassName`, `nodeSelector`, `tolerations`, `resources`) 
 | `image.repository` | Container image repository | `m11s/comfyui` |
 | `image.tag` | Image tag; defaults to the chart appVersion | `""` |
 | `replicaCount` | Number of pod replicas | `1` |
+| `strategy` | Deployment update strategy | `{type: Recreate}` |
 | `service.type` | Kubernetes Service type | `ClusterIP` |
 | `service.port` | Port the Service listens on | `8188` |
 | `runtimeClassName` | Pod RuntimeClass; set to `nvidia` on clusters where GPU access requires it | `""` |
