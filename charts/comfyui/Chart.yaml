@@ -2,11 +2,11 @@ apiVersion: v2
 name: comfyui
 description: Helm chart for ComfyUI, a node-based Stable Diffusion / image-and-video generation UI, on GPU nodes
 type: application
-version: 0.1.0
+version: 0.1.1
 # renovate: datasource=docker depName=m11s/comfyui
 appVersion: "0.1.0"
 home: https://github.com/comfyanonymous/ComfyUI
-icon: https://raw.githubusercontent.com/comfyanonymous/ComfyUI/master/comfyui_screenshot.png
+icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/comfyui.svg
 sources:
   - https://github.com/comfyanonymous/ComfyUI
   - https://github.com/m11s-io/docker-images
@@ -29,3 +29,5 @@ annotations:
   artifacthub.io/changes: |-
     - kind: added
       description: "Initial chart release"
+    - kind: fixed
+      description: "Fix broken icon URL (previously pointed at a nonexistent screenshot path)"
