@@ -57,6 +57,56 @@ tests:
           path: spec.template.spec.volumes[0].persistentVolumeClaim.claimName
           value: my-existing-pvc
 
+  - it: mounts the NFS models PVC when nfsModels is enabled
+    set:
+      nfsModels.enabled: true
+    asserts:
+      - equal:
+          path: spec.template.spec.volumes[0].persistentVolumeClaim.claimName
+          value: RELEASE-NAME-comfyui-nfs-models
+      - equal:
+          path: spec.template.spec.containers[0].volumeMounts[0].mountPath
+          value: /mnt/nfs-models
+      - notExists:
+          path: spec.template.spec.volumes[1]
+
+  - it: uses existingClaim for the NFS models volume when set
+    set:
+      nfsModels.enabled: true
+      nfsModels.existingClaim: my-nfs-pvc
+    asserts:
+      - equal:
+          path: spec.template.spec.volumes[0].persistentVolumeClaim.claimName
+          value: my-nfs-pvc
+
+  - it: mounts an extra_model_paths.yaml configmap when nfsModels.categories is set
+    set:
+      nfsModels.enabled: true
+      nfsModels.categories:
+        loras: models/loras
+    asserts:
+      - equal:
+          path: spec.template.spec.volumes[1].configMap.name
+          value: RELEASE-NAME-comfyui-extra-model-paths
+      - equal:
+          path: spec.template.spec.containers[0].volumeMounts[1].mountPath
+          value: /app/extra_model_paths.yaml
+      - equal:
+          path: spec.template.spec.containers[0].volumeMounts[1].subPath
+          value: extra_model_paths.yaml
+
+  - it: mounts both the local and NFS models volumes when both are enabled
+    set:
+      persistence.enabled: true
+      nfsModels.enabled: true
+    asserts:
+      - equal:
+          path: spec.template.spec.volumes[0].persistentVolumeClaim.claimName
+          value: RELEASE-NAME-comfyui-models
+      - equal:
+          path: spec.template.spec.volumes[1].persistentVolumeClaim.claimName
+          value: RELEASE-NAME-comfyui-nfs-models
+
   - it: respects replicaCount
     set:
       replicaCount: 2

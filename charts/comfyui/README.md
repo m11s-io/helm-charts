@@ -38,6 +38,13 @@ GPU scheduling (`runtimeClassName`, `nodeSelector`, `tolerations`, `resources`) 
 | `persistence.accessMode` | PVC access mode | `ReadWriteOnce` |
 | `persistence.size` | PVC storage request | `200Gi` |
 | `persistence.mountPath` | Where the models volume is mounted | `/app/models` |
+| `nfsModels.enabled` | Create (or reuse) a second PVC for shared/NFS model categories | `false` |
+| `nfsModels.existingClaim` | Reuse an existing PVC instead of creating one | `""` |
+| `nfsModels.storageClassName` | StorageClass for the created PVC | `""` |
+| `nfsModels.accessMode` | PVC access mode | `ReadWriteMany` |
+| `nfsModels.size` | PVC storage request | `50Gi` |
+| `nfsModels.mountPath` | Where the NFS models volume is mounted | `/mnt/nfs-models` |
+| `nfsModels.categories` | ComfyUI folder_paths categories to wire in via a generated `extra_model_paths.yaml` | `{}` |
 | `httpRoute.enabled` | Enable a Gateway API HTTPRoute | `false` |
 | `httpRoute.parentRefs` | Gateways the HTTPRoute attaches to; required when enabled | `[]` |
 | `httpRoute.hostnames` | Hostnames the HTTPRoute matches | `[]` |
@@ -53,6 +60,27 @@ persistence:
   enabled: true
   storageClassName: local-path
   size: 200Gi
+```
+
+## Splitting model categories across storage
+
+`persistence` is meant for large, latency-critical files (`checkpoints`, `diffusion_models`, `text_encoders`, `vae`) that get loaded fully into GPU memory at workflow start — keep these on fast, node-local storage. `nfsModels` adds a second, optional PVC for categories that are small and swapped frequently (`loras`, `embeddings`, `controlnet`, `upscale_models`) and benefit from shared/NFS-backed storage instead. When `nfsModels.categories` is set, the chart renders a ConfigMap containing `extra_model_paths.yaml` and mounts it into the container; ComfyUI merges both roots at startup, so workflows reference files from either PVC the same way.
+
+```yaml
+persistence:
+  enabled: true
+  storageClassName: local-path
+  size: 200Gi
+
+nfsModels:
+  enabled: true
+  storageClassName: synology-nfs
+  size: 50Gi
+  categories:
+    loras: models/loras
+    embeddings: models/embeddings
+    controlnet: models/controlnet
+    upscale_models: models/upscale_models
 ```
 
 ## Probes

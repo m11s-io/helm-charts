@@ -1,0 +1,15 @@
+{{- if and .Values.nfsModels.enabled .Values.nfsModels.categories }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "comfyui.extraModelPathsConfigMapName" . }}
+  labels:
+    {{- include "comfyui.labels" . | nindent 4 }}
+data:
+  extra_model_paths.yaml: |
+    comfyui-nfs:
+      base_path: {{ .Values.nfsModels.mountPath }}
+      {{- range $category, $path := .Values.nfsModels.categories }}
+      {{ $category }}: {{ $path }}
+      {{- end }}
+{{- end }}

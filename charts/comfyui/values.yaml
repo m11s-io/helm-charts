@@ -100,6 +100,36 @@ persistence:
   # persistence.mountPath is where the models volume is mounted in the container
   mountPath: /app/models
 
+# nfsModels configures a second, optional PVC for model categories that
+# benefit from shared/NFS storage (small files, swapped frequently) rather
+# than the node-local persistence PVC above (large files, latency-critical
+# at workflow start). Listed categories are wired in via a generated
+# extra_model_paths.yaml, which ComfyUI merges with persistence.mountPath
+# at startup — see extra_model_paths.yaml.example in the ComfyUI source for
+# the canonical category list (loras, embeddings, controlnet, etc).
+nfsModels:
+  # nfsModels.enabled creates (or reuses) a second PVC and mounts it at nfsModels.mountPath
+  enabled: false
+  # nfsModels.existingClaim reuses an existing PVC instead of creating one
+  existingClaim: ""
+  # nfsModels.storageClassName is the StorageClass for the created PVC
+  storageClassName: ""
+  # nfsModels.accessMode is the PVC access mode
+  accessMode: ReadWriteMany
+  # nfsModels.size is the PVC storage request
+  size: 50Gi
+  # nfsModels.mountPath is where the NFS models volume is mounted in the container
+  mountPath: /mnt/nfs-models
+  # nfsModels.categories maps ComfyUI folder_paths category names to
+  # subdirectories under nfsModels.mountPath. Leave empty to mount the PVC
+  # without generating extra_model_paths.yaml.
+  categories: {}
+  # example:
+  #   loras: models/loras
+  #   embeddings: models/embeddings
+  #   controlnet: models/controlnet
+  #   upscale_models: models/upscale_models
+
 # environment sets extra environment variables on the comfyui container.
 # Do not set PYTORCH_CUDA_ALLOC_CONF: overriding it on the CUDA 13.0 +
 # torch 2.11 image crashes at import with a PyTorch internal assert

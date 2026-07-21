@@ -97,6 +97,32 @@
         "nameOverride": {
             "type": "string"
         },
+        "nfsModels": {
+            "type": "object",
+            "properties": {
+                "accessMode": {
+                    "type": "string"
+                },
+                "categories": {
+                    "type": "object"
+                },
+                "enabled": {
+                    "type": "boolean"
+                },
+                "existingClaim": {
+                    "type": "string"
+                },
+                "mountPath": {
+                    "type": "string"
+                },
+                "size": {
+                    "type": "string"
+                },
+                "storageClassName": {
+                    "type": "string"
+                }
+            }
+        },
         "nodeSelector": {
             "type": "object"
         },

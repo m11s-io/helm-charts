@@ -1,0 +1,17 @@
+{{- if and .Values.nfsModels.enabled (not .Values.nfsModels.existingClaim) }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "comfyui.nfsModelsClaimName" . }}
+  labels:
+    {{- include "comfyui.labels" . | nindent 4 }}
+spec:
+  accessModes:
+    - {{ .Values.nfsModels.accessMode }}
+  resources:
+    requests:
+      storage: {{ .Values.nfsModels.size | quote }}
+  {{- with .Values.nfsModels.storageClassName }}
+  storageClassName: {{ . | quote }}
+  {{- end }}
+{{- end }}

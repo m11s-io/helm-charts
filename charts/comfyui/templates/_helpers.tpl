@@ -55,3 +55,13 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- define "comfyui.modelsClaimName" -}}
 {{- .Values.persistence.existingClaim | default (printf "%s-models" (include "comfyui.fullname" .)) }}
 {{- end }}
+
+{{/* comfyui.nfsModelsClaimName returns the PVC name for the NFS models volume */}}
+{{- define "comfyui.nfsModelsClaimName" -}}
+{{- .Values.nfsModels.existingClaim | default (printf "%s-nfs-models" (include "comfyui.fullname" .)) }}
+{{- end }}
+
+{{/* comfyui.extraModelPathsConfigMapName returns the ConfigMap name for the generated extra_model_paths.yaml */}}
+{{- define "comfyui.extraModelPathsConfigMapName" -}}
+{{- printf "%s-extra-model-paths" (include "comfyui.fullname" .) }}
+{{- end }}

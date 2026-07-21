@@ -66,16 +66,40 @@ spec:
           {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          {{- if .Values.persistence.enabled }}
+          {{- if or .Values.persistence.enabled .Values.nfsModels.enabled }}
           volumeMounts:
+            {{- if .Values.persistence.enabled }}
             - name: models
               mountPath: {{ .Values.persistence.mountPath }}
+            {{- end }}
+            {{- if .Values.nfsModels.enabled }}
+            - name: nfs-models
+              mountPath: {{ .Values.nfsModels.mountPath }}
+            {{- if .Values.nfsModels.categories }}
+            - name: extra-model-paths
+              mountPath: /app/extra_model_paths.yaml
+              subPath: extra_model_paths.yaml
+              readOnly: true
+            {{- end }}
+            {{- end }}
           {{- end }}
-      {{- if .Values.persistence.enabled }}
+      {{- if or .Values.persistence.enabled .Values.nfsModels.enabled }}
       volumes:
+        {{- if .Values.persistence.enabled }}
         - name: models
           persistentVolumeClaim:
             claimName: {{ include "comfyui.modelsClaimName" . }}
+        {{- end }}
+        {{- if .Values.nfsModels.enabled }}
+        - name: nfs-models
+          persistentVolumeClaim:
+            claimName: {{ include "comfyui.nfsModelsClaimName" . }}
+        {{- if .Values.nfsModels.categories }}
+        - name: extra-model-paths
+          configMap:
+            name: {{ include "comfyui.extraModelPathsConfigMapName" . }}
+        {{- end }}
+        {{- end }}
       {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:

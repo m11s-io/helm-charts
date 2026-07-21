@@ -2,7 +2,7 @@ apiVersion: v2
 name: comfyui
 description: Helm chart for ComfyUI, a node-based, modular visual AI engine for GPU nodes
 type: application
-version: 0.3.1
+version: 0.4.0
 # renovate: datasource=docker depName=m11s/comfyui
 appVersion: "0.3.1"
 home: https://github.com/comfyanonymous/ComfyUI
@@ -28,6 +28,8 @@ annotations:
     - name: image source
       url: https://github.com/m11s-io/docker-images
   artifacthub.io/changes: |-
+    - kind: added
+      description: "Add optional nfsModels PVC for splitting model categories (e.g. loras, embeddings) onto shared/NFS storage, wired in via a generated extra_model_paths.yaml"
     - kind: fixed
       description: "Drop --disable-cuda-malloc (m11s/comfyui:0.3.1): the allocator was never the cause of the startup hang, which was actually a missing NodeLocal DNS Cache on the ai cluster's GPU nodes"
     - kind: fixed
