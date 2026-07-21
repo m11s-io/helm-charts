@@ -101,10 +101,10 @@ persistence:
   mountPath: /app/models
 
 # environment sets extra environment variables on the comfyui container.
-# PYTORCH_CUDA_ALLOC_CONF=backend:native disables torch's cudaMallocAsync
-# allocator, which hangs the server unresponsive on CUDA 13.0 + torch 2.11.
-environment:
-  PYTORCH_CUDA_ALLOC_CONF: "backend:native"
+# Do not set PYTORCH_CUDA_ALLOC_CONF: overriding it on the CUDA 13.0 +
+# torch 2.11 image crashes at import with a PyTorch internal assert
+# instead of the load-time default hang; needs an upstream image fix.
+environment: {}
 
 # runtimeClassName sets the pod's RuntimeClass; required on clusters where
 # NVIDIA GPU access isn't the container runtime default (e.g. set to "nvidia")
