@@ -4,6 +4,62 @@ entries:
   - annotations:
       artifacthub.io/category: ai-machine-learning
       artifacthub.io/changes: |-
+        - kind: changed
+          description: "Bump to m11s/comfyui:0.4.0, adding the ComfyUI-GGUF custom node for GGUF-quantized model loaders (UnetLoaderGGUF, DualCLIPLoaderGGUF) alongside the existing safetensors loaders"
+        - kind: fixed
+          description: "Default strategy.type to Recreate (0.4.0-0.4.1 had a broken null-clearing branch for an existing object's leftover rollingUpdate field; a one-time delete+recreate of the live Deployment is the actual fix for that transition)"
+        - kind: added
+          description: "Add optional nfsModels PVC for splitting model categories (e.g. loras, embeddings) onto shared/NFS storage, wired in via a generated extra_model_paths.yaml"
+        - kind: fixed
+          description: "Drop --disable-cuda-malloc (m11s/comfyui:0.3.1): the allocator was never the cause of the startup hang, which was actually a missing NodeLocal DNS Cache on the ai cluster's GPU nodes"
+        - kind: fixed
+          description: "Run with --disable-cuda-malloc (m11s/comfyui:0.3.0) to fix a startup hang caused by torch's cudaMallocAsync allocator on CUDA 13.0 + torch 2.11"
+        - kind: fixed
+          description: "Revert PYTORCH_CUDA_ALLOC_CONF override: it crashes the CUDA 13.0 + torch 2.11 image at import instead of fixing the startup hang"
+        - kind: changed
+          description: "Upgrade image to CUDA 13.0 runtime base (m11s/comfyui:0.2.0)"
+        - kind: added
+          description: "Initial chart release"
+        - kind: fixed
+          description: "Fix broken icon URL (previously pointed at a nonexistent screenshot path)"
+        - kind: changed
+          description: "Broaden description from image/video generation to visual AI, matching upstream's own framing"
+        - kind: added
+          description: "Set artifacthub.io/category to ai-machine-learning"
+      artifacthub.io/containersImages: |
+        - name: comfyui
+          image: m11s/comfyui:0.4.0
+      artifacthub.io/links: |
+        - name: source
+          url: https://github.com/comfyanonymous/ComfyUI
+        - name: image source
+          url: https://github.com/m11s-io/docker-images
+      artifacthub.io/signKey: |
+        fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
+        url: https://keys.openpgp.org/search?q=hello%40m11s.io
+    apiVersion: v2
+    appVersion: 0.4.0
+    created: "2026-07-23T07:13:04.227245164Z"
+    description: Helm chart for ComfyUI, a node-based, modular visual AI engine for
+      GPU nodes
+    digest: 266a508a193bd17a6db7a6bb820a86202aaaf431b103c53323ad6375f6c96106
+    home: https://github.com/comfyanonymous/ComfyUI
+    icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/comfyui.svg
+    maintainers:
+    - name: m11s
+      url: https://m11s.io
+    name: comfyui
+    sources:
+    - https://github.com/comfyanonymous/ComfyUI
+    - https://github.com/m11s-io/docker-images
+    - https://github.com/m11s-io/charts
+    type: application
+    urls:
+    - https://github.com/m11s-io/helm-charts/releases/download/comfyui-0.4.3/comfyui-0.4.3.tgz
+    version: 0.4.3
+  - annotations:
+      artifacthub.io/category: ai-machine-learning
+      artifacthub.io/changes: |-
         - kind: fixed
           description: "Default strategy.type to Recreate (0.4.0-0.4.1 had a broken null-clearing branch for an existing object's leftover rollingUpdate field; a one-time delete+recreate of the live Deployment is the actual fix for that transition)"
         - kind: added
@@ -1753,4 +1809,4 @@ entries:
     urls:
     - https://github.com/m11s-io/charts/releases/download/whoami-0.1.0/whoami-0.1.0.tgz
     version: 0.1.0
-generated: "2026-07-21T20:07:52.872620322Z"
+generated: "2026-07-23T07:13:04.227374136Z"
