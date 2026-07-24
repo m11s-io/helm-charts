@@ -52,7 +52,7 @@ entries:
     sources:
     - https://github.com/comfyanonymous/ComfyUI
     - https://github.com/m11s-io/docker-images
-    - https://github.com/m11s-io/charts
+    - https://github.com/m11s-io/helm-charts
     type: application
     urls:
     - https://github.com/m11s-io/helm-charts/releases/download/comfyui-0.4.3/comfyui-0.4.3.tgz
@@ -106,7 +106,7 @@ entries:
     sources:
     - https://github.com/comfyanonymous/ComfyUI
     - https://github.com/m11s-io/docker-images
-    - https://github.com/m11s-io/charts
+    - https://github.com/m11s-io/helm-charts
     type: application
     urls:
     - https://github.com/m11s-io/helm-charts/releases/download/comfyui-0.4.2/comfyui-0.4.2.tgz
@@ -160,7 +160,7 @@ entries:
     sources:
     - https://github.com/comfyanonymous/ComfyUI
     - https://github.com/m11s-io/docker-images
-    - https://github.com/m11s-io/charts
+    - https://github.com/m11s-io/helm-charts
     type: application
     urls:
     - https://github.com/m11s-io/helm-charts/releases/download/comfyui-0.4.1/comfyui-0.4.1.tgz
@@ -212,7 +212,7 @@ entries:
     sources:
     - https://github.com/comfyanonymous/ComfyUI
     - https://github.com/m11s-io/docker-images
-    - https://github.com/m11s-io/charts
+    - https://github.com/m11s-io/helm-charts
     type: application
     urls:
     - https://github.com/m11s-io/helm-charts/releases/download/comfyui-0.4.0/comfyui-0.4.0.tgz
@@ -262,7 +262,7 @@ entries:
     sources:
     - https://github.com/comfyanonymous/ComfyUI
     - https://github.com/m11s-io/docker-images
-    - https://github.com/m11s-io/charts
+    - https://github.com/m11s-io/helm-charts
     type: application
     urls:
     - https://github.com/m11s-io/helm-charts/releases/download/comfyui-0.3.1/comfyui-0.3.1.tgz
@@ -310,7 +310,7 @@ entries:
     sources:
     - https://github.com/comfyanonymous/ComfyUI
     - https://github.com/m11s-io/docker-images
-    - https://github.com/m11s-io/charts
+    - https://github.com/m11s-io/helm-charts
     type: application
     urls:
     - https://github.com/m11s-io/helm-charts/releases/download/comfyui-0.3.0/comfyui-0.3.0.tgz
@@ -356,7 +356,7 @@ entries:
     sources:
     - https://github.com/comfyanonymous/ComfyUI
     - https://github.com/m11s-io/docker-images
-    - https://github.com/m11s-io/charts
+    - https://github.com/m11s-io/helm-charts
     type: application
     urls:
     - https://github.com/m11s-io/helm-charts/releases/download/comfyui-0.2.2/comfyui-0.2.2.tgz
@@ -402,7 +402,7 @@ entries:
     sources:
     - https://github.com/comfyanonymous/ComfyUI
     - https://github.com/m11s-io/docker-images
-    - https://github.com/m11s-io/charts
+    - https://github.com/m11s-io/helm-charts
     type: application
     urls:
     - https://github.com/m11s-io/helm-charts/releases/download/comfyui-0.2.1/comfyui-0.2.1.tgz
@@ -446,7 +446,7 @@ entries:
     sources:
     - https://github.com/comfyanonymous/ComfyUI
     - https://github.com/m11s-io/docker-images
-    - https://github.com/m11s-io/charts
+    - https://github.com/m11s-io/helm-charts
     type: application
     urls:
     - https://github.com/m11s-io/helm-charts/releases/download/comfyui-0.2.0/comfyui-0.2.0.tgz
@@ -488,7 +488,7 @@ entries:
     sources:
     - https://github.com/comfyanonymous/ComfyUI
     - https://github.com/m11s-io/docker-images
-    - https://github.com/m11s-io/charts
+    - https://github.com/m11s-io/helm-charts
     type: application
     urls:
     - https://github.com/m11s-io/helm-charts/releases/download/comfyui-0.1.2/comfyui-0.1.2.tgz
@@ -525,7 +525,7 @@ entries:
     sources:
     - https://github.com/comfyanonymous/ComfyUI
     - https://github.com/m11s-io/docker-images
-    - https://github.com/m11s-io/charts
+    - https://github.com/m11s-io/helm-charts
     type: application
     urls:
     - https://github.com/m11s-io/helm-charts/releases/download/comfyui-0.1.1/comfyui-0.1.1.tgz
@@ -560,7 +560,7 @@ entries:
     sources:
     - https://github.com/comfyanonymous/ComfyUI
     - https://github.com/m11s-io/docker-images
-    - https://github.com/m11s-io/charts
+    - https://github.com/m11s-io/helm-charts
     type: application
     urls:
     - https://github.com/m11s-io/helm-charts/releases/download/comfyui-0.1.0/comfyui-0.1.0.tgz
@@ -1254,7 +1254,7 @@ entries:
     name: dub
     sources:
     - https://github.com/dubinc/dub
-    - https://github.com/m11s-io/charts
+    - https://github.com/m11s-io/helm-charts
     type: application
     urls:
     - https://github.com/m11s-io/helm-charts/releases/download/dub-0.1.2/dub-0.1.2.tgz
@@ -1287,7 +1287,7 @@ entries:
     name: dub
     sources:
     - https://github.com/dubinc/dub
-    - https://github.com/m11s-io/charts
+    - https://github.com/m11s-io/helm-charts
     type: application
     urls:
     - https://github.com/m11s-io/helm-charts/releases/download/dub-0.1.1/dub-0.1.1.tgz
@@ -1320,7 +1320,7 @@ entries:
     name: dub
     sources:
     - https://github.com/dubinc/dub
-    - https://github.com/m11s-io/charts
+    - https://github.com/m11s-io/helm-charts
     type: application
     urls:
     - https://github.com/m11s-io/helm-charts/releases/download/dub-0.1.0/dub-0.1.0.tgz
@@ -1343,10 +1343,10 @@ entries:
     name: fider
     sources:
     - https://github.com/getfider/fider
-    - https://github.com/m11s-io/charts
+    - https://github.com/m11s-io/helm-charts
     type: application
     urls:
-    - https://github.com/m11s-io/charts/releases/download/fider-0.3.7/fider-0.3.7.tgz
+    - https://github.com/m11s-io/helm-charts/releases/download/fider-0.3.7/fider-0.3.7.tgz
     version: 0.3.7
   - annotations:
       artifacthub.io/signKey: |
@@ -1365,10 +1365,10 @@ entries:
     name: fider
     sources:
     - https://github.com/getfider/fider
-    - https://github.com/m11s-io/charts
+    - https://github.com/m11s-io/helm-charts
     type: application
     urls:
-    - https://github.com/m11s-io/charts/releases/download/fider-0.3.6/fider-0.3.6.tgz
+    - https://github.com/m11s-io/helm-charts/releases/download/fider-0.3.6/fider-0.3.6.tgz
     version: 0.3.6
   - apiVersion: v2
     appVersion: v0.35.0
@@ -1383,10 +1383,10 @@ entries:
     name: fider
     sources:
     - https://github.com/getfider/fider
-    - https://github.com/m11s-io/charts
+    - https://github.com/m11s-io/helm-charts
     type: application
     urls:
-    - https://github.com/m11s-io/charts/releases/download/fider-0.3.4/fider-0.3.4.tgz
+    - https://github.com/m11s-io/helm-charts/releases/download/fider-0.3.4/fider-0.3.4.tgz
     version: 0.3.4
   - apiVersion: v2
     appVersion: v0.35.0
@@ -1401,10 +1401,10 @@ entries:
     name: fider
     sources:
     - https://github.com/getfider/fider
-    - https://github.com/m11s-io/charts
+    - https://github.com/m11s-io/helm-charts
     type: application
     urls:
-    - https://github.com/m11s-io/charts/releases/download/fider-0.3.3/fider-0.3.3.tgz
+    - https://github.com/m11s-io/helm-charts/releases/download/fider-0.3.3/fider-0.3.3.tgz
     version: 0.3.3
   - apiVersion: v2
     appVersion: v0.35.0
@@ -1419,10 +1419,10 @@ entries:
     name: fider
     sources:
     - https://github.com/getfider/fider
-    - https://github.com/m11s-io/charts
+    - https://github.com/m11s-io/helm-charts
     type: application
     urls:
-    - https://github.com/m11s-io/charts/releases/download/fider-0.3.2/fider-0.3.2.tgz
+    - https://github.com/m11s-io/helm-charts/releases/download/fider-0.3.2/fider-0.3.2.tgz
     version: 0.3.2
   - apiVersion: v2
     appVersion: v0.35.0-m11s.1
@@ -1433,7 +1433,7 @@ entries:
     name: fider
     type: application
     urls:
-    - https://github.com/m11s-io/charts/releases/download/fider-0.3.1/fider-0.3.1.tgz
+    - https://github.com/m11s-io/helm-charts/releases/download/fider-0.3.1/fider-0.3.1.tgz
     version: 0.3.1
   - apiVersion: v2
     appVersion: v0.35.0
@@ -1444,7 +1444,7 @@ entries:
     name: fider
     type: application
     urls:
-    - https://github.com/m11s-io/charts/releases/download/fider-0.3.0/fider-0.3.0.tgz
+    - https://github.com/m11s-io/helm-charts/releases/download/fider-0.3.0/fider-0.3.0.tgz
     version: 0.3.0
   - apiVersion: v2
     appVersion: v0.35.0
@@ -1455,7 +1455,7 @@ entries:
     name: fider
     type: application
     urls:
-    - https://github.com/m11s-io/charts/releases/download/fider-0.2.0/fider-0.2.0.tgz
+    - https://github.com/m11s-io/helm-charts/releases/download/fider-0.2.0/fider-0.2.0.tgz
     version: 0.2.0
   - apiVersion: v2
     appVersion: 0.22.0
@@ -1466,7 +1466,7 @@ entries:
     name: fider
     type: application
     urls:
-    - https://github.com/m11s-io/charts/releases/download/fider-0.1.0/fider-0.1.0.tgz
+    - https://github.com/m11s-io/helm-charts/releases/download/fider-0.1.0/fider-0.1.0.tgz
     version: 0.1.0
   shlink:
   - annotations:
@@ -1497,7 +1497,7 @@ entries:
     name: shlink
     sources:
     - https://github.com/shlinkio/shlink
-    - https://github.com/m11s-io/charts
+    - https://github.com/m11s-io/helm-charts
     type: application
     urls:
     - https://github.com/m11s-io/helm-charts/releases/download/shlink-0.1.5/shlink-0.1.5.tgz
@@ -1534,7 +1534,7 @@ entries:
     name: shlink
     sources:
     - https://github.com/shlinkio/shlink
-    - https://github.com/m11s-io/charts
+    - https://github.com/m11s-io/helm-charts
     type: application
     urls:
     - https://github.com/m11s-io/helm-charts/releases/download/shlink-0.1.4/shlink-0.1.4.tgz
@@ -1571,7 +1571,7 @@ entries:
     name: shlink
     sources:
     - https://github.com/shlinkio/shlink
-    - https://github.com/m11s-io/charts
+    - https://github.com/m11s-io/helm-charts
     type: application
     urls:
     - https://github.com/m11s-io/helm-charts/releases/download/shlink-0.1.3/shlink-0.1.3.tgz
@@ -1606,7 +1606,7 @@ entries:
     name: shlink
     sources:
     - https://github.com/shlinkio/shlink
-    - https://github.com/m11s-io/charts
+    - https://github.com/m11s-io/helm-charts
     type: application
     urls:
     - https://github.com/m11s-io/helm-charts/releases/download/shlink-0.1.2/shlink-0.1.2.tgz
@@ -1639,7 +1639,7 @@ entries:
     name: shlink
     sources:
     - https://github.com/shlinkio/shlink
-    - https://github.com/m11s-io/charts
+    - https://github.com/m11s-io/helm-charts
     type: application
     urls:
     - https://github.com/m11s-io/helm-charts/releases/download/shlink-0.1.1/shlink-0.1.1.tgz
@@ -1672,7 +1672,7 @@ entries:
     name: shlink
     sources:
     - https://github.com/shlinkio/shlink
-    - https://github.com/m11s-io/charts
+    - https://github.com/m11s-io/helm-charts
     type: application
     urls:
     - https://github.com/m11s-io/helm-charts/releases/download/shlink-0.1.0/shlink-0.1.0.tgz
@@ -1702,10 +1702,10 @@ entries:
     name: whoami
     sources:
     - https://github.com/traefik/whoami
-    - https://github.com/m11s-io/charts
+    - https://github.com/m11s-io/helm-charts
     type: application
     urls:
-    - https://github.com/m11s-io/charts/releases/download/whoami-0.1.6/whoami-0.1.6.tgz
+    - https://github.com/m11s-io/helm-charts/releases/download/whoami-0.1.6/whoami-0.1.6.tgz
     version: 0.1.6
   - annotations:
       artifacthub.io/containersImages: |
@@ -1731,10 +1731,10 @@ entries:
     name: whoami
     sources:
     - https://github.com/traefik/whoami
-    - https://github.com/m11s-io/charts
+    - https://github.com/m11s-io/helm-charts
     type: application
     urls:
-    - https://github.com/m11s-io/charts/releases/download/whoami-0.1.5/whoami-0.1.5.tgz
+    - https://github.com/m11s-io/helm-charts/releases/download/whoami-0.1.5/whoami-0.1.5.tgz
     version: 0.1.5
   - annotations:
       artifacthub.io/signKey: |
@@ -1754,10 +1754,10 @@ entries:
     name: whoami
     sources:
     - https://github.com/traefik/whoami
-    - https://github.com/m11s-io/charts
+    - https://github.com/m11s-io/helm-charts
     type: application
     urls:
-    - https://github.com/m11s-io/charts/releases/download/whoami-0.1.4/whoami-0.1.4.tgz
+    - https://github.com/m11s-io/helm-charts/releases/download/whoami-0.1.4/whoami-0.1.4.tgz
     version: 0.1.4
   - apiVersion: v2
     appVersion: v1.11.0
@@ -1773,10 +1773,10 @@ entries:
     name: whoami
     sources:
     - https://github.com/traefik/whoami
-    - https://github.com/m11s-io/charts
+    - https://github.com/m11s-io/helm-charts
     type: application
     urls:
-    - https://github.com/m11s-io/charts/releases/download/whoami-0.1.2/whoami-0.1.2.tgz
+    - https://github.com/m11s-io/helm-charts/releases/download/whoami-0.1.2/whoami-0.1.2.tgz
     version: 0.1.2
   - apiVersion: v2
     appVersion: v1.11.0
@@ -1792,10 +1792,10 @@ entries:
     name: whoami
     sources:
     - https://github.com/traefik/whoami
-    - https://github.com/m11s-io/charts
+    - https://github.com/m11s-io/helm-charts
     type: application
     urls:
-    - https://github.com/m11s-io/charts/releases/download/whoami-0.1.1/whoami-0.1.1.tgz
+    - https://github.com/m11s-io/helm-charts/releases/download/whoami-0.1.1/whoami-0.1.1.tgz
     version: 0.1.1
   - apiVersion: v2
     appVersion: v1.11.0
@@ -1807,6 +1807,6 @@ entries:
     name: whoami
     type: application
     urls:
-    - https://github.com/m11s-io/charts/releases/download/whoami-0.1.0/whoami-0.1.0.tgz
+    - https://github.com/m11s-io/helm-charts/releases/download/whoami-0.1.0/whoami-0.1.0.tgz
     version: 0.1.0
 generated: "2026-07-23T07:13:04.227374136Z"
