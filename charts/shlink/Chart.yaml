@@ -9,7 +9,7 @@ home: https://shlink.io
 icon: https://shlink.io/images/shlink-logo-blue.svg
 sources:
   - https://github.com/shlinkio/shlink
-  - https://github.com/m11s-io/charts
+  - https://github.com/m11s-io/helm-charts
 maintainers:
   - name: m11s
     url: https://m11s.io

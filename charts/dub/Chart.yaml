@@ -9,7 +9,7 @@ home: https://dub.co
 icon: https://assets.dub.co/brand/logo.svg
 sources:
   - https://github.com/dubinc/dub
-  - https://github.com/m11s-io/charts
+  - https://github.com/m11s-io/helm-charts
 maintainers:
   - name: m11s
     url: https://m11s.io

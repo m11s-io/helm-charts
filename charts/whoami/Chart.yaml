@@ -9,7 +9,7 @@ home: https://github.com/traefik/whoami
 icon: https://www.gravatar.com/avatar/27caca9bcd7fd7f7412ca5255c9ae2d0?s=120&r=g&d=404
 sources:
   - https://github.com/traefik/whoami
-  - https://github.com/m11s-io/charts
+  - https://github.com/m11s-io/helm-charts
 maintainers:
   - name: m11s
     url: https://m11s.io
