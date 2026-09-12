@@ -40,7 +40,7 @@ jobs:
 
       - name: Install helm-values-schema-json plugin
         # renovate: datasource=github-releases depName=losisin/helm-values-schema-json
-        run: helm plugin install https://github.com/losisin/helm-values-schema-json.git --version v2.3.1 --verify=false
+        run: helm plugin install https://github.com/losisin/helm-values-schema-json.git --version v2.6.0 --verify=false
 
       - name: Determine charts to process
         id: charts
