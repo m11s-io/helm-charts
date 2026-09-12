@@ -1,164 +1,264 @@
 {
-  "$schema": "https://json-schema.org/draft-07/schema#",
-  "type": "object",
-  "properties": {
-    "image": {
-      "type": "object",
-      "properties": {
-        "repository": { "type": "string", "minLength": 1 },
-        "tag": { "type": "string" },
-        "pullPolicy": {
-          "type": "string",
-          "enum": ["Always", "IfNotPresent", "Never"]
-        }
-      }
-    },
-    "replicaCount": { "type": "integer", "minimum": 0 },
-    "service": {
-      "type": "object",
-      "properties": {
-        "type": {
-          "type": "string",
-          "enum": ["ClusterIP", "NodePort", "LoadBalancer", "ExternalName"]
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "affinity": {
+            "type": "object"
         },
-        "port": { "type": "integer", "minimum": 1, "maximum": 65535 }
-      }
-    },
-    "decapCms": {
-      "type": "object",
-      "properties": {
-        "port": { "type": "integer", "minimum": 1, "maximum": 65535 },
-        "tenantsFile": { "type": "string", "minLength": 1 }
-      }
-    },
-    "tenants": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "required": ["slug", "gitlabRepo", "gitlabBranch", "gitlabAppId", "uploadUrl"],
-        "properties": {
-          "slug": {
-            "type": "string",
-            "minLength": 1,
-            "pattern": "^[a-z0-9][a-z0-9-]*$"
-          },
-          "gitlabRepo": { "type": "string", "minLength": 1 },
-          "gitlabBranch": { "type": "string", "minLength": 1 },
-          "gitlabAppId": { "type": "string", "minLength": 1 },
-          "uploadUrl": { "type": "string", "minLength": 1 },
-          "postsFolder": { "type": "string", "minLength": 1 },
-          "publishMode": {
-            "type": "string",
-            "enum": ["simple", "editorial_workflow"]
-          }
-        },
-        "additionalProperties": false
-      }
-    },
-    "existingTenantsConfigMap": { "type": "string" },
-    "existingTenantsPersistentVolumeClaim": { "type": "string" },
-    "httpRoute": {
-      "type": "object",
-      "properties": {
-        "enabled": { "type": "boolean" },
-        "annotations": {
-          "type": "object",
-          "additionalProperties": { "type": "string" }
-        },
-        "labels": {
-          "type": "object",
-          "additionalProperties": { "type": "string" }
-        },
-        "parentRefs": {
-          "type": "array",
-          "items": {
+        "decapCms": {
             "type": "object",
-            "required": ["name"],
             "properties": {
-              "group": { "type": "string" },
-              "kind": { "type": "string" },
-              "namespace": { "type": "string" },
-              "name": { "type": "string", "minLength": 1 },
-              "sectionName": { "type": "string" },
-              "port": { "type": "integer", "minimum": 1, "maximum": 65535 }
-            },
-            "additionalProperties": true
-          }
+                "port": {
+                    "type": "integer"
+                },
+                "tenantsFile": {
+                    "type": "string"
+                }
+            }
         },
-        "hostnames": {
-          "type": "array",
-          "items": { "type": "string", "minLength": 1 }
-        }
-      },
-      "if": {
-        "properties": {
-          "enabled": { "const": true }
-        }
-      },
-      "then": {
-        "required": ["parentRefs", "hostnames"],
-        "properties": {
-          "parentRefs": { "minItems": 1 },
-          "hostnames": { "minItems": 1 }
-        }
-      }
-    },
-    "resources": {
-      "type": "object",
-      "properties": {
-        "requests": { "type": "object" },
-        "limits": { "type": "object" }
-      }
-    },
-    "uploadProxy": {
-      "type": "object",
-      "properties": {
-        "enabled": { "type": "boolean" },
+        "existingTenantsConfigMap": {
+            "type": "string"
+        },
+        "existingTenantsPersistentVolumeClaim": {
+            "type": "string"
+        },
+        "fullnameOverride": {
+            "type": "string"
+        },
+        "httpRoute": {
+            "type": "object",
+            "properties": {
+                "annotations": {
+                    "type": "object"
+                },
+                "enabled": {
+                    "type": "boolean"
+                },
+                "hostnames": {
+                    "type": "array"
+                },
+                "labels": {
+                    "type": "object"
+                },
+                "parentRefs": {
+                    "type": "array"
+                }
+            }
+        },
         "image": {
-          "type": "object",
-          "properties": {
-            "repository": { "type": "string", "minLength": 1 },
-            "tag": { "type": "string", "minLength": 1 },
-            "pullPolicy": {
-              "type": "string",
-              "enum": ["Always", "IfNotPresent", "Never"]
-            }
-          }
-        },
-        "s3": {
-          "type": "object",
-          "properties": {
-            "endpoint": { "type": "string" },
-            "bucket": { "type": "string" },
-            "region": { "type": "string" },
-            "keyPrefix": { "type": "string" },
-            "publicUrl": { "type": "string" }
-          }
-        },
-        "existingSecret": { "type": "string" },
-        "resources": {
-          "type": "object",
-          "properties": {
-            "requests": { "type": "object" },
-            "limits": { "type": "object" }
-          }
-        }
-      },
-      "if": { "properties": { "enabled": { "const": true } } },
-      "then": {
-        "required": ["existingSecret"],
-        "properties": {
-          "existingSecret": { "minLength": 1 },
-          "s3": {
-            "required": ["endpoint", "bucket", "publicUrl"],
+            "type": "object",
             "properties": {
-              "endpoint": { "minLength": 1 },
-              "bucket": { "minLength": 1 },
-              "publicUrl": { "minLength": 1 }
+                "pullPolicy": {
+                    "type": "string"
+                },
+                "repository": {
+                    "type": "string"
+                },
+                "tag": {
+                    "type": "string"
+                }
             }
-          }
+        },
+        "nameOverride": {
+            "type": "string"
+        },
+        "nodeSelector": {
+            "type": "object"
+        },
+        "podAnnotations": {
+            "type": "object"
+        },
+        "podSecurityContext": {
+            "type": "object",
+            "properties": {
+                "fsGroup": {
+                    "type": "integer"
+                },
+                "runAsGroup": {
+                    "type": "integer"
+                },
+                "runAsNonRoot": {
+                    "type": "boolean"
+                },
+                "runAsUser": {
+                    "type": "integer"
+                }
+            }
+        },
+        "replicaCount": {
+            "type": "integer"
+        },
+        "resources": {
+            "type": "object",
+            "properties": {
+                "limits": {
+                    "type": "object",
+                    "properties": {
+                        "memory": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "requests": {
+                    "type": "object",
+                    "properties": {
+                        "cpu": {
+                            "type": "string"
+                        },
+                        "memory": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "securityContext": {
+            "type": "object",
+            "properties": {
+                "allowPrivilegeEscalation": {
+                    "type": "boolean"
+                },
+                "capabilities": {
+                    "type": "object",
+                    "properties": {
+                        "add": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "drop": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "readOnlyRootFilesystem": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "service": {
+            "type": "object",
+            "properties": {
+                "port": {
+                    "type": "integer"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "serviceAccount": {
+            "type": "object",
+            "properties": {
+                "annotations": {
+                    "type": "object"
+                },
+                "create": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "tenants": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "gitlabAppId": {
+                        "type": "string"
+                    },
+                    "gitlabBranch": {
+                        "type": "string"
+                    },
+                    "gitlabRepo": {
+                        "type": "string"
+                    },
+                    "slug": {
+                        "type": "string"
+                    },
+                    "uploadUrl": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "tolerations": {
+            "type": "array"
+        },
+        "uploadProxy": {
+            "type": "object",
+            "properties": {
+                "enabled": {
+                    "type": "boolean"
+                },
+                "existingSecret": {
+                    "type": "string"
+                },
+                "image": {
+                    "type": "object",
+                    "properties": {
+                        "pullPolicy": {
+                            "type": "string"
+                        },
+                        "repository": {
+                            "type": "string"
+                        },
+                        "tag": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "resources": {
+                    "type": "object",
+                    "properties": {
+                        "limits": {
+                            "type": "object",
+                            "properties": {
+                                "memory": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "requests": {
+                            "type": "object",
+                            "properties": {
+                                "cpu": {
+                                    "type": "string"
+                                },
+                                "memory": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "s3": {
+                    "type": "object",
+                    "properties": {
+                        "bucket": {
+                            "type": "string"
+                        },
+                        "endpoint": {
+                            "type": "string"
+                        },
+                        "keyPrefix": {
+                            "type": "string"
+                        },
+                        "publicUrl": {
+                            "type": "string"
+                        },
+                        "region": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
         }
-      }
     }
-  }
 }
