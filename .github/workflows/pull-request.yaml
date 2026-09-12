@@ -47,6 +47,12 @@ jobs:
         if: steps.list-changed.outputs.changed == 'true'
         run: helm plugin install https://github.com/helm-unittest/helm-unittest --verify=false
 
+      - name: Register chart dependency repositories
+        if: steps.list-changed.outputs.changed == 'true'
+        # Needed by both `ct lint` and `helm dependency build` below: Helm resolves
+        # subchart dependencies only against repos in repositories.yaml.
+        run: helm repo add valkey https://valkey.io/valkey-helm/
+
       - name: Lint changed charts
         if: steps.list-changed.outputs.changed == 'true'
         run: |
@@ -61,7 +67,7 @@ jobs:
             [[ -z "$chart" ]] && continue
             if [[ -d "$chart/tests" ]]; then
               echo "Running unittest for $chart"
-              # Self-sufficient rather than relying on ct lint having built deps.
+              # Needs the repo registered by the step above, not ct lint's side effects.
               [[ -f "$chart/Chart.lock" ]] && helm dependency build "$chart"
               helm unittest "$chart"
             else
