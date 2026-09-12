@@ -4,7 +4,7 @@ description: Helm chart for Shlink self-hosted URL shortener
 type: application
 version: 0.1.5
 # renovate: datasource=docker depName=shlinkio/shlink
-appVersion: "5.1.5"
+appVersion: "5.1.6"
 home: https://shlink.io
 icon: https://shlink.io/images/shlink-logo-blue.svg
 sources:
