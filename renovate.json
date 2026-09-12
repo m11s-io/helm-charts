@@ -65,6 +65,10 @@
       "labels": [
         "dependencies",
         "automerge"
+      ],
+      "description": "Automerge only CI tool pins. Chart appVersion and subchart bumps are deliberately excluded: chart-releaser publishes on Chart.yaml version and skips versions it has already released, so an automerged chart edit would land without ever being published",
+      "matchFileNames": [
+        ".github/workflows/**"
       ]
     },
     {
