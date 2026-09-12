@@ -2,9 +2,9 @@ apiVersion: v2
 name: fider
 description: Helm chart for Fider self-hosted user feedback platform
 type: application
-version: 0.3.7
+version: 0.3.8
 # renovate: datasource=docker depName=getfider/fider
-appVersion: "v0.35.0"
+appVersion: "v0.36.0"
 home: https://fider.io
 icon: https://raw.githubusercontent.com/getfider/fider/main/favicon.png
 sources:
@@ -19,7 +19,7 @@ annotations:
     url: https://keys.openpgp.org/search?q=hello%40m11s.io
   artifacthub.io/containersImages: |
     - name: fider
-      image: getfider/fider:v0.35.0
+      image: getfider/fider:v0.36.0
   artifacthub.io/links: |
     - name: source
       url: https://github.com/getfider/fider
