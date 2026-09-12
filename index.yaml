@@ -1784,6 +1784,38 @@ entries:
     version: 0.1.0
   whoami:
   - annotations:
+      artifacthub.io/changes: |-
+        - kind: added
+          description: "Add helm-unittest tests and ci values"
+      artifacthub.io/containersImages: |
+        - name: whoami
+          image: traefik/whoami:v1.12.0
+      artifacthub.io/links: |
+        - name: source
+          url: https://github.com/traefik/whoami
+      artifacthub.io/signKey: |
+        fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
+        url: https://keys.openpgp.org/search?q=hello%40m11s.io
+    apiVersion: v2
+    appVersion: v1.12.0
+    created: "2026-09-12T19:30:16.928455762Z"
+    description: Helm chart for whoami, a tiny HTTP server that prints OS info and
+      HTTP request details
+    digest: c61b2b1b8819d8c539c9169be08642348ae05f55990e4e097df8fcb1be70a9e9
+    home: https://github.com/traefik/whoami
+    icon: https://www.gravatar.com/avatar/27caca9bcd7fd7f7412ca5255c9ae2d0?s=120&r=g&d=404
+    maintainers:
+    - name: m11s
+      url: https://m11s.io
+    name: whoami
+    sources:
+    - https://github.com/traefik/whoami
+    - https://github.com/m11s-io/helm-charts
+    type: application
+    urls:
+    - https://github.com/m11s-io/helm-charts/releases/download/whoami-0.1.7/whoami-0.1.7.tgz
+    version: 0.1.7
+  - annotations:
       artifacthub.io/containersImages: |
         - name: whoami
           image: traefik/whoami:v1.11.0
@@ -1914,4 +1946,4 @@ entries:
     urls:
     - https://github.com/m11s-io/helm-charts/releases/download/whoami-0.1.0/whoami-0.1.0.tgz
     version: 0.1.0
-generated: "2026-09-12T19:28:21.909449699Z"
+generated: "2026-09-12T19:30:16.928548881Z"
