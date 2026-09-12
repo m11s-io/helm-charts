@@ -49,7 +49,10 @@ jobs:
 
       - name: Lint changed charts
         if: steps.list-changed.outputs.changed == 'true'
-        run: ct lint --target-branch ${{ github.event.repository.default_branch }} --validate-maintainers=false
+        run: |
+          ct lint --target-branch ${{ github.event.repository.default_branch }} \
+            --validate-maintainers=false \
+            --chart-repos valkey=https://valkey.io/valkey-helm/
 
       - name: Run helm unittest
         if: steps.list-changed.outputs.changed == 'true'
@@ -58,6 +61,8 @@ jobs:
             [[ -z "$chart" ]] && continue
             if [[ -d "$chart/tests" ]]; then
               echo "Running unittest for $chart"
+              # Self-sufficient rather than relying on ct lint having built deps.
+              [[ -f "$chart/Chart.lock" ]] && helm dependency build "$chart"
               helm unittest "$chart"
             else
               echo "No tests found for $chart, skipping"

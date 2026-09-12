@@ -1,0 +1,38 @@
+apiVersion: v2
+name: searxng
+description: Helm chart for SearXNG, a privacy-respecting metasearch engine
+type: application
+version: 0.1.0
+# renovate: datasource=docker depName=searxng/searxng
+appVersion: "2026.9.12-56b1f6454"
+home: https://searxng.org
+icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/searxng.svg
+sources:
+  - https://github.com/searxng/searxng
+  - https://github.com/m11s-io/helm-charts
+maintainers:
+  - name: m11s
+    url: https://m11s.io
+dependencies:
+  - name: valkey
+    version: ~0.12.0
+    repository: https://valkey.io/valkey-helm/
+    condition: valkey.enabled
+annotations:
+  artifacthub.io/category: networking
+  artifacthub.io/signKey: |
+    fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
+    url: https://keys.openpgp.org/search?q=hello%40m11s.io
+  artifacthub.io/containersImages: |
+    - name: searxng
+      image: searxng/searxng:2026.9.12-56b1f6454
+    - name: valkey
+      image: docker.io/valkey/valkey:9.1.2
+  artifacthub.io/links: |
+    - name: source
+      url: https://github.com/searxng/searxng
+    - name: docs
+      url: https://docs.searxng.org/
+  artifacthub.io/changes: |-
+    - kind: added
+      description: "Initial chart release"

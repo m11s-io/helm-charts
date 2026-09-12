@@ -1,0 +1,178 @@
+# image.repository is the container image repository
+image:
+  repository: searxng/searxng
+  # image.tag overrides the image tag; defaults to the chart appVersion
+  tag: ""
+  # image.pullPolicy is the image pull policy
+  pullPolicy: IfNotPresent
+
+# nameOverride overrides the chart name portion of the release name
+nameOverride: ""
+# fullnameOverride overrides the full release name used for all resources
+fullnameOverride: ""
+
+# replicaCount is the number of SearXNG pod replicas
+replicaCount: 1
+
+service:
+  # service.type is the Kubernetes Service type
+  type: ClusterIP
+  # service.port is the port the Service listens on
+  port: 8080
+
+searxng:
+  # searxng.baseURL is the public URL of this instance, used to build correct inbound links (required)
+  baseURL: ""
+  # searxng.instanceName is the instance name shown in the web UI
+  instanceName: SearXNG
+  # searxng.imageProxy proxies image results through SearXNG instead of hotlinking them
+  imageProxy: true
+  # searxng.publicInstance enables hardening features intended for publicly reachable instances
+  publicInstance: false
+  # searxng.method is the HTTP method used to submit searches; valid values: GET, POST
+  method: GET
+  # searxng.debug enables debug mode; never enable it on a public instance
+  debug: false
+  # searxng.formats lists the response formats the instance serves; valid values: html, csv, json, rss
+  formats:
+    - html
+  existingSecret:
+    # searxng.existingSecret.name is the name of the Secret holding the instance secret key (required)
+    name: ""
+    # searxng.existingSecret.secretKeyKey is the key within the Secret that holds SEARXNG_SECRET
+    secretKeyKey: secret-key
+  # searxng.settings is a free-form settings.yml fragment merged over the chart defaults.
+  # See https://docs.searxng.org/admin/settings/ for the full reference.
+  settings: {}
+
+limiter:
+  # limiter.enabled turns on the bot-detection rate limiter; requires a bundled or external Valkey
+  enabled: false
+  # limiter.ipv4Prefix is the number of leading bits compared when grouping IPv4 clients
+  ipv4Prefix: 32
+  # limiter.ipv6Prefix is the number of leading bits compared when grouping IPv6 clients
+  ipv6Prefix: 48
+  # limiter.trustedProxies lists CIDRs whose X-Forwarded-For/X-Real-IP headers are trusted.
+  # Set this to your gateway or ingress pod CIDR, otherwise every request appears to come
+  # from the proxy and the limiter blocks all traffic at once.
+  trustedProxies:
+    - 127.0.0.0/8
+    - ::1
+  # limiter.filterLinkLocal also rate limits link-local addresses
+  filterLinkLocal: false
+  # limiter.linkToken enables the link_token bot-detection method
+  linkToken: false
+  # limiter.passIP lists CIDRs granted unrestricted access
+  passIP: []
+  # limiter.blockIP lists CIDRs denied access outright
+  blockIP: []
+  # limiter.passSearxngOrg allows the SearXNG project's own monitoring IPs through
+  passSearxngOrg: true
+  # limiter.extraConfig is raw TOML appended verbatim to limiter.toml
+  extraConfig: ""
+
+valkey:
+  # valkey.enabled deploys the bundled Valkey subchart, required by limiter.enabled
+  enabled: false
+  # valkey.url is an external Valkey connection URL, used when valkey.enabled is false
+  # Value format: valkey://[[username]:[password]@]host:6379/0
+  url: ""
+  existingSecret:
+    # valkey.existingSecret.name is the name of a Secret holding the external Valkey URL
+    name: ""
+    # valkey.existingSecret.urlKey is the key within the Secret that holds SEARXNG_VALKEY_URL
+    urlKey: valkey-url
+
+persistence:
+  # persistence.enabled mounts a PersistentVolumeClaim at /var/cache/searxng for the favicon cache
+  enabled: false
+  # persistence.existingClaim uses an existing PVC instead of creating one
+  existingClaim: ""
+  # persistence.accessMode is the PVC access mode
+  accessMode: ReadWriteOnce
+  # persistence.size is the requested volume size
+  size: 1Gi
+  # persistence.storageClass is the StorageClass name; empty uses the cluster default
+  storageClass: ""
+
+httpRoute:
+  # httpRoute.enabled enables a Gateway API HTTPRoute resource
+  enabled: false
+  # httpRoute.annotations are extra annotations added to the HTTPRoute
+  annotations: {}
+  # httpRoute.labels are extra labels added to the HTTPRoute
+  labels: {}
+  # httpRoute.parentRefs is the list of Gateways this route attaches to
+  parentRefs: []
+  # httpRoute.hostnames is the list of hostnames this route matches
+  hostnames: []
+
+networkPolicy:
+  # networkPolicy.enabled enables a NetworkPolicy restricting pod ingress and egress
+  enabled: false
+  # networkPolicy.gatewayNamespace is the namespace of the Gateway allowed to reach SearXNG
+  gatewayNamespace: ""
+  # networkPolicy.valkeyPort is the Valkey port SearXNG may reach
+  valkeyPort: 6379
+  internetEgress:
+    # networkPolicy.internetEgress.enabled allows egress to the internet, required to query search engines
+    enabled: true
+    # networkPolicy.internetEgress.cidr is the allowed egress CIDR
+    cidr: 0.0.0.0/0
+    # networkPolicy.internetEgress.except lists CIDRs excluded from internet egress (private ranges)
+    except:
+      - 10.0.0.0/8
+      - 172.16.0.0/12
+      - 192.168.0.0/16
+  dnsEgress:
+    # networkPolicy.dnsEgress.enabled allows DNS lookups on TCP/UDP port 53
+    enabled: true
+
+serviceAccount:
+  # serviceAccount.create specifies whether a ServiceAccount should be created
+  create: true
+  # serviceAccount.name is the name of the ServiceAccount; defaults to fullname if empty
+  name: ""
+  # serviceAccount.annotations are extra annotations added to the ServiceAccount
+  annotations: {}
+
+# podSecurityContext sets the security context for the SearXNG pod.
+# 977 is the uid/gid the upstream image assigns to the searxng user.
+podSecurityContext:
+  fsGroup: 977
+
+# securityContext sets the security context for the SearXNG container
+securityContext:
+  capabilities:
+    drop:
+      - ALL
+  runAsNonRoot: true
+  runAsUser: 977
+  runAsGroup: 977
+  allowPrivilegeEscalation: false
+
+# resources sets the CPU and memory requests and limits for the SearXNG container
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    memory: 1Gi
+
+# env is a map of additional non-sensitive environment variables to inject
+env: {}
+
+# extraEnv is a list of additional env var objects (name/value or name/valueFrom) to inject
+extraEnv: []
+
+# extraEnvFrom is a list of envFrom sources (configMapRef, secretRef) to inject
+extraEnvFrom: []
+
+# podAnnotations are extra annotations added to the SearXNG pod
+podAnnotations: {}
+# nodeSelector constrains the SearXNG pod to nodes matching the given labels
+nodeSelector: {}
+# tolerations allow the SearXNG pod to be scheduled on tainted nodes
+tolerations: []
+# affinity sets pod affinity and anti-affinity rules
+affinity: {}
