@@ -39,7 +39,7 @@ jobs:
         uses: azure/setup-helm@9bc31f4ebc9c6b171d7bfbaa5d006ae7abdb4310 # v5.0.1
 
       - name: Install helm-values-schema-json plugin
-        run: helm plugin install https://github.com/losisin/helm-values-schema-json.git --version v2.3.1
+        run: helm plugin install https://github.com/losisin/helm-values-schema-json.git --version v2.3.1 --verify=false
 
       - name: Determine charts to process
         id: charts
