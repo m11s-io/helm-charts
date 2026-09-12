@@ -1,0 +1,45 @@
+{{- include "searxng.validateValkey" . }}
+{{- $base := dict
+      "use_default_settings" true
+      "general" (dict
+        "instance_name" .Values.searxng.instanceName
+        "debug" .Values.searxng.debug)
+      "search" (dict
+        "formats" .Values.searxng.formats)
+      "server" (dict
+        "limiter" .Values.limiter.enabled
+        "public_instance" .Values.searxng.publicInstance
+        "image_proxy" .Values.searxng.imageProxy
+        "method" .Values.searxng.method)
+-}}
+{{- $settings := mergeOverwrite $base (deepCopy .Values.searxng.settings) -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "searxng.fullname" . }}
+  labels:
+    {{- include "searxng.labels" . | nindent 4 }}
+data:
+  settings.yml: |
+    # Managed by the searxng Helm chart. Override values under searxng.settings.
+    {{- toYaml $settings | nindent 4 }}
+  {{- if .Values.limiter.enabled }}
+  limiter.toml: |
+    # Managed by the searxng Helm chart. Override values under limiter.*.
+    [botdetection]
+    ipv4_prefix = {{ .Values.limiter.ipv4Prefix | int }}
+    ipv6_prefix = {{ .Values.limiter.ipv6Prefix | int }}
+    trusted_proxies = {{ .Values.limiter.trustedProxies | toJson }}
+
+    [botdetection.ip_limit]
+    filter_link_local = {{ .Values.limiter.filterLinkLocal }}
+    link_token = {{ .Values.limiter.linkToken }}
+
+    [botdetection.ip_lists]
+    block_ip = {{ .Values.limiter.blockIP | toJson }}
+    pass_ip = {{ .Values.limiter.passIP | toJson }}
+    pass_searxng_org = {{ .Values.limiter.passSearxngOrg }}
+    {{- with .Values.limiter.extraConfig }}
+    {{ . | nindent 4 | trim }}
+    {{- end }}
+  {{- end }}

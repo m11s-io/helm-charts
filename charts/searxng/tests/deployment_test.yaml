@@ -1,0 +1,228 @@
+suite: searxng deployment
+# configmap.yaml is included because deployment.yaml's checksum/config
+# annotation renders it; assertions are scoped per test.
+templates:
+  - deployment.yaml
+  - configmap.yaml
+
+set:
+  searxng.baseURL: https://search.example.com
+  searxng.existingSecret.name: searxng-secret
+
+tests:
+  - it: renders with required values
+    template: deployment.yaml
+    asserts:
+      - isKind:
+          of: Deployment
+      - equal:
+          path: spec.replicas
+          value: 1
+      - matchRegex:
+          path: spec.template.spec.containers[0].image
+          pattern: "searxng/searxng:[0-9]{4}\\.[0-9]+\\.[0-9]+-[0-9a-f]+"
+
+  - it: serves on the container port the upstream image exposes
+    template: deployment.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].ports[0].containerPort
+          value: 8080
+      - equal:
+          path: spec.template.spec.containers[0].ports[0].name
+          value: http
+
+  - it: probes the upstream /healthz endpoint
+    template: deployment.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].startupProbe.httpGet.path
+          value: /healthz
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.httpGet.path
+          value: /healthz
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.httpGet.path
+          value: /healthz
+
+  - it: sets SEARXNG_BASE_URL from searxng.baseURL
+    template: deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: SEARXNG_BASE_URL
+            value: "https://search.example.com"
+
+  - it: sources SEARXNG_SECRET from the existing secret
+    template: deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: SEARXNG_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: searxng-secret
+                key: secret-key
+
+  - it: fails when searxng.baseURL is not set
+    template: deployment.yaml
+    set:
+      searxng.baseURL: null
+    asserts:
+      - failedTemplate:
+          errorMessage: searxng.baseURL is required
+
+  - it: fails when searxng.existingSecret.name is not set
+    template: deployment.yaml
+    set:
+      searxng.existingSecret.name: null
+    asserts:
+      - failedTemplate:
+          errorMessage: searxng.existingSecret.name is required
+
+  - it: omits SEARXNG_VALKEY_URL when no valkey is configured
+    template: deployment.yaml
+    asserts:
+      - notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: SEARXNG_VALKEY_URL
+          any: true
+
+  - it: points SEARXNG_VALKEY_URL at the bundled subchart service
+    template: deployment.yaml
+    set:
+      limiter.enabled: true
+      valkey.enabled: true
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: SEARXNG_VALKEY_URL
+            value: "valkey://RELEASE-NAME-valkey:6379/0"
+
+  - it: prefers an external valkey url over the bundled subchart
+    template: deployment.yaml
+    set:
+      limiter.enabled: true
+      valkey.url: valkey://external:6379/0
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: SEARXNG_VALKEY_URL
+            value: "valkey://external:6379/0"
+
+  - it: sources SEARXNG_VALKEY_URL from a secret when one is given
+    template: deployment.yaml
+    set:
+      limiter.enabled: true
+      valkey.existingSecret.name: valkey-creds
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: SEARXNG_VALKEY_URL
+            valueFrom:
+              secretKeyRef:
+                name: valkey-creds
+                key: valkey-url
+
+  - it: fails when the limiter is enabled without any valkey
+    template: deployment.yaml
+    set:
+      limiter.enabled: true
+    asserts:
+      - failedTemplate:
+          errorMessage: "limiter.enabled requires a Valkey database: set valkey.enabled=true to deploy the bundled subchart, or point valkey.url / valkey.existingSecret.name at an external instance"
+
+  - it: mounts config read-only and data writable
+    template: deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            name: config
+            mountPath: /etc/searxng
+            readOnly: true
+      - contains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            name: data
+            mountPath: /var/cache/searxng
+
+  - it: uses an emptyDir for data when persistence is disabled
+    template: deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: data
+            emptyDir: {}
+
+  - it: uses the generated claim when persistence is enabled
+    template: deployment.yaml
+    set:
+      persistence.enabled: true
+    asserts:
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: data
+            persistentVolumeClaim:
+              claimName: RELEASE-NAME-searxng
+
+  - it: uses an existing claim when one is given
+    template: deployment.yaml
+    set:
+      persistence.enabled: true
+      persistence.existingClaim: my-claim
+    asserts:
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: data
+            persistentVolumeClaim:
+              claimName: my-claim
+
+  - it: rolls the pod when the config changes
+    template: deployment.yaml
+    asserts:
+      - exists:
+          path: spec.template.metadata.annotations["checksum/config"]
+
+  - it: runs as the uid the upstream image assigns to searxng
+    template: deployment.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.runAsUser
+          value: 977
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.runAsNonRoot
+          value: true
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.capabilities.drop[0]
+          value: ALL
+      - equal:
+          path: spec.template.spec.securityContext.fsGroup
+          value: 977
+
+  - it: respects replicaCount
+    template: deployment.yaml
+    set:
+      replicaCount: 3
+    asserts:
+      - equal:
+          path: spec.replicas
+          value: 3
+
+  - it: uses fullnameOverride
+    template: deployment.yaml
+    set:
+      fullnameOverride: my-searxng
+    asserts:
+      - equal:
+          path: metadata.name
+          value: my-searxng

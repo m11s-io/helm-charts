@@ -1,0 +1,4 @@
+searxng:
+  baseURL: https://search.ci-test.example.com
+  existingSecret:
+    name: searxng-ci-test

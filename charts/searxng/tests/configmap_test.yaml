@@ -1,0 +1,136 @@
+suite: searxng configmap
+templates:
+  - configmap.yaml
+
+set:
+  searxng.baseURL: https://search.example.com
+  searxng.existingSecret.name: searxng-secret
+
+tests:
+  - it: builds settings.yml on top of the upstream defaults
+    asserts:
+      - isKind:
+          of: ConfigMap
+      - matchRegex:
+          path: data["settings.yml"]
+          pattern: "use_default_settings: true"
+
+  - it: sets the instance name and server options from typed values
+    set:
+      searxng.instanceName: My Search
+      searxng.imageProxy: false
+      searxng.method: POST
+      searxng.publicInstance: true
+    asserts:
+      - matchRegex:
+          path: data["settings.yml"]
+          pattern: "instance_name: My Search"
+      - matchRegex:
+          path: data["settings.yml"]
+          pattern: "image_proxy: false"
+      - matchRegex:
+          path: data["settings.yml"]
+          pattern: "method: POST"
+      - matchRegex:
+          path: data["settings.yml"]
+          pattern: "public_instance: true"
+
+  - it: merges searxng.settings over the chart defaults
+    set:
+      searxng.settings:
+        search:
+          safe_search: 2
+          autocomplete: google
+        ui:
+          default_theme: simple
+    asserts:
+      - matchRegex:
+          path: data["settings.yml"]
+          pattern: "safe_search: 2"
+      - matchRegex:
+          path: data["settings.yml"]
+          pattern: "autocomplete: google"
+      - matchRegex:
+          path: data["settings.yml"]
+          pattern: "default_theme: simple"
+
+  - it: lets searxng.settings override a chart default
+    set:
+      searxng.instanceName: FromValue
+      searxng.settings:
+        general:
+          instance_name: FromSettings
+    asserts:
+      - matchRegex:
+          path: data["settings.yml"]
+          pattern: "instance_name: FromSettings"
+
+  - it: reflects the limiter switch in settings.yml
+    asserts:
+      - matchRegex:
+          path: data["settings.yml"]
+          pattern: "limiter: false"
+
+  - it: omits limiter.toml when the limiter is disabled
+    asserts:
+      - notExists:
+          path: data["limiter.toml"]
+
+  - it: writes limiter.toml when the limiter is enabled
+    set:
+      limiter.enabled: true
+      valkey.enabled: true
+    asserts:
+      - exists:
+          path: data["limiter.toml"]
+      - matchRegex:
+          path: data["settings.yml"]
+          pattern: "limiter: true"
+
+  - it: keeps TOML prefixes as integers rather than floats
+    set:
+      limiter.enabled: true
+      valkey.enabled: true
+    asserts:
+      - matchRegex:
+          path: data["limiter.toml"]
+          pattern: "ipv4_prefix = 32\n"
+      - matchRegex:
+          path: data["limiter.toml"]
+          pattern: "ipv6_prefix = 48\n"
+
+  - it: renders trusted proxies as a TOML array
+    set:
+      limiter.enabled: true
+      valkey.enabled: true
+      limiter.trustedProxies:
+        - 10.42.0.0/16
+        - 10.43.0.0/16
+    asserts:
+      - matchRegex:
+          path: data["limiter.toml"]
+          pattern: 'trusted_proxies = \["10\.42\.0\.0/16","10\.43\.0\.0/16"\]'
+
+  - it: renders empty ip lists as empty TOML arrays
+    set:
+      limiter.enabled: true
+      valkey.enabled: true
+    asserts:
+      - matchRegex:
+          path: data["limiter.toml"]
+          pattern: "block_ip = \\[\\]"
+      - matchRegex:
+          path: data["limiter.toml"]
+          pattern: "pass_ip = \\[\\]"
+
+  - it: appends extraConfig verbatim
+    set:
+      limiter.enabled: true
+      valkey.enabled: true
+      limiter.extraConfig: |
+        [botdetection.ip_limit]
+        burst_max = 42
+    asserts:
+      - matchRegex:
+          path: data["limiter.toml"]
+          pattern: "burst_max = 42"

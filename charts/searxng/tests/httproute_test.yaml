@@ -1,0 +1,41 @@
+suite: searxng httproute
+templates:
+  - httproute.yaml
+
+set:
+  searxng.baseURL: https://search.example.com
+  searxng.existingSecret.name: searxng-secret
+
+tests:
+  - it: renders nothing when disabled
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: routes to the searxng service on the service port
+    set:
+      httpRoute.enabled: true
+      httpRoute.parentRefs:
+        - name: gateway
+          namespace: gateway
+      httpRoute.hostnames:
+        - search.example.com
+    asserts:
+      - isKind:
+          of: HTTPRoute
+      - equal:
+          path: spec.rules[0].backendRefs[0].name
+          value: RELEASE-NAME-searxng
+      - equal:
+          path: spec.rules[0].backendRefs[0].port
+          value: 8080
+      - equal:
+          path: spec.hostnames[0]
+          value: search.example.com
+
+  - it: fails when enabled without parentRefs
+    set:
+      httpRoute.enabled: true
+    asserts:
+      - failedTemplate:
+          errorMessage: httpRoute.parentRefs must contain at least one Gateway reference when httpRoute.enabled is true
