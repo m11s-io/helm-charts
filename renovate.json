@@ -80,6 +80,24 @@
         "dependencies",
         "major-update"
       ]
+    },
+    {
+      "description": "ct lint requires a chart version bump on every chart change and chart-releaser publishes on chart version, so an appVersion-only PR can never be released. The regex is deliberately unanchored: Renovate compiles matchStrings without the multiline flag, so ^ would mean start-of-file and never match. It still picks the chart version because apiVersion has a capital V and exec() without /g returns the first hit, which precedes any dependency version.",
+      "matchFileNames": [
+        "charts/**"
+      ],
+      "bumpVersions": [
+        {
+          "name": "chart version",
+          "filePatterns": [
+            "{{packageFileDir}}/Chart.{yaml,yml}"
+          ],
+          "matchStrings": [
+            "version:\\s(?<version>[^\\s]+)"
+          ],
+          "bumpType": "patch"
+        }
+      ]
     }
   ]
 }
