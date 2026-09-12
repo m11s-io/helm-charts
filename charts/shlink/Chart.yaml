@@ -2,7 +2,7 @@ apiVersion: v2
 name: shlink
 description: Helm chart for Shlink self-hosted URL shortener
 type: application
-version: 0.1.5
+version: 0.1.6
 # renovate: datasource=docker depName=shlinkio/shlink
 appVersion: "5.1.6"
 home: https://shlink.io
@@ -19,12 +19,14 @@ annotations:
     url: https://keys.openpgp.org/search?q=hello%40m11s.io
   artifacthub.io/containersImages: |
     - name: shlink
-      image: shlinkio/shlink:5.1.5
+      image: shlinkio/shlink:5.1.6
   artifacthub.io/links: |
     - name: source
       url: https://github.com/shlinkio/shlink
     - name: docs
       url: https://shlink.io/documentation/install-docker-image/
   artifacthub.io/changes: |-
+    - kind: changed
+      description: "Bump Shlink to 5.1.6"
     - kind: fixed
       description: "Fix service selector to exclude web-client pods (app.kubernetes.io/component: api)"
