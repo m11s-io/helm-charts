@@ -1,0 +1,85 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:best-practices"
+  ],
+  "timezone": "UTC",
+  "labels": [
+    "renovate"
+  ],
+  "prConcurrentLimit": 5,
+  "github-actions": {
+    "enabled": false
+  },
+  "helm-values": {
+    "enabled": false
+  },
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Chart appVersion annotated with Renovate hints",
+      "managerFilePatterns": [
+        "/^charts/.+/Chart\\.yaml$/"
+      ],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)\\s*\\nappVersion:\\s+\"(?<currentValue>[^\"]+)\""
+      ],
+      "datasourceTemplate": "{{{datasource}}}",
+      "depNameTemplate": "{{{depName}}}"
+    },
+    {
+      "customType": "regex",
+      "description": "Pinned CI tool versions annotated with Renovate hints",
+      "managerFilePatterns": [
+        "/^\\.github/workflows/.+\\.ya?ml$/"
+      ],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)\\s*\\n\\s*version:\\s+\"?(?<currentValue>[^\"\\s]+)\"?",
+        "# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)\\s*\\n[^\\n]*--version[= ](?<currentValue>[^\\s\"]+)"
+      ],
+      "datasourceTemplate": "{{{datasource}}}",
+      "depNameTemplate": "{{{depName}}}"
+    }
+  ],
+  "packageRules": [
+    {
+      "description": "appVersion and pinned CI tool versions are plain strings, not image references -- never append a digest",
+      "matchManagers": [
+        "custom.regex"
+      ],
+      "pinDigests": false
+    },
+    {
+      "description": "SearXNG publishes date-stamped tags with a git SHA suffix; the SHA is not orderable, so it is matched but excluded from comparison",
+      "matchPackageNames": [
+        "searxng/searxng"
+      ],
+      "versioning": "regex:^(?<major>\\d{4})\\.(?<minor>\\d+)\\.(?<patch>\\d+)(?:-.+)?$"
+    },
+    {
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
+      "automerge": true,
+      "labels": [
+        "dependencies",
+        "automerge"
+      ],
+      "description": "Automerge only CI tool pins. Chart appVersion and subchart bumps are deliberately excluded: chart-releaser publishes on Chart.yaml version and skips versions it has already released, so an automerged chart edit would land without ever being published",
+      "matchFileNames": [
+        ".github/workflows/**"
+      ]
+    },
+    {
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "automerge": false,
+      "labels": [
+        "dependencies",
+        "major-update"
+      ]
+    }
+  ]
+}
