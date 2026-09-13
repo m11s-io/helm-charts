@@ -1496,6 +1496,25 @@ entries:
     urls:
     - https://github.com/m11s-io/helm-charts/releases/download/fider-0.1.0/fider-0.1.0.tgz
     version: 0.1.0
+  ovms:
+  - annotations:
+      artifacthub.io/license: Apache-2.0
+    apiVersion: v2
+    appVersion: 2026.3.1
+    created: "2026-09-13T15:00:28.142971759Z"
+    description: Deploy OpenVINO Model Server for any supported task
+    digest: fd89e76fa1ac87e0726356fc31afe90fa05e9e4fd33db0b981cf1c4e69a842f4
+    home: https://github.com/m11s-io/helm-charts/tree/main/charts/ovms
+    maintainers:
+    - name: m11s
+      url: https://github.com/m11s-io
+    name: ovms
+    sources:
+    - https://github.com/openvinotoolkit/model_server
+    type: application
+    urls:
+    - https://github.com/m11s-io/helm-charts/releases/download/ovms-0.1.0/ovms-0.1.0.tgz
+    version: 0.1.0
   reranker:
   - annotations:
       artifacthub.io/license: Apache-2.0
@@ -1966,4 +1985,4 @@ entries:
     urls:
     - https://github.com/m11s-io/helm-charts/releases/download/whoami-0.1.0/whoami-0.1.0.tgz
     version: 0.1.0
-generated: "2026-09-13T12:26:28.434673Z"
+generated: "2026-09-13T15:00:28.143107254Z"
