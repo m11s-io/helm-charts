@@ -1,0 +1,27 @@
+suite: reranker service
+templates: [service.yaml]
+tests:
+  - it: exposes Jina and native OVMS APIs
+    asserts:
+      - equal:
+          path: spec.ports[0].name
+          value: jina-http
+      - equal:
+          path: spec.ports[0].port
+          value: 8080
+      - equal:
+          path: spec.ports[1].name
+          value: ovms-http
+      - equal:
+          path: spec.ports[1].port
+          value: 8000
+  - it: omits Jina when proxy is disabled
+    set:
+      proxy.enabled: false
+    asserts:
+      - lengthEqual:
+          path: spec.ports
+          count: 1
+      - equal:
+          path: spec.ports[0].name
+          value: ovms-http

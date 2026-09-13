@@ -1,0 +1,74 @@
+nameOverride: ""
+fullnameOverride: ""
+replicaCount: 1
+imagePullSecrets: []
+podAnnotations: {}
+podLabels: {}
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  runAsGroup: 1000
+  fsGroup: 1000
+  seccompProfile:
+    type: RuntimeDefault
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+model:
+  source: OpenVINO/Qwen3-Reranker-0.6B-seq-cls-fp16-ov
+  name: OpenVINO/Qwen3-Reranker-0.6B-seq-cls-fp16-ov
+  device: CPU
+  instruction: Given a web search query, retrieve relevant passages that answer the query
+
+runtime:
+  image:
+    repository: openvino/model_server
+    tag: 2026.3.1
+    pullPolicy: IfNotPresent
+  port: 8000
+  logLevel: INFO
+  resources:
+    requests: {cpu: "2", memory: 2Gi}
+    limits: {memory: 4Gi}
+  startupProbe: {periodSeconds: 10, failureThreshold: 180}
+  readinessProbe: {periodSeconds: 10, failureThreshold: 3}
+  livenessProbe: {initialDelaySeconds: 30, periodSeconds: 30, failureThreshold: 3}
+  securityContext:
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: true
+    capabilities: {drop: [ALL]}
+
+proxy:
+  enabled: true
+  image:
+    repository: m11s/rerank-proxy
+    tag: sha-d5241d5c66d9
+    pullPolicy: IfNotPresent
+  port: 8080
+  timeout: 30s
+  maxRequestBytes: 1048576
+  maxDocuments: 100
+  maxDocumentBytes: 65536
+  resources:
+    requests: {cpu: 20m, memory: 16Mi}
+    limits: {memory: 64Mi}
+  readinessProbe: {periodSeconds: 10, failureThreshold: 3}
+  livenessProbe: {periodSeconds: 30, failureThreshold: 3}
+  securityContext:
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: true
+    capabilities: {drop: [ALL]}
+
+persistence:
+  enabled: true
+  existingClaim: ""
+  nameOverride: ""
+  storageClass: ""
+  accessModes: [ReadWriteOnce]
+  size: 2Gi
+
+service:
+  type: ClusterIP
+  jina: {enabled: true, port: 8080}
+  ovms: {enabled: true, port: 8000}

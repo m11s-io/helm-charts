@@ -1,0 +1,121 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "reranker.fullname" . }}
+  labels:
+    {{- include "reranker.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      {{- include "reranker.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "reranker.selectorLabels" . | nindent 8 }}
+        {{- with .Values.podLabels }}{{ toYaml . | nindent 8 }}{{- end }}
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        {{- if .Values.proxy.enabled }}
+        - name: proxy
+          image: "{{ .Values.proxy.image.repository }}:{{ .Values.proxy.image.tag }}"
+          imagePullPolicy: {{ .Values.proxy.image.pullPolicy }}
+          env:
+            - name: UPSTREAM_URL
+              value: "http://127.0.0.1:{{ .Values.runtime.port }}/v3/rerank"
+            - name: UPSTREAM_MODEL
+              value: {{ .Values.model.name | quote }}
+            - name: RERANK_INSTRUCTION
+              value: {{ .Values.model.instruction | quote }}
+            - name: UPSTREAM_TIMEOUT
+              value: {{ .Values.proxy.timeout | quote }}
+            - name: MAX_REQUEST_BYTES
+              value: {{ .Values.proxy.maxRequestBytes | quote }}
+            - name: MAX_DOCUMENTS
+              value: {{ .Values.proxy.maxDocuments | quote }}
+            - name: MAX_DOCUMENT_BYTES
+              value: {{ .Values.proxy.maxDocumentBytes | quote }}
+          ports:
+            - {name: proxy-http, containerPort: {{ .Values.proxy.port }}, protocol: TCP}
+          readinessProbe:
+            httpGet: {path: /readyz, port: proxy-http}
+            {{- toYaml .Values.proxy.readinessProbe | nindent 12 }}
+          livenessProbe:
+            httpGet: {path: /healthz, port: proxy-http}
+            {{- toYaml .Values.proxy.livenessProbe | nindent 12 }}
+          resources:
+            {{- toYaml .Values.proxy.resources | nindent 12 }}
+          securityContext:
+            {{- toYaml .Values.proxy.securityContext | nindent 12 }}
+        {{- end }}
+        - name: ovms
+          image: "{{ .Values.runtime.image.repository }}:{{ .Values.runtime.image.tag }}"
+          imagePullPolicy: {{ .Values.runtime.image.pullPolicy }}
+          args:
+            - --source_model
+            - {{ .Values.model.source | quote }}
+            - --model_repository_path
+            - /models
+            - --model_name
+            - {{ .Values.model.name | quote }}
+            - --task
+            - rerank
+            - --target_device
+            - {{ .Values.model.device | quote }}
+            - --rest_port
+            - {{ .Values.runtime.port | quote }}
+            - --log_level
+            - {{ .Values.runtime.logLevel | quote }}
+          ports:
+            - {name: ovms-http, containerPort: {{ .Values.runtime.port }}, protocol: TCP}
+          startupProbe:
+            httpGet: {path: /v2/health/ready, port: ovms-http}
+            {{- toYaml .Values.runtime.startupProbe | nindent 12 }}
+          readinessProbe:
+            httpGet: {path: /v2/health/ready, port: ovms-http}
+            {{- toYaml .Values.runtime.readinessProbe | nindent 12 }}
+          livenessProbe:
+            httpGet: {path: /v2/health/live, port: ovms-http}
+            {{- toYaml .Values.runtime.livenessProbe | nindent 12 }}
+          resources:
+            {{- toYaml .Values.runtime.resources | nindent 12 }}
+          securityContext:
+            {{- toYaml .Values.runtime.securityContext | nindent 12 }}
+          volumeMounts:
+            - {name: model-cache, mountPath: /models}
+            - {name: tmp, mountPath: /tmp}
+      volumes:
+        - name: model-cache
+          {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ include "reranker.claimName" . }}
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
+        - name: tmp
+          emptyDir: {}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
