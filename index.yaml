@@ -1496,6 +1496,26 @@ entries:
     urls:
     - https://github.com/m11s-io/helm-charts/releases/download/fider-0.1.0/fider-0.1.0.tgz
     version: 0.1.0
+  reranker:
+  - annotations:
+      artifacthub.io/license: Apache-2.0
+    apiVersion: v2
+    appVersion: 2026.3.1
+    created: "2026-09-13T12:26:28.434567525Z"
+    description: Deploy an OVMS reranker with an optional Jina-compatible API
+    digest: 823ddb08d19e5e6585f55cf2531851c5d409b3925bccd57dc2c1cb24ea9392dd
+    home: https://github.com/m11s-io/helm-charts/tree/main/charts/reranker
+    maintainers:
+    - name: m11s
+      url: https://github.com/m11s-io
+    name: reranker
+    sources:
+    - https://github.com/m11s-io/rerank-proxy
+    - https://github.com/openvinotoolkit/model_server
+    type: application
+    urls:
+    - https://github.com/m11s-io/helm-charts/releases/download/reranker-0.1.0/reranker-0.1.0.tgz
+    version: 0.1.0
   searxng:
   - annotations:
       artifacthub.io/category: networking
@@ -1946,4 +1966,4 @@ entries:
     urls:
     - https://github.com/m11s-io/helm-charts/releases/download/whoami-0.1.0/whoami-0.1.0.tgz
     version: 0.1.0
-generated: "2026-09-12T19:30:16.928548881Z"
+generated: "2026-09-13T12:26:28.434673Z"
