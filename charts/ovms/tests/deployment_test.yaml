@@ -1,0 +1,93 @@
+suite: ovms deployment
+templates: [deployment.yaml]
+set:
+  model.source: OpenVINO/Qwen3-Reranker-0.6B-seq-cls-fp16-ov
+tests:
+  - it: deploys a single OVMS container
+    asserts:
+      - equal:
+          path: spec.strategy.type
+          value: Recreate
+      - equal:
+          path: spec.selector.matchLabels["app.kubernetes.io/instance"]
+          value: RELEASE-NAME
+      - equal:
+          path: spec.template.spec.automountServiceAccountToken
+          value: false
+      - lengthEqual:
+          path: spec.template.spec.containers
+          count: 1
+      - equal:
+          path: spec.template.spec.containers[0].name
+          value: ovms
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.readOnlyRootFilesystem
+          value: true
+  - it: passes the model and task through to OVMS
+    set:
+      model.task: embeddings
+      model.device: GPU
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--task"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: embeddings
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--target_device"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: GPU
+  - it: defaults the served model name to the source
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: OpenVINO/Qwen3-Reranker-0.6B-seq-cls-fp16-ov
+  - it: honours an explicit model name
+    set:
+      model.name: qwen3-reranker
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: qwen3-reranker
+  - it: appends extra arguments verbatim
+    set:
+      runtime.extraArgs: ["--max_num_seqs", "64"]
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "--max_num_seqs"
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: "64"
+  - it: refuses to render without a model source
+    set:
+      model.source: ""
+    asserts:
+      - failedTemplate:
+          errorMessage: "model.source is required"
+  - it: uses an ephemeral cache when persistence is disabled
+    set:
+      persistence.enabled: false
+    asserts:
+      - exists:
+          path: spec.template.spec.volumes[0].emptyDir
+  - it: uses an existing cache claim
+    set:
+      persistence.existingClaim: shared-models
+    asserts:
+      - equal:
+          path: spec.template.spec.volumes[0].persistentVolumeClaim.claimName
+          value: shared-models
+  - it: scopes the selector per release so co-located models do not collide
+    release:
+      name: embed
+    asserts:
+      - equal:
+          path: spec.selector.matchLabels["app.kubernetes.io/instance"]
+          value: embed
+      - equal:
+          path: spec.selector.matchLabels["app.kubernetes.io/name"]
+          value: ovms

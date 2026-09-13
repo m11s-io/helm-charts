@@ -16,10 +16,19 @@ tolerations: []
 affinity: {}
 
 model:
-  source: OpenVINO/Qwen3-Reranker-0.6B-seq-cls-fp16-ov
-  name: OpenVINO/Qwen3-Reranker-0.6B-seq-cls-fp16-ov
+  # HuggingFace repository id (OVMS pull mode) or a path inside the model repository.
+  source: ""
+  # Name clients address the model by. Defaults to model.source when empty.
+  name: ""
+  # OVMS task graph to build. Determines which /v3 endpoint is served:
+  #   rerank           -> /v3/rerank
+  #   embeddings       -> /v3/embeddings
+  #   text_generation  -> /v3/chat/completions, /v3/completions
+  # Other values are passed through verbatim; see the OVMS docs for the full list.
+  task: rerank
+  # OpenVINO target device: CPU, GPU (Intel iGPU/Arc), NPU, or AUTO/MULTI/HETERO.
+  # There is no CUDA target - OpenVINO does not run on NVIDIA GPUs.
   device: CPU
-  instruction: Given a web search query, retrieve relevant passages that answer the query
 
 runtime:
   image:
@@ -28,33 +37,16 @@ runtime:
     pullPolicy: IfNotPresent
   port: 8000
   logLevel: INFO
+  # Extra arguments appended verbatim, for task-specific tuning
+  # (e.g. ["--max_num_seqs", "64"]).
+  extraArgs: []
   resources:
     requests: {cpu: "2", memory: 2Gi}
     limits: {memory: 4Gi}
+  # Generous by default: a cold start downloads the model before serving.
   startupProbe: {periodSeconds: 10, failureThreshold: 180}
   readinessProbe: {periodSeconds: 10, failureThreshold: 3}
   livenessProbe: {initialDelaySeconds: 30, periodSeconds: 30, failureThreshold: 3}
-  securityContext:
-    allowPrivilegeEscalation: false
-    readOnlyRootFilesystem: true
-    capabilities: {drop: [ALL]}
-
-proxy:
-  enabled: true
-  image:
-    repository: m11s/rerank-proxy
-    tag: sha-d5241d5c66d9
-    pullPolicy: IfNotPresent
-  port: 8080
-  timeout: 30s
-  maxRequestBytes: 1048576
-  maxDocuments: 100
-  maxDocumentBytes: 65536
-  resources:
-    requests: {cpu: 20m, memory: 16Mi}
-    limits: {memory: 64Mi}
-  readinessProbe: {periodSeconds: 10, failureThreshold: 3}
-  livenessProbe: {periodSeconds: 30, failureThreshold: 3}
   securityContext:
     allowPrivilegeEscalation: false
     readOnlyRootFilesystem: true
@@ -70,5 +62,4 @@ persistence:
 
 service:
   type: ClusterIP
-  jina: {enabled: true, port: 8080}
-  ovms: {enabled: true, port: 8000}
+  port: 8000
