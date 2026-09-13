@@ -1,0 +1,16 @@
+OpenVINO Model Server is serving {{ .Values.model.name | default .Values.model.source }}
+for task "{{ .Values.model.task }}" on device {{ .Values.model.device }}.
+
+Base URL:
+  http://{{ include "ovms.fullname" . }}.{{ .Release.Namespace }}.svc:{{ .Values.service.port }}
+
+{{- if eq .Values.model.task "rerank" }}
+Endpoint: POST /v3/rerank
+Native OVMS clients must apply the model's own prompt template themselves.
+{{- else if eq .Values.model.task "embeddings" }}
+Endpoint: POST /v3/embeddings
+{{- else if eq .Values.model.task "text_generation" }}
+Endpoints: POST /v3/chat/completions, POST /v3/completions
+{{- end }}
+
+Health: GET /v2/health/ready, GET /v2/health/live

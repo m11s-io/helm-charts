@@ -1,0 +1,6 @@
+# model.source has no default: the chart is model-agnostic and fails fast
+# without one. This pins a small CPU reranker so lint has something to render.
+model:
+  source: OpenVINO/Qwen3-Reranker-0.6B-seq-cls-fp16-ov
+  task: rerank
+  device: CPU

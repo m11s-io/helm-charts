@@ -1,6 +1,8 @@
-suite: reranker persistence
+suite: ovms persistence
 templates:
   - pvc.yaml
+set:
+  model.source: OpenVINO/Qwen3-Reranker-0.6B-seq-cls-fp16-ov
 tests:
   - it: creates the configured cache claim
     set: {persistence.nameOverride: qwen-cache}

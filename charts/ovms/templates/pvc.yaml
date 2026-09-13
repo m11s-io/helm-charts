@@ -2,9 +2,9 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ include "reranker.claimName" . }}
+  name: {{ include "ovms.claimName" . }}
   labels:
-    {{- include "reranker.labels" . | nindent 4 }}
+    {{- include "ovms.labels" . | nindent 4 }}
 spec:
   accessModes:
     {{- toYaml .Values.persistence.accessModes | nindent 4 }}

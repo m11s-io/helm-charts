@@ -1,8 +1,0 @@
-Jina-compatible endpoint:
-{{- if and .Values.proxy.enabled .Values.service.jina.enabled }}
-  http://{{ include "reranker.fullname" . }}.{{ .Release.Namespace }}.svc:{{ .Values.service.jina.port }}/v1/rerank
-{{- else }} disabled{{- end }}
-Native OVMS endpoint:
-{{- if .Values.service.ovms.enabled }}
-  http://{{ include "reranker.fullname" . }}.{{ .Release.Namespace }}.svc:{{ .Values.service.ovms.port }}/v3/rerank
-{{- else }} disabled{{- end }}
