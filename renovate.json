@@ -8,9 +8,6 @@
     "renovate"
   ],
   "prConcurrentLimit": 5,
-  "github-actions": {
-    "enabled": false
-  },
   "helm-values": {
     "enabled": false
   },
