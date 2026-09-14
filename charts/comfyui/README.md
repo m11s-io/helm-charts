@@ -7,6 +7,8 @@
 
 This chart targets a single GPU-bound replica per release; it does not include HPA or PodDisruptionBudget resources. `strategy` defaults to `Recreate` rather than Kubernetes' default `RollingUpdate`, since GPU nodes typically expose exactly one `nvidia.com/gpu` and RollingUpdate's create-before-destroy behavior deadlocks — the new pod can never schedule while the old one still holds the only GPU.
 
+The chart's default `0.5.1-gguf` image uses Python 3.14 and includes the pinned ComfyUI-GGUF extension. Python 3.14 is supported by ComfyUI and PyTorch, but community custom nodes may not yet support it; use a custom `image.tag` if a required node needs an older interpreter.
+
 ## Installation
 
 ```bash
