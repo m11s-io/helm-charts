@@ -35,11 +35,6 @@ helm install fider m11s/fider -n fider --create-namespace -f values.yaml
 | `httpRoute.enabled` | Create a Gateway API HTTPRoute | `false` |
 | `httpRoute.parentRefs` | Gateways the HTTPRoute attaches to; required when enabled | `[]` |
 | `httpRoute.hostnames` | Hostnames the HTTPRoute matches | `[]` |
-| `networkPolicy.enabled` | Create a NetworkPolicy for Fider pods | `false` |
-| `networkPolicy.gatewayNamespace` | Gateway namespace allowed to reach Fider; empty allows same-namespace pods | `""` |
-| `networkPolicy.databaseNamespace` | Database namespace allowed for egress; empty allows same-namespace pods | `""` |
-| `networkPolicy.databasePort` | PostgreSQL port allowed for database egress | `5432` |
-| `networkPolicy.dnsEgress.enabled` | Allow DNS egress on TCP/UDP port 53 | `true` |
 | `resources.requests.cpu` | Default CPU request | `100m` |
 | `resources.requests.memory` | Default memory request | `128Mi` |
 | `resources.limits.memory` | Default memory limit | `512Mi` |
@@ -109,10 +104,6 @@ httpRoute:
 ```
 
 The chart creates only an HTTPRoute. It does not create a Gateway, because Gateways are usually owned by the cluster/platform layer. If the Gateway is in another namespace, its listener must allow routes from the Fider namespace with Gateway API `allowedRoutes`.
-
-## NetworkPolicy
-
-NetworkPolicy is disabled by default. When enabled, the policy allows ingress from `networkPolicy.gatewayNamespace`; if that value is empty, ingress is limited to pods in the release namespace. Egress allows DNS on TCP/UDP port 53, PostgreSQL on `networkPolicy.databasePort` to the same namespace or configured database namespace, and optional internet egress for OAuth, email, webhooks, and object storage.
 
 ## Source
 

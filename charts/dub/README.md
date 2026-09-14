@@ -121,18 +121,6 @@ httpRoute:
     - dub.example.com
 ```
 
-### NetworkPolicy
-
-NetworkPolicy is disabled by default. When enabled, it allows ingress from `networkPolicy.gatewayNamespace` and egress to the database namespace plus internet (Upstash, QStash, Tinybird, etc.).
-
-```yaml
-networkPolicy:
-  enabled: true
-  gatewayNamespace: gateway
-  databaseNamespace: dbs
-  databasePort: 3306
-```
-
 ## Parameters
 
 | Parameter | Description | Default |
@@ -143,9 +131,6 @@ networkPolicy:
 | `httpRoute.enabled` | Enable a Gateway API HTTPRoute | `false` |
 | `httpRoute.parentRefs` | Gateways the HTTPRoute attaches to; required when enabled | `[]` |
 | `httpRoute.hostnames` | Hostnames the HTTPRoute matches | `[]` |
-| `networkPolicy.enabled` | Enable a NetworkPolicy | `false` |
-| `networkPolicy.databasePort` | Database port allowed for egress | `3306` |
-| `networkPolicy.internetEgress.enabled` | Allow internet egress | `true` |
 | `resources.requests.cpu` | CPU request | `100m` |
 | `resources.requests.memory` | Memory request | `512Mi` |
 | `resources.limits.memory` | Memory limit | `1Gi` |
