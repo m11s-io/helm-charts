@@ -226,3 +226,10 @@ tests:
       - equal:
           path: metadata.name
           value: my-searxng
+
+  - it: does not automount the ServiceAccount token; SearXNG never calls the Kubernetes API
+    template: deployment.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.automountServiceAccountToken
+          value: false

@@ -2,7 +2,7 @@ apiVersion: v2
 name: searxng
 description: Helm chart for SearXNG, a privacy-respecting metasearch engine
 type: application
-version: 0.1.0
+version: 0.1.1
 # renovate: datasource=docker depName=searxng/searxng
 appVersion: "2026.9.12-56b1f6454"
 home: https://searxng.org
@@ -34,5 +34,7 @@ annotations:
     - name: docs
       url: https://docs.searxng.org/
   artifacthub.io/changes: |-
+    - kind: fixed
+      description: "Disable ServiceAccount token automount; SearXNG never calls the Kubernetes API"
     - kind: added
       description: "Initial chart release"
