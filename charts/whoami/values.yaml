@@ -28,24 +28,6 @@ whoami:
   # whoami.name sets a display name printed in responses; useful when running multiple instances
   name: ""
 
-networkPolicy:
-  # networkPolicy.enabled enables a default-deny NetworkPolicy for whoami pods
-  enabled: false
-  ingress:
-    gateway:
-      # networkPolicy.ingress.gateway.namespaceSelector identifies the Gateway namespace by labels
-      namespaceSelector: {}
-      # networkPolicy.ingress.gateway.podSelector identifies Gateway pods by labels
-      podSelector: {}
-  egress:
-    dns:
-      # networkPolicy.egress.dns.enabled allows DNS only when both selectors are configured
-      enabled: true
-      # networkPolicy.egress.dns.namespaceSelector identifies the DNS namespace by labels
-      namespaceSelector: {}
-      # networkPolicy.egress.dns.podSelector identifies DNS pods by labels
-      podSelector: {}
-
 httpRoute:
   # httpRoute.enabled enables a Gateway API HTTPRoute resource
   enabled: false

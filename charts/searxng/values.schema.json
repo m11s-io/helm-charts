@@ -96,8 +96,7 @@
             "type": "object",
             "properties": {
                 "enabled": {"type": "boolean"},
-                "ingress": {"type": "object", "properties": {"gateway": {"type": "object", "properties": {"namespaceSelector": {"type": "object"}, "podSelector": {"type": "object"}}}}},
-                "egress": {"type": "object", "properties": {"dns": {"type": "object", "properties": {"enabled": {"type": "boolean"}, "namespaceSelector": {"type": "object"}, "podSelector": {"type": "object"}}}, "valkey": {"type": "object", "properties": {"enabled": {"type": "boolean"}, "namespaceSelector": {"type": "object"}, "podSelector": {"type": "object"}, "port": {"type": "integer"}}}, "internet": {"type": "object", "properties": {"enabled": {"type": "boolean"}, "cidrs": {"type": "array", "items": {"type": "string"}}}}}}
+                "extraIngress": {"type": "array", "items": {"type": "object"}}
             }
         },
         "nodeSelector": {

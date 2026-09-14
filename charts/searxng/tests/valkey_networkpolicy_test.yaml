@@ -1,0 +1,49 @@
+suite: searxng bundled Valkey network policy
+templates:
+  - valkey-networkpolicy.yaml
+
+tests:
+  - it: renders nothing when bundled Valkey is disabled
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: renders nothing when policy is disabled
+    set:
+      valkey.enabled: true
+      networkPolicy.enabled: false
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: permits SearXNG and Valkey replication peers only by default
+    set:
+      valkey.enabled: true
+    asserts:
+      - isKind:
+          of: NetworkPolicy
+      - equal:
+          path: spec.podSelector.matchLabels["app.kubernetes.io/name"]
+          value: valkey
+      - equal:
+          path: spec.ingress[0].from[0].podSelector.matchLabels["app.kubernetes.io/name"]
+          value: searxng
+      - equal:
+          path: spec.ingress[1].from[0].podSelector.matchLabels["app.kubernetes.io/name"]
+          value: valkey
+
+  - it: appends explicit additional Valkey clients
+    set:
+      valkey.enabled: true
+      networkPolicy.extraIngress:
+        - from:
+            - podSelector:
+                matchLabels:
+                  app.kubernetes.io/name: metrics-scraper
+          ports:
+            - port: 9121
+              protocol: TCP
+    asserts:
+      - equal:
+          path: spec.ingress[2].from[0].podSelector.matchLabels["app.kubernetes.io/name"]
+          value: metrics-scraper

@@ -54,10 +54,6 @@ Key values:
 | `persistence.existingClaim` | `""` | Reuse an existing PVC |
 | `service.port` | `8000` | Service port for the REST API |
 
-## NetworkPolicy
-
-NetworkPolicy is disabled by default. When enabled, it isolates OVMS pods in both directions. Configure both `networkPolicy.ingress.gateway` selectors and, when DNS is needed, both `networkPolicy.egress.dns` selectors. Empty selectors emit no allow rule. Use `networkPolicy.egress.internet.cidrs` only for explicitly required external CIDRs.
-
 A cold start downloads the model before serving, so `runtime.startupProbe`
 allows up to 30 minutes by default. Set `persistence.enabled=false` for an
 ephemeral cache, at the cost of re-downloading on every restart.

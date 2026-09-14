@@ -88,10 +88,6 @@ nfsModels:
 
 ComfyUI's HTTP listener comes up before models finish loading, so probes use `/system_stats` rather than a bare TCP or `/` check. `startupProbe` is tuned for a multi-minute cold start (`failureThreshold: 30` at 10s intervals, ~5 minutes) so `livenessProbe` doesn't restart the pod mid model-load.
 
-## NetworkPolicy
-
-NetworkPolicy is disabled by default. When enabled, it isolates ComfyUI pods in both directions. Configure both `networkPolicy.ingress.gateway` selectors and, when DNS is needed, both `networkPolicy.egress.dns` selectors. Empty selectors emit no allow rule. Use `networkPolicy.egress.internet.cidrs` only for explicitly required external CIDRs.
-
 ## Example: GPU node with dedicated model storage
 
 ```yaml

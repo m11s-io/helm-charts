@@ -41,10 +41,6 @@ helm install whoami m11s/whoami -n whoami --create-namespace
 | `/bench` | Minimal response for benchmarking |
 | `/echo` | WebSocket echo |
 
-## NetworkPolicy
-
-NetworkPolicy is disabled by default. When enabled, it isolates whoami pods in both directions. Configure both `networkPolicy.ingress.gateway` selectors and, when DNS is needed, both `networkPolicy.egress.dns` selectors. Empty selectors emit no allow rule.
-
 ## Examples
 
 ### Basic install

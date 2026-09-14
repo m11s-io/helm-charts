@@ -108,36 +108,10 @@ httpRoute:
   hostnames: []
 
 networkPolicy:
-  # networkPolicy.enabled enables a default-deny NetworkPolicy for SearXNG pods
-  enabled: false
-  ingress:
-    gateway:
-      # networkPolicy.ingress.gateway.namespaceSelector identifies the Gateway namespace by labels
-      namespaceSelector: {}
-      # networkPolicy.ingress.gateway.podSelector identifies Gateway pods by labels
-      podSelector: {}
-  egress:
-    dns:
-      # networkPolicy.egress.dns.enabled allows DNS only when both selectors are configured
-      enabled: true
-      # networkPolicy.egress.dns.namespaceSelector identifies the DNS namespace by labels
-      namespaceSelector: {}
-      # networkPolicy.egress.dns.podSelector identifies DNS pods by labels
-      podSelector: {}
-    valkey:
-      # networkPolicy.egress.valkey.enabled allows Valkey only when both selectors are configured
-      enabled: true
-      # networkPolicy.egress.valkey.namespaceSelector identifies the Valkey namespace by labels
-      namespaceSelector: {}
-      # networkPolicy.egress.valkey.podSelector identifies Valkey pods by labels
-      podSelector: {}
-      # networkPolicy.egress.valkey.port is the Valkey port SearXNG may reach
-      port: 6379
-    internet:
-      # networkPolicy.egress.internet.enabled allows egress to the configured CIDRs
-      enabled: false
-      # networkPolicy.egress.internet.cidrs lists external CIDRs; an empty list allows none
-      cidrs: []
+  # networkPolicy.enabled protects bundled Valkey and defaults to enabled
+  enabled: true
+  # networkPolicy.extraIngress adds explicit clients to bundled Valkey
+  extraIngress: []
 
 serviceAccount:
   # serviceAccount.create specifies whether a ServiceAccount should be created

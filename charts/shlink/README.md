@@ -97,7 +97,3 @@ httpRoute:
   hostnames:
     - s.example.com
 ```
-
-## NetworkPolicy
-
-NetworkPolicy is disabled by default. When enabled, it isolates Shlink API pods in both directions. Configure both selectors for the Gateway, DNS, and database workloads. Empty selectors emit no allow rule; enable internet egress only with explicitly required CIDRs.
