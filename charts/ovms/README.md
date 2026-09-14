@@ -1,5 +1,8 @@
 # ovms
 
+[![Docker Pulls](https://img.shields.io/docker/pulls/openvino/model_server.svg)](https://hub.docker.com/r/openvino/model_server/)
+[![CI](https://img.shields.io/github/checks-status/openvinotoolkit/model_server/main?label=CI)](https://github.com/openvinotoolkit/model_server/actions)
+
 Deploys [OpenVINO Model Server](https://github.com/openvinotoolkit/model_server)
 (OVMS) for any task it supports. The model is pulled from HuggingFace at startup
 and cached on a PVC.
@@ -57,12 +60,6 @@ Key values:
 A cold start downloads the model before serving, so `runtime.startupProbe`
 allows up to 30 minutes by default. Set `persistence.enabled=false` for an
 ephemeral cache, at the cost of re-downloading on every restart.
-
-## Network policy
-
-This portable chart does not create a NetworkPolicy. Gateway, DNS, model-download, and
-client-allow rules are deployment-specific; define them in the platform policy layer (for
-example, a CiliumNetworkPolicy in the cluster registry).
 
 The chart does not create a Namespace.
 
