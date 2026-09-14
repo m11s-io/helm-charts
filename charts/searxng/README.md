@@ -61,8 +61,9 @@ searxng:
 | `httpRoute.parentRefs` | Gateways the HTTPRoute attaches to; required when enabled | `[]` |
 | `httpRoute.hostnames` | Hostnames the HTTPRoute matches | `[]` |
 | `networkPolicy.enabled` | Create a NetworkPolicy for SearXNG pods | `false` |
-| `networkPolicy.gatewayNamespace` | Gateway namespace allowed to reach SearXNG | `""` |
-| `networkPolicy.valkeyPort` | Valkey port allowed for egress | `6379` |
+| `networkPolicy.ingress.gateway` | Namespace and pod labels for the Gateway workload | `{}` |
+| `networkPolicy.egress.dns` | Namespace and pod labels for the DNS workload | `{}` |
+| `networkPolicy.egress.valkey` | Namespace and pod labels for the Valkey workload | `{}` |
 | `resources.requests.cpu` | Default CPU request | `100m` |
 | `resources.requests.memory` | Default memory request | `256Mi` |
 | `resources.limits.memory` | Default memory limit | `1Gi` |
@@ -213,10 +214,10 @@ default, which is fine — the cache rebuilds itself. Enable `persistence` to ke
 
 ## NetworkPolicy
 
-NetworkPolicy is disabled by default. When enabled, ingress is allowed from
-`networkPolicy.gatewayNamespace` (or, if empty, pods in the release namespace). Egress allows DNS
-on TCP/UDP 53, Valkey on `networkPolicy.valkeyPort` when a Valkey is configured, and internet
-egress — which SearXNG needs, since querying upstream search engines is its entire job.
+NetworkPolicy is disabled by default. When enabled, it isolates SearXNG pods in both directions.
+Allow rules require both namespace and pod selectors, so empty selectors emit no rule. Configure
+Gateway, DNS, and Valkey selectors for the deployed workloads. For upstream search engines, set
+`networkPolicy.egress.internet.enabled` and explicitly list the required CIDRs.
 
 ## Source
 

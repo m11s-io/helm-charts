@@ -5,7 +5,7 @@
 
 [ComfyUI](https://github.com/comfyanonymous/ComfyUI) is a modular, node-based visual AI engine — image, video, audio, and 3D generation, not just Stable Diffusion. Upstream publishes no official container image, so this chart deploys [m11s/comfyui](https://github.com/m11s-io/docker-images/tree/main/comfyui), built from ComfyUI source on a CUDA runtime base.
 
-This chart targets a single GPU-bound replica per release; it does not include HPA, PodDisruptionBudget, or NetworkPolicy resources. `strategy` defaults to `Recreate` rather than Kubernetes' default `RollingUpdate`, since GPU nodes typically expose exactly one `nvidia.com/gpu` and RollingUpdate's create-before-destroy behavior deadlocks — the new pod can never schedule while the old one still holds the only GPU.
+This chart targets a single GPU-bound replica per release; it does not include HPA or PodDisruptionBudget resources. `strategy` defaults to `Recreate` rather than Kubernetes' default `RollingUpdate`, since GPU nodes typically expose exactly one `nvidia.com/gpu` and RollingUpdate's create-before-destroy behavior deadlocks — the new pod can never schedule while the old one still holds the only GPU.
 
 ## Installation
 
@@ -87,6 +87,10 @@ nfsModels:
 ## Probes
 
 ComfyUI's HTTP listener comes up before models finish loading, so probes use `/system_stats` rather than a bare TCP or `/` check. `startupProbe` is tuned for a multi-minute cold start (`failureThreshold: 30` at 10s intervals, ~5 minutes) so `livenessProbe` doesn't restart the pod mid model-load.
+
+## NetworkPolicy
+
+NetworkPolicy is disabled by default. When enabled, it isolates ComfyUI pods in both directions. Configure both `networkPolicy.ingress.gateway` selectors and, when DNS is needed, both `networkPolicy.egress.dns` selectors. Empty selectors emit no allow rule. Use `networkPolicy.egress.internet.cidrs` only for explicitly required external CIDRs.
 
 ## Example: GPU node with dedicated model storage
 

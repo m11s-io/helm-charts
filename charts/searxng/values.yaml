@@ -108,25 +108,36 @@ httpRoute:
   hostnames: []
 
 networkPolicy:
-  # networkPolicy.enabled enables a NetworkPolicy restricting pod ingress and egress
+  # networkPolicy.enabled enables a default-deny NetworkPolicy for SearXNG pods
   enabled: false
-  # networkPolicy.gatewayNamespace is the namespace of the Gateway allowed to reach SearXNG
-  gatewayNamespace: ""
-  # networkPolicy.valkeyPort is the Valkey port SearXNG may reach
-  valkeyPort: 6379
-  internetEgress:
-    # networkPolicy.internetEgress.enabled allows egress to the internet, required to query search engines
-    enabled: true
-    # networkPolicy.internetEgress.cidr is the allowed egress CIDR
-    cidr: 0.0.0.0/0
-    # networkPolicy.internetEgress.except lists CIDRs excluded from internet egress (private ranges)
-    except:
-      - 10.0.0.0/8
-      - 172.16.0.0/12
-      - 192.168.0.0/16
-  dnsEgress:
-    # networkPolicy.dnsEgress.enabled allows DNS lookups on TCP/UDP port 53
-    enabled: true
+  ingress:
+    gateway:
+      # networkPolicy.ingress.gateway.namespaceSelector identifies the Gateway namespace by labels
+      namespaceSelector: {}
+      # networkPolicy.ingress.gateway.podSelector identifies Gateway pods by labels
+      podSelector: {}
+  egress:
+    dns:
+      # networkPolicy.egress.dns.enabled allows DNS only when both selectors are configured
+      enabled: true
+      # networkPolicy.egress.dns.namespaceSelector identifies the DNS namespace by labels
+      namespaceSelector: {}
+      # networkPolicy.egress.dns.podSelector identifies DNS pods by labels
+      podSelector: {}
+    valkey:
+      # networkPolicy.egress.valkey.enabled allows Valkey only when both selectors are configured
+      enabled: true
+      # networkPolicy.egress.valkey.namespaceSelector identifies the Valkey namespace by labels
+      namespaceSelector: {}
+      # networkPolicy.egress.valkey.podSelector identifies Valkey pods by labels
+      podSelector: {}
+      # networkPolicy.egress.valkey.port is the Valkey port SearXNG may reach
+      port: 6379
+    internet:
+      # networkPolicy.egress.internet.enabled allows egress to the configured CIDRs
+      enabled: false
+      # networkPolicy.egress.internet.cidrs lists external CIDRs; an empty list allows none
+      cidrs: []
 
 serviceAccount:
   # serviceAccount.create specifies whether a ServiceAccount should be created

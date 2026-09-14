@@ -2,13 +2,13 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: {{ include "shlink.fullname" . }}
+  name: {{ include "whoami.fullname" . }}
   labels:
-    {{- include "shlink.labels" . | nindent 4 }}
+    {{- include "whoami.labels" . | nindent 4 }}
 spec:
   podSelector:
     matchLabels:
-      {{- include "shlink.selectorLabels" . | nindent 6 }}
+      {{- include "whoami.selectorLabels" . | nindent 6 }}
   policyTypes:
     - Ingress
     - Egress
@@ -21,7 +21,7 @@ spec:
           podSelector:
             matchLabels: {{- toYaml $gateway.podSelector | nindent 14 }}
       ports:
-        - port: 8080
+        - port: {{ .Values.service.port }}
           protocol: TCP
     {{- end }}
   egress:
@@ -37,24 +37,5 @@ spec:
           protocol: UDP
         - port: 53
           protocol: TCP
-    {{- end }}
-    {{- $database := .Values.networkPolicy.egress.database }}
-    {{- if and (ne .Values.db.driver "sqlite") $database.enabled (not (empty $database.namespaceSelector)) (not (empty $database.podSelector)) }}
-    - to:
-        - namespaceSelector:
-            matchLabels: {{- toYaml $database.namespaceSelector | nindent 14 }}
-          podSelector:
-            matchLabels: {{- toYaml $database.podSelector | nindent 14 }}
-      ports:
-        - port: {{ $database.port }}
-          protocol: TCP
-    {{- end }}
-    {{- $internet := .Values.networkPolicy.egress.internet }}
-    {{- if and $internet.enabled (not (empty $internet.cidrs)) }}
-    - to:
-        {{- range $internet.cidrs }}
-        - ipBlock:
-            cidr: {{ . | quote }}
-        {{- end }}
     {{- end }}
 {{- end }}

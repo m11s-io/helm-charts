@@ -13,39 +13,48 @@ spec:
     - Ingress
     - Egress
   ingress:
+    {{- $gateway := .Values.networkPolicy.ingress.gateway }}
+    {{- if and (not (empty $gateway.namespaceSelector)) (not (empty $gateway.podSelector)) }}
     - from:
-        {{- if .Values.networkPolicy.gatewayNamespace }}
         - namespaceSelector:
-            matchLabels:
-              kubernetes.io/metadata.name: {{ .Values.networkPolicy.gatewayNamespace }}
-        {{- else }}
-        - podSelector: {}
-        {{- end }}
+            matchLabels: {{- toYaml $gateway.namespaceSelector | nindent 14 }}
+          podSelector:
+            matchLabels: {{- toYaml $gateway.podSelector | nindent 14 }}
       ports:
         - port: 8080
           protocol: TCP
+    {{- end }}
   egress:
-    {{- if .Values.networkPolicy.dnsEgress.enabled }}
-    - ports:
+    {{- $dns := .Values.networkPolicy.egress.dns }}
+    {{- if and $dns.enabled (not (empty $dns.namespaceSelector)) (not (empty $dns.podSelector)) }}
+    - to:
+        - namespaceSelector:
+            matchLabels: {{- toYaml $dns.namespaceSelector | nindent 14 }}
+          podSelector:
+            matchLabels: {{- toYaml $dns.podSelector | nindent 14 }}
+      ports:
         - port: 53
           protocol: UDP
         - port: 53
           protocol: TCP
     {{- end }}
-    {{- if or .Values.valkey.enabled .Values.valkey.url .Values.valkey.existingSecret.name }}
+    {{- $valkey := .Values.networkPolicy.egress.valkey }}
+    {{- if and $valkey.enabled (not (empty $valkey.namespaceSelector)) (not (empty $valkey.podSelector)) }}
     - to:
-        - podSelector: {}
+        - namespaceSelector:
+            matchLabels: {{- toYaml $valkey.namespaceSelector | nindent 14 }}
+          podSelector:
+            matchLabels: {{- toYaml $valkey.podSelector | nindent 14 }}
       ports:
-        - port: {{ .Values.networkPolicy.valkeyPort }}
+        - port: {{ $valkey.port }}
           protocol: TCP
     {{- end }}
-    {{- if .Values.networkPolicy.internetEgress.enabled }}
+    {{- $internet := .Values.networkPolicy.egress.internet }}
+    {{- if and $internet.enabled (not (empty $internet.cidrs)) }}
     - to:
+        {{- range $internet.cidrs }}
         - ipBlock:
-            cidr: {{ .Values.networkPolicy.internetEgress.cidr }}
-            {{- with .Values.networkPolicy.internetEgress.except }}
-            except:
-              {{- toYaml . | nindent 14 }}
-            {{- end }}
+            cidr: {{ . | quote }}
+        {{- end }}
     {{- end }}
 {{- end }}

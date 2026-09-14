@@ -31,6 +31,14 @@
         "nameOverride": {
             "type": "string"
         },
+        "networkPolicy": {
+            "type": "object",
+            "properties": {
+                "enabled": {"type": "boolean"},
+                "ingress": {"type": "object", "properties": {"gateway": {"type": "object", "properties": {"namespaceSelector": {"type": "object"}, "podSelector": {"type": "object"}}}}},
+                "egress": {"type": "object", "properties": {"dns": {"type": "object", "properties": {"enabled": {"type": "boolean"}, "namespaceSelector": {"type": "object"}, "podSelector": {"type": "object"}}}, "internet": {"type": "object", "properties": {"enabled": {"type": "boolean"}, "cidrs": {"type": "array", "items": {"type": "string"}}}}}}
+            }
+        },
         "nodeSelector": {
             "type": "object"
         },

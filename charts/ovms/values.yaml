@@ -63,3 +63,26 @@ persistence:
 service:
   type: ClusterIP
   port: 8000
+
+networkPolicy:
+  # networkPolicy.enabled enables a default-deny NetworkPolicy for OVMS pods
+  enabled: false
+  ingress:
+    gateway:
+      # networkPolicy.ingress.gateway.namespaceSelector identifies the Gateway namespace by labels
+      namespaceSelector: {}
+      # networkPolicy.ingress.gateway.podSelector identifies Gateway pods by labels
+      podSelector: {}
+  egress:
+    dns:
+      # networkPolicy.egress.dns.enabled allows DNS only when both selectors are configured
+      enabled: true
+      # networkPolicy.egress.dns.namespaceSelector identifies the DNS namespace by labels
+      namespaceSelector: {}
+      # networkPolicy.egress.dns.podSelector identifies DNS pods by labels
+      podSelector: {}
+    internet:
+      # networkPolicy.egress.internet.enabled allows egress to the configured CIDRs
+      enabled: false
+      # networkPolicy.egress.internet.cidrs lists external CIDRs; an empty list allows none
+      cidrs: []

@@ -238,27 +238,36 @@ httpRoute:
   hostnames: []
 
 networkPolicy:
-  # networkPolicy.enabled enables a NetworkPolicy restricting pod ingress and egress
+  # networkPolicy.enabled enables a default-deny NetworkPolicy for Shlink API pods
   enabled: false
-  # networkPolicy.gatewayNamespace is the namespace of the Gateway allowed to reach Shlink
-  gatewayNamespace: ""
-  # networkPolicy.databaseNamespace is the namespace of the database pods Shlink may reach
-  databaseNamespace: ""
-  # networkPolicy.databasePort is the database port Shlink may reach
-  databasePort: 5432
-  internetEgress:
-    # networkPolicy.internetEgress.enabled allows egress to the internet (GeoLite download, Mercure, etc.)
-    enabled: true
-    # networkPolicy.internetEgress.cidr is the allowed egress CIDR
-    cidr: 0.0.0.0/0
-    # networkPolicy.internetEgress.except lists CIDRs excluded from internet egress (private ranges)
-    except:
-      - 10.0.0.0/8
-      - 172.16.0.0/12
-      - 192.168.0.0/16
-  dnsEgress:
-    # networkPolicy.dnsEgress.enabled allows DNS lookups on TCP/UDP port 53
-    enabled: true
+  ingress:
+    gateway:
+      # networkPolicy.ingress.gateway.namespaceSelector identifies the Gateway namespace by labels
+      namespaceSelector: {}
+      # networkPolicy.ingress.gateway.podSelector identifies Gateway pods by labels
+      podSelector: {}
+  egress:
+    dns:
+      # networkPolicy.egress.dns.enabled allows DNS only when both selectors are configured
+      enabled: true
+      # networkPolicy.egress.dns.namespaceSelector identifies the DNS namespace by labels
+      namespaceSelector: {}
+      # networkPolicy.egress.dns.podSelector identifies DNS pods by labels
+      podSelector: {}
+    database:
+      # networkPolicy.egress.database.enabled allows the database only when both selectors are configured
+      enabled: true
+      # networkPolicy.egress.database.namespaceSelector identifies the database namespace by labels
+      namespaceSelector: {}
+      # networkPolicy.egress.database.podSelector identifies database pods by labels
+      podSelector: {}
+      # networkPolicy.egress.database.port is the database port Shlink may reach
+      port: 5432
+    internet:
+      # networkPolicy.egress.internet.enabled allows egress to the configured CIDRs
+      enabled: false
+      # networkPolicy.egress.internet.cidrs lists external CIDRs; an empty list allows none
+      cidrs: []
 
 serviceAccount:
   # serviceAccount.create specifies whether a ServiceAccount should be created
