@@ -58,6 +58,12 @@ A cold start downloads the model before serving, so `runtime.startupProbe`
 allows up to 30 minutes by default. Set `persistence.enabled=false` for an
 ephemeral cache, at the cost of re-downloading on every restart.
 
+## Network policy
+
+This portable chart does not create a NetworkPolicy. Gateway, DNS, model-download, and
+client-allow rules are deployment-specific; define them in the platform policy layer (for
+example, a CiliumNetworkPolicy in the cluster registry).
+
 The chart does not create a Namespace.
 
 See [values.yaml](values.yaml) for all configuration and defaults.
