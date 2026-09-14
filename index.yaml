@@ -1787,6 +1787,49 @@ entries:
         fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
         url: https://keys.openpgp.org/search?q=hello%40m11s.io
     apiVersion: v2
+    appVersion: 2026.9.14-ef05645f0
+    created: "2026-09-14T19:44:25.21409818Z"
+    dependencies:
+    - condition: valkey.enabled
+      name: valkey
+      repository: https://valkey.io/valkey-helm/
+      version: ~0.12.0
+    description: Helm chart for SearXNG, a privacy-respecting metasearch engine
+    digest: 51e9c9de7bcc6b7f8435247e1b13cfd38c5f2e44bd74d7ab68a9e68c2e75fd75
+    home: https://searxng.org
+    icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/searxng.svg
+    maintainers:
+    - name: m11s
+      url: https://m11s.io
+    name: searxng
+    sources:
+    - https://github.com/searxng/searxng
+    - https://github.com/m11s-io/helm-charts
+    type: application
+    urls:
+    - https://github.com/m11s-io/helm-charts/releases/download/searxng-0.2.1/searxng-0.2.1.tgz
+    version: 0.2.1
+  - annotations:
+      artifacthub.io/category: networking
+      artifacthub.io/changes: |-
+        - kind: fixed
+          description: "Disable ServiceAccount token automount; SearXNG never calls the Kubernetes API"
+        - kind: added
+          description: "Initial chart release"
+      artifacthub.io/containersImages: |
+        - name: searxng
+          image: searxng/searxng:2026.9.12-56b1f6454
+        - name: valkey
+          image: docker.io/valkey/valkey:9.1.2
+      artifacthub.io/links: |
+        - name: source
+          url: https://github.com/searxng/searxng
+        - name: docs
+          url: https://docs.searxng.org/
+      artifacthub.io/signKey: |
+        fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
+        url: https://keys.openpgp.org/search?q=hello%40m11s.io
+    apiVersion: v2
     appVersion: 2026.9.13-d4ce87c23
     created: "2026-09-14T19:34:42.738430047Z"
     dependencies:
@@ -2478,4 +2521,4 @@ entries:
     urls:
     - https://github.com/m11s-io/helm-charts/releases/download/whoami-0.1.0/whoami-0.1.0.tgz
     version: 0.1.0
-generated: "2026-09-14T19:42:46.621623381Z"
+generated: "2026-09-14T19:44:25.214173891Z"
