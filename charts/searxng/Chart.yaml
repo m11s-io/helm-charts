@@ -4,7 +4,7 @@ description: Helm chart for SearXNG, a privacy-respecting metasearch engine
 type: application
 version: 0.1.1
 # renovate: datasource=docker depName=searxng/searxng
-appVersion: "2026.9.12-56b1f6454"
+appVersion: "2026.9.13-d4ce87c23"
 home: https://searxng.org
 icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/searxng.svg
 sources:
