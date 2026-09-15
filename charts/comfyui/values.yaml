@@ -115,7 +115,7 @@ persistence:
 # the configured SHA-256 check succeeds.
 modelDownload:
   enabled: false
-  # Leave empty to use the ComfyUI workload image, which includes huggingface_hub.
+  # Leave empty to use the ComfyUI workload image, which includes the hf CLI.
   image: ""
   # Optional existing Secret containing a read-only Hugging Face token. This is
   # only needed for private/gated models or to use an authenticated rate limit.

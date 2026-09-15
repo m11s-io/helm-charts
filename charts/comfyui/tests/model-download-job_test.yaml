@@ -45,10 +45,10 @@ tests:
           pattern: "PROGRESS model="
       - matchRegex:
           path: spec.template.spec.containers[0].command[2]
-          pattern: 'hf_hub_download'
+          pattern: 'hf download "\$repo" "\$file" --revision "\$revision" --cache-dir "\$cache_dir" --quiet'
       - matchRegex:
           path: spec.template.spec.containers[0].command[2]
-          pattern: 'python3\.14 - "\$repo" "\$revision"'
+          pattern: 'cached_file=\$\('
       - matchRegex:
           path: spec.template.spec.containers[0].command[2]
           pattern: 'HF_HUB_DISABLE_PROGRESS_BARS=1'

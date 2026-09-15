@@ -83,22 +83,11 @@ spec:
                 cache_before=$(du -sk "$cache_dir" 2>/dev/null | awk '{print $1 * 1024}')
                 cache_before=${cache_before:-0}
                 echo "[model-download] FETCH model=$label cache_dir=$cache_dir"
-                HF_HOME="$cache_dir" HF_HUB_DISABLE_PROGRESS_BARS=1 HF_HUB_CACHE="$cache_dir" \
-                  python3.14 - "$repo" "$revision" "$file" "$partial" <<'PY' &
-              import os
-              import sys
-
-              from huggingface_hub import hf_hub_download
-
-              repo, revision, file, partial = sys.argv[1:]
-              cached_file = hf_hub_download(
-                  repo_id=repo,
-                  revision=revision,
-                  filename=file,
-                  cache_dir=os.environ["HF_HUB_CACHE"],
-              )
-              os.link(cached_file, partial)
-              PY
+                (
+                  cached_file=$(HF_HOME="$cache_dir" HF_HUB_DISABLE_PROGRESS_BARS=1 HF_HUB_CACHE="$cache_dir" \
+                    hf download "$repo" "$file" --revision "$revision" --cache-dir "$cache_dir" --quiet)
+                  ln "$cached_file" "$partial"
+                ) &
                 download_pid=$!
                 while kill -0 "$download_pid" 2>/dev/null; do
                   cache_now=$(du -sk "$cache_dir" 2>/dev/null | awk '{print $1 * 1024}')
@@ -110,7 +99,7 @@ spec:
                   echo "[model-download] FAILED model=$label phase=transfer" >&2
                   return 1
                 fi
-                echo "[model-download] TRANSFER_COMPLETE model=$label source=huggingface_hub"
+                echo "[model-download] TRANSFER_COMPLETE model=$label source=hf-cli"
 
                 if ! printf '%s  %s\n' "$expected_sha256" "$partial" | sha256sum -c - >/dev/null; then
                   echo "[model-download] FAILED model=$label phase=checksum expected_sha256=$expected_sha256" >&2

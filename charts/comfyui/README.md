@@ -69,7 +69,7 @@ persistence:
 ## Downloading models into the PVC
 
 `modelDownload` renders a one-shot Kubernetes Job that uses the official
-[`huggingface_hub` downloader](https://huggingface.co/docs/huggingface_hub/guides/download)
+[`hf download` CLI](https://huggingface.co/docs/huggingface_hub/guides/cli#hf-download)
 to fetch model files directly into the persistent models PVC. Each destination
 is relative to `persistence.mountPath`; the Hub cache stays on that PVC so
 interrupted downloads resume, and the cached blob is hard-linked into the
