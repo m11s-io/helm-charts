@@ -29,13 +29,13 @@ service:
   # service.port is the port the Service listens on
   port: 8188
 
-# comfyMcp optionally deploys the thin MCP + comfy-cli image as a separate
-# HTTP workload. It never shares the ComfyUI container, GPU runtime, or models.
+# comfyMcp optionally adds the synchronized GGUF MCP image as a sidecar to the
+# ComfyUI Pod. It shares the Pod network and models volume without another GPU.
 comfyMcp:
   enabled: false
   image:
-    repository: m11s/comfy-mcp
-    tag: "0.2.0"
+    repository: m11s/comfyui
+    tag: "0.5.4-gguf-mcp"
     pullPolicy: IfNotPresent
   service:
     type: ClusterIP

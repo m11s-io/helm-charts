@@ -36,7 +36,7 @@ tests:
           value: m11s/comfyui:0.5.4-gguf
       - equal:
           path: spec.template.spec.containers[0].resources.limits.memory
-          value: 3Gi
+          value: 5Gi
       - matchRegex:
           path: spec.template.spec.containers[0].command[2]
           pattern: "START model="

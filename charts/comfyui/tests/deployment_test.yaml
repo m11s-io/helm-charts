@@ -109,3 +109,26 @@ tests:
           path: spec.template.spec.containers[0].resources.limits
           value:
             nvidia.com/gpu: "1"
+
+  - it: adds MCP as a colocated sidecar without a second GPU
+    set:
+      comfyMcp.enabled: true
+      persistence.enabled: true
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[1].name
+          value: comfy-mcp
+      - equal:
+          path: spec.template.spec.containers[1].image
+          value: m11s/comfyui:0.5.4-gguf-mcp
+      - equal:
+          path: spec.template.spec.containers[1].ports[0].containerPort
+          value: 8080
+      - equal:
+          path: spec.template.spec.containers[1].args[0]
+          value: --transport
+      - equal:
+          path: spec.template.spec.containers[1].volumeMounts[0].mountPath
+          value: /app/models
+      - notExists:
+          path: spec.template.spec.containers[1].resources.limits.nvidia.com/gpu
