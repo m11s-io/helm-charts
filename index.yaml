@@ -4,6 +4,100 @@ entries:
   - annotations:
       artifacthub.io/category: ai-machine-learning
       artifacthub.io/changes: |-
+        - kind: fixed
+          description: "Set COMFYUI_URL for the MCP sidecar so execution and job tools target the colocated ComfyUI despite Kubernetes service-link variables."
+        - kind: changed
+          description: "Use the thin comfy-mcp image as a loopback sidecar, avoiding a second full CUDA image pull."
+        - kind: changed
+          description: "Raise the model-download Job memory limit to 5Gi for large Hugging Face transfers."
+        - kind: fixed
+          description: "Include GCC and Python development headers required for Triton's CUDA driver compilation."
+        - kind: fixed
+          description: "Create the non-root comfyui user's home directory so Triton can compile and cache CUDA helpers."
+        - kind: fixed
+          description: "Resolve hf download snapshot symlinks before hard-linking verified models into ComfyUI paths."
+        - kind: fixed
+          description: "Keep model-download progress counters as shell-compatible integers after the cache exceeds 2 GB."
+        - kind: fixed
+          description: "Disable Hugging Face CLI update hints in model-download Job logs."
+        - kind: changed
+          description: "Use the baked-in hf download CLI for model-download Jobs."
+        - kind: fixed
+          description: "Allocate sufficient memory for hf_xet's large-file download buffers in model-download Jobs."
+        - kind: fixed
+          description: "Store hf_xet state under the writable models PVC when model-download Jobs use the ComfyUI image."
+        - kind: added
+          description: "Allow model-download Jobs to use an optional Hugging Face token from an existing Kubernetes Secret."
+        - kind: changed
+          description: "Use huggingface_hub with pinned source revisions and a persistent cache for model-download Jobs."
+        - kind: changed
+          description: "Make model-download Job logs explicit and periodic, including model names, byte counts, transfer metrics, and checksum status."
+        - kind: removed
+          description: "Remove the optional nfsModels second-store feature; use persistence.storageClassName for the chart's single, storage-agnostic models PVC."
+        - kind: added
+          description: "Add an optional, checksummed model-download Job for fetching ComfyUI models directly into the persistent models PVC."
+        - kind: fixed
+          description: "Use the matched cu130 Torch 2.14.0, TorchVision 0.29.0, and TorchAudio 2.11.0 wheels; TorchAudio has no cu132 wheel and otherwise fails at startup with a CUDA ABI mismatch."
+        - kind: changed
+          description: "Bump to m11s/comfyui:0.5.0: CUDA 13.3.1 runtime base, torch 2.14.0/torchvision 0.29.0 (cu132), and ComfyUI v0.35.1 (from v0.28.2). New tag rather than reusing 0.4.0, since IfNotPresent-pulling nodes wouldn't otherwise see the change"
+        - kind: changed
+          description: "Bump to m11s/comfyui:0.4.0, adding the ComfyUI-GGUF custom node for GGUF-quantized model loaders (UnetLoaderGGUF, DualCLIPLoaderGGUF) alongside the existing safetensors loaders"
+        - kind: fixed
+          description: "Default strategy.type to Recreate (0.4.0-0.4.1 had a broken null-clearing branch for an existing object's leftover rollingUpdate field; a one-time delete+recreate of the live Deployment is the actual fix for that transition)"
+        - kind: added
+          description: "Add optional nfsModels PVC for splitting model categories (e.g. loras, embeddings) onto shared/NFS storage, wired in via a generated extra_model_paths.yaml"
+        - kind: fixed
+          description: "Drop --disable-cuda-malloc (m11s/comfyui:0.3.1): the allocator was never the cause of the startup hang, which was actually a missing NodeLocal DNS Cache on the ai cluster's GPU nodes"
+        - kind: fixed
+          description: "Run with --disable-cuda-malloc (m11s/comfyui:0.3.0) to fix a startup hang caused by torch's cudaMallocAsync allocator on CUDA 13.0 + torch 2.11"
+        - kind: fixed
+          description: "Revert PYTORCH_CUDA_ALLOC_CONF override: it crashes the CUDA 13.0 + torch 2.11 image at import instead of fixing the startup hang"
+        - kind: changed
+          description: "Upgrade image to CUDA 13.0 runtime base (m11s/comfyui:0.2.0)"
+        - kind: added
+          description: "Initial chart release"
+        - kind: fixed
+          description: "Fix broken icon URL (previously pointed at a nonexistent screenshot path)"
+        - kind: changed
+          description: "Broaden description from image/video generation to visual AI, matching upstream's own framing"
+        - kind: added
+          description: "Set artifacthub.io/category to ai-machine-learning"
+      artifacthub.io/containersImages: |
+        - name: comfyui
+          image: m11s/comfyui:0.5.4-gguf
+        - name: comfy-mcp
+          image: m11s/comfy-mcp:0.2.2
+      artifacthub.io/links: |
+        - name: source
+          url: https://github.com/comfyanonymous/ComfyUI
+        - name: image source
+          url: https://github.com/m11s-io/docker-images
+      artifacthub.io/signKey: |
+        fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
+        url: https://keys.openpgp.org/search?q=hello%40m11s.io
+    apiVersion: v2
+    appVersion: 0.5.4-gguf
+    created: "2026-09-15T20:05:11.416525703Z"
+    description: Helm chart for ComfyUI, a node-based, modular visual AI engine for
+      GPU nodes
+    digest: 17fca58bdd1a5e822830050453a76aaa2bdfd2b8f7b827268758cdc208b1273f
+    home: https://github.com/comfyanonymous/ComfyUI
+    icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/comfyui.svg
+    maintainers:
+    - name: m11s
+      url: https://m11s.io
+    name: comfyui
+    sources:
+    - https://github.com/comfyanonymous/ComfyUI
+    - https://github.com/m11s-io/docker-images
+    - https://github.com/m11s-io/helm-charts
+    type: application
+    urls:
+    - https://github.com/m11s-io/helm-charts/releases/download/comfyui-0.10.3/comfyui-0.10.3.tgz
+    version: 0.10.3
+  - annotations:
+      artifacthub.io/category: ai-machine-learning
+      artifacthub.io/changes: |-
         - kind: changed
           description: "Use the thin comfy-mcp image as a loopback sidecar, avoiding a second full CUDA image pull."
         - kind: changed
@@ -3855,4 +3949,4 @@ entries:
     urls:
     - https://github.com/m11s-io/helm-charts/releases/download/whoami-0.1.0/whoami-0.1.0.tgz
     version: 0.1.0
-generated: "2026-09-15T19:45:20.582863547Z"
+generated: "2026-09-15T20:05:11.416731536Z"
