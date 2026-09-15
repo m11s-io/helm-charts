@@ -7,7 +7,7 @@
 
 This chart targets a single GPU-bound replica per release; it does not include HPA or PodDisruptionBudget resources. `strategy` defaults to `Recreate` rather than Kubernetes' default `RollingUpdate`, since GPU nodes typically expose exactly one `nvidia.com/gpu` and RollingUpdate's create-before-destroy behavior deadlocks — the new pod can never schedule while the old one still holds the only GPU.
 
-The chart's default `0.5.1-gguf` image uses Python 3.14 and includes the pinned ComfyUI-GGUF extension. Python 3.14 is supported by ComfyUI and PyTorch, but community custom nodes may not yet support it; use a custom `image.tag` if a required node needs an older interpreter.
+The chart's default GGUF image uses Python 3.14 and includes the pinned ComfyUI-GGUF extension. Python 3.14 is supported by ComfyUI and PyTorch, but community custom nodes may not yet support it; use a custom `image.tag` if a required node needs an older interpreter.
 
 ## Installation
 
@@ -41,6 +41,12 @@ GPU scheduling (`runtimeClassName`, `nodeSelector`, `tolerations`, `resources`) 
 | `persistence.accessMode` | PVC access mode | `ReadWriteOnce` |
 | `persistence.size` | PVC storage request | `200Gi` |
 | `persistence.mountPath` | Where the models volume is mounted | `/app/models` |
+| `modelDownload.enabled` | Create a Job to download models into the persistent PVC | `false` |
+| `modelDownload.image` | Downloader container image | `curlimages/curl:8.10.1` |
+| `modelDownload.backoffLimit` | Maximum downloader Job retries | `3` |
+| `modelDownload.models` | Model entries with relative destination, URL, and SHA-256 hash | `[]` |
+| `modelDownload.resources` | CPU and memory requests/limits for the downloader Job | `{requests: ..., limits: ...}` |
+| `modelDownload.ttlSecondsAfterFinished` | Optional TTL for completed Jobs; unset by default for Argo CD reconciliation | `null` |
 | `httpRoute.enabled` | Enable a Gateway API HTTPRoute | `false` |
 | `httpRoute.parentRefs` | Gateways the HTTPRoute attaches to; required when enabled | `[]` |
 | `httpRoute.hostnames` | Hostnames the HTTPRoute matches | `[]` |
@@ -114,6 +120,6 @@ persistence:
 
 ## Source
 
-- Chart: [github.com/m11s-io/charts](https://github.com/m11s-io/charts)
+- Chart: [github.com/m11s-io/helm-charts](https://github.com/m11s-io/helm-charts)
 - Image: [github.com/m11s-io/docker-images](https://github.com/m11s-io/docker-images/tree/main/comfyui)
 - Upstream: [github.com/comfyanonymous/ComfyUI](https://github.com/comfyanonymous/ComfyUI)
