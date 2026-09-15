@@ -134,7 +134,7 @@ modelDownload:
       cpu: "1"
       # hf_xet's default download buffer is 2GiB (512MiB per file); leave
       # headroom for Python and filesystem accounting during large transfers.
-      memory: 3Gi
+      memory: 5Gi
   models: []
   # example:
   #   - destination: diffusion_models/example.safetensors

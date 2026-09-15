@@ -2,7 +2,7 @@ apiVersion: v2
 name: comfyui
 description: Helm chart for ComfyUI, a node-based, modular visual AI engine for GPU nodes
 type: application
-version: 0.7.9
+version: 0.7.10
 # renovate: datasource=docker depName=m11s/comfyui
 appVersion: "0.5.4-gguf"
 home: https://github.com/comfyanonymous/ComfyUI
@@ -28,6 +28,8 @@ annotations:
     - name: image source
       url: https://github.com/m11s-io/docker-images
   artifacthub.io/changes: |-
+    - kind: changed
+      description: "Raise the model-download Job memory limit to 5Gi for large Hugging Face transfers."
     - kind: fixed
       description: "Include GCC and Python development headers required for Triton's CUDA driver compilation."
     - kind: fixed
