@@ -2,7 +2,7 @@ apiVersion: v2
 name: comfyui
 description: Helm chart for ComfyUI, a node-based, modular visual AI engine for GPU nodes
 type: application
-version: 0.7.3
+version: 0.7.4
 # renovate: datasource=docker depName=m11s/comfyui
 appVersion: "0.5.2-gguf"
 home: https://github.com/comfyanonymous/ComfyUI
@@ -28,6 +28,8 @@ annotations:
     - name: image source
       url: https://github.com/m11s-io/docker-images
   artifacthub.io/changes: |-
+    - kind: fixed
+      description: "Allocate sufficient memory for hf_xet's large-file download buffers in model-download Jobs."
     - kind: fixed
       description: "Store hf_xet state under the writable models PVC when model-download Jobs use the ComfyUI image."
     - kind: added

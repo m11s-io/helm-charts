@@ -47,7 +47,7 @@ GPU scheduling (`runtimeClassName`, `nodeSelector`, `tolerations`, `resources`) 
 | `modelDownload.huggingFaceToken.key` | Key in that Secret containing the token | `token` |
 | `modelDownload.backoffLimit` | Maximum downloader Job retries | `3` |
 | `modelDownload.models` | Model entries with relative destination, HF repo/file/revision, and SHA-256 hash | `[]` |
-| `modelDownload.resources` | CPU and memory requests/limits for the downloader Job | `{requests: ..., limits: ...}` |
+| `modelDownload.resources` | CPU and memory requests/limits for the downloader Job; defaults reserve 512Mi and allow 3Gi for `hf_xet` buffers | `{requests: ..., limits: ...}` |
 | `modelDownload.ttlSecondsAfterFinished` | Optional TTL for completed Jobs; unset by default for Argo CD reconciliation | `null` |
 | `httpRoute.enabled` | Enable a Gateway API HTTPRoute | `false` |
 | `httpRoute.parentRefs` | Gateways the HTTPRoute attaches to; required when enabled | `[]` |
