@@ -90,7 +90,7 @@ spec:
               containerPort: 8080
               protocol: TCP
           env:
-            - name: COMFYUI_URL
+            - name: COMFY_LOCAL_URL
               value: http://127.0.0.1:8188
             - name: COMFY_MCP_TRANSPORT
               value: streamable-http
@@ -100,17 +100,12 @@ spec:
               value: "8080"
           readinessProbe:
             exec:
-              command: ["python3.14", "/opt/comfy-mcp-image/healthcheck.py"]
+              command: ["python", "/opt/comfy-mcp-image/healthcheck.py"]
           livenessProbe:
             exec:
-              command: ["python3.14", "/opt/comfy-mcp-image/healthcheck.py"]
+              command: ["python", "/opt/comfy-mcp-image/healthcheck.py"]
           resources:
             {{- toYaml .Values.comfyMcp.resources | nindent 12 }}
-          {{- if .Values.persistence.enabled }}
-          volumeMounts:
-            - name: models
-              mountPath: {{ .Values.persistence.mountPath }}
-          {{- end }}
         {{- end }}
       {{- if .Values.persistence.enabled }}
       volumes:

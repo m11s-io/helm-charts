@@ -29,18 +29,24 @@ service:
   # service.port is the port the Service listens on
   port: 8188
 
-# comfyMcp optionally adds the synchronized GGUF MCP image as a sidecar to the
-# ComfyUI Pod. It shares the Pod network and models volume without another GPU.
+# comfyMcp optionally adds the thin MCP sidecar. It uses Pod-loopback networking
+# to talk to ComfyUI and does not need a GPU or the models volume.
 comfyMcp:
   enabled: false
   image:
-    repository: m11s/comfyui
-    tag: "0.5.4-gguf-mcp"
+    repository: m11s/comfy-mcp
+    tag: "0.2.0"
     pullPolicy: IfNotPresent
   service:
     type: ClusterIP
     port: 8080
-  resources: {}
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 250m
+      memory: 256Mi
   # Optional Gateway API route for MCP clients. This route sends /mcp directly
   # to comfy-mcp; no Envoy MCP filter or sidecar is required.
   httpRoute:

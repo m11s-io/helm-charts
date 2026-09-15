@@ -2,7 +2,7 @@ apiVersion: v2
 name: comfyui
 description: Helm chart for ComfyUI, a node-based, modular visual AI engine for GPU nodes
 type: application
-version: 0.9.0
+version: 0.10.0
 # renovate: datasource=docker depName=m11s/comfyui
 appVersion: "0.5.4-gguf"
 home: https://github.com/comfyanonymous/ComfyUI
@@ -23,7 +23,7 @@ annotations:
     - name: comfyui
       image: m11s/comfyui:0.5.4-gguf
     - name: comfy-mcp
-      image: m11s/comfyui:0.5.4-gguf-mcp
+      image: m11s/comfy-mcp:0.2.0
   artifacthub.io/links: |
     - name: source
       url: https://github.com/comfyanonymous/ComfyUI
@@ -31,7 +31,7 @@ annotations:
       url: https://github.com/m11s-io/docker-images
   artifacthub.io/changes: |-
     - kind: changed
-      description: "Run the optional synchronized comfy-mcp image as a sidecar in the ComfyUI Pod."
+      description: "Use the thin comfy-mcp image as a loopback sidecar, avoiding a second full CUDA image pull."
     - kind: changed
       description: "Raise the model-download Job memory limit to 5Gi for large Hugging Face transfers."
     - kind: fixed
