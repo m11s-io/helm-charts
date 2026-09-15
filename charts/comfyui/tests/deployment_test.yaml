@@ -120,7 +120,7 @@ tests:
           value: comfy-mcp
       - equal:
           path: spec.template.spec.containers[1].image
-          value: m11s/comfy-mcp:0.2.1
+          value: m11s/comfy-mcp:0.2.2
       - equal:
           path: spec.template.spec.containers[1].ports[0].containerPort
           value: 8080

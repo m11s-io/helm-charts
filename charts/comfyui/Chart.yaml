@@ -2,7 +2,7 @@ apiVersion: v2
 name: comfyui
 description: Helm chart for ComfyUI, a node-based, modular visual AI engine for GPU nodes
 type: application
-version: 0.10.1
+version: 0.10.2
 # renovate: datasource=docker depName=m11s/comfyui
 appVersion: "0.5.4-gguf"
 home: https://github.com/comfyanonymous/ComfyUI
@@ -23,7 +23,7 @@ annotations:
     - name: comfyui
       image: m11s/comfyui:0.5.4-gguf
     - name: comfy-mcp
-      image: m11s/comfy-mcp:0.2.1
+      image: m11s/comfy-mcp:0.2.2
   artifacthub.io/links: |
     - name: source
       url: https://github.com/comfyanonymous/ComfyUI
