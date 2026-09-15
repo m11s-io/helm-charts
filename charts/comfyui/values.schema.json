@@ -107,23 +107,43 @@
                 "image": {
                     "type": "string"
                 },
+                "huggingFaceToken": {
+                    "type": "object",
+                    "properties": {
+                        "existingSecret": {
+                            "type": "string"
+                        },
+                        "key": {
+                            "type": "string",
+                            "minLength": 1
+                        }
+                    }
+                },
                 "models": {
                     "type": "array",
                     "items": {
                         "type": "object",
-                        "required": ["destination", "url", "sha256"],
+                        "required": ["destination", "repo", "revision", "file", "sha256"],
                         "properties": {
                             "destination": {
                                 "type": "string",
                                 "pattern": "^[^/].*"
                             },
+                            "file": {
+                                "type": "string",
+                                "pattern": "^[^/].*"
+                            },
+                            "repo": {
+                                "type": "string",
+                                "pattern": "^[^/]+/[^/]+$"
+                            },
+                            "revision": {
+                                "type": "string",
+                                "pattern": "^[a-fA-F0-9]{40}$"
+                            },
                             "sha256": {
                                 "type": "string",
                                 "pattern": "^[a-fA-F0-9]{64}$"
-                            },
-                            "url": {
-                                "type": "string",
-                                "format": "uri"
                             }
                         }
                     }

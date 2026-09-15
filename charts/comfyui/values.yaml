@@ -108,13 +108,20 @@ persistence:
   # persistence.mountPath is where the models volume is mounted in the container
   mountPath: /app/models
 
-# modelDownload optionally creates a Job that downloads model files directly
-# into the persistent models PVC. Each destination is relative to
-# persistence.mountPath. Existing verified files are retained; interrupted
-# downloads resume from a .part file and each configured SHA-256 is checked.
+# modelDownload optionally creates a Job that downloads Hugging Face model files
+# directly into the persistent models PVC. Each destination is relative to
+# persistence.mountPath. The Hugging Face cache is retained on the same PVC, so
+# interrupted downloads resume and cached blobs are hard-linked into place after
+# the configured SHA-256 check succeeds.
 modelDownload:
   enabled: false
-  image: curlimages/curl:8.10.1
+  # Leave empty to use the ComfyUI workload image, which includes huggingface_hub.
+  image: ""
+  # Optional existing Secret containing a read-only Hugging Face token. This is
+  # only needed for private/gated models or to use an authenticated rate limit.
+  huggingFaceToken:
+    existingSecret: ""
+    key: token
   backoffLimit: 3
   # Keep completed Jobs so Argo CD does not recreate them during self-heal.
   # Set this only when the release is not continuously reconciled.
@@ -129,7 +136,9 @@ modelDownload:
   models: []
   # example:
   #   - destination: diffusion_models/example.safetensors
-  #     url: https://example.invalid/example.safetensors
+  #     repo: example-org/example-model
+  #     revision: 0123456789abcdef0123456789abcdef01234567
+  #     file: split_files/diffusion_models/example.safetensors
   #     sha256: 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
 
 # environment sets extra environment variables on the comfyui container.

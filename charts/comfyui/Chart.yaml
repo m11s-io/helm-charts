@@ -2,7 +2,7 @@ apiVersion: v2
 name: comfyui
 description: Helm chart for ComfyUI, a node-based, modular visual AI engine for GPU nodes
 type: application
-version: 0.7.0
+version: 0.7.2
 # renovate: datasource=docker depName=m11s/comfyui
 appVersion: "0.5.2-gguf"
 home: https://github.com/comfyanonymous/ComfyUI
@@ -28,6 +28,12 @@ annotations:
     - name: image source
       url: https://github.com/m11s-io/docker-images
   artifacthub.io/changes: |-
+    - kind: added
+      description: "Allow model-download Jobs to use an optional Hugging Face token from an existing Kubernetes Secret."
+    - kind: changed
+      description: "Use huggingface_hub with pinned source revisions and a persistent cache for model-download Jobs."
+    - kind: changed
+      description: "Make model-download Job logs explicit and periodic, including model names, byte counts, transfer metrics, and checksum status."
     - kind: removed
       description: "Remove the optional nfsModels second-store feature; use persistence.storageClassName for the chart's single, storage-agnostic models PVC."
     - kind: added

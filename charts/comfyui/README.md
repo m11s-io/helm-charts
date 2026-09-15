@@ -42,9 +42,11 @@ GPU scheduling (`runtimeClassName`, `nodeSelector`, `tolerations`, `resources`) 
 | `persistence.size` | PVC storage request | `200Gi` |
 | `persistence.mountPath` | Where the models volume is mounted | `/app/models` |
 | `modelDownload.enabled` | Create a Job to download models into the persistent PVC | `false` |
-| `modelDownload.image` | Downloader container image | `curlimages/curl:8.10.1` |
+| `modelDownload.image` | Optional downloader image; empty uses the ComfyUI workload image | `""` |
+| `modelDownload.huggingFaceToken.existingSecret` | Optional existing Secret with an HF read token | `""` |
+| `modelDownload.huggingFaceToken.key` | Key in that Secret containing the token | `token` |
 | `modelDownload.backoffLimit` | Maximum downloader Job retries | `3` |
-| `modelDownload.models` | Model entries with relative destination, URL, and SHA-256 hash | `[]` |
+| `modelDownload.models` | Model entries with relative destination, HF repo/file/revision, and SHA-256 hash | `[]` |
 | `modelDownload.resources` | CPU and memory requests/limits for the downloader Job | `{requests: ..., limits: ...}` |
 | `modelDownload.ttlSecondsAfterFinished` | Optional TTL for completed Jobs; unset by default for Argo CD reconciliation | `null` |
 | `httpRoute.enabled` | Enable a Gateway API HTTPRoute | `false` |
@@ -66,12 +68,27 @@ persistence:
 
 ## Downloading models into the PVC
 
-`modelDownload` renders a one-shot Kubernetes Job that downloads model files
-directly into the persistent models PVC. Each destination is relative to
-`persistence.mountPath`; downloads resume from a `.part` file, and files are
-only retained after their configured SHA-256 hashes verify. The Job inherits
+`modelDownload` renders a one-shot Kubernetes Job that uses the official
+[`huggingface_hub` downloader](https://huggingface.co/docs/huggingface_hub/guides/download)
+to fetch model files directly into the persistent models PVC. Each destination
+is relative to `persistence.mountPath`; the Hub cache stays on that PVC so
+interrupted downloads resume, and the cached blob is hard-linked into the
+requested ComfyUI path only after its configured SHA-256 verifies. Pin every
+`revision` to the source repository's 40-character commit SHA. The Job inherits
 the chart's node selector, affinity, tolerations, and pod security context, so
 it can safely share a node-local ReadWriteOnce models PVC with ComfyUI.
+
+For private or gated repositories, or to use Hugging Face's authenticated rate
+limit, create a [fine-grained read token](https://huggingface.co/docs/hub/security-tokens)
+in a Kubernetes Secret outside Helm and configure its name and key. The token
+is injected only into the downloader Job as `HF_TOKEN`.
+
+```yaml
+modelDownload:
+  huggingFaceToken:
+    existingSecret: comfyui-hf-token
+    key: token
+```
 
 ```yaml
 persistence:
@@ -81,7 +98,9 @@ modelDownload:
   enabled: true
   models:
     - destination: diffusion_models/example.safetensors
-      url: https://example.invalid/example.safetensors
+      repo: example-org/example-model
+      revision: 0123456789abcdef0123456789abcdef01234567
+      file: split_files/diffusion_models/example.safetensors
       sha256: 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
 ```
 

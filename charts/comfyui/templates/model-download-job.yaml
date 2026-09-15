@@ -10,10 +10,13 @@
 {{- fail "modelDownload.models[].destination must be a relative path without '..'" }}
 {{- end }}
 {{- end }}
+{{- $workloadImageTag := default .Chart.AppVersion .Values.image.tag }}
+{{- $workloadImage := printf "%s:%s" .Values.image.repository $workloadImageTag }}
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ include "comfyui.fullname" . }}-model-download-{{ .Values.modelDownload.models | toJson | sha256sum | trunc 8 }}
+  {{- $modelSpecHash := printf "%s:%s" .Chart.Version (.Values.modelDownload.models | toJson) | sha256sum | trunc 8 }}
+  name: {{ include "comfyui.fullname" . }}-model-download-{{ $modelSpecHash }}
   labels:
     {{- include "comfyui.labels" . | nindent 4 }}
     app.kubernetes.io/component: model-download
@@ -34,37 +37,91 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: model-download
-          image: {{ .Values.modelDownload.image }}
+          image: {{ default $workloadImage .Values.modelDownload.image }}
           imagePullPolicy: IfNotPresent
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
+          {{- with .Values.modelDownload.huggingFaceToken.existingSecret }}
+          env:
+            - name: HF_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ . }}
+                  key: {{ $.Values.modelDownload.huggingFaceToken.key }}
+          {{- end }}
           command:
             - /bin/sh
             - -ec
             - |
               download() {
                 destination="$1"
-                url="$2"
-                expected_sha256="$3"
+                repo="$2"
+                revision="$3"
+                file="$4"
+                expected_sha256="$5"
+                label="$6"
                 partial="${destination}.part"
+                cache_dir="{{ $.Values.persistence.mountPath }}/.cache/huggingface"
 
+                echo "[model-download] START model=$label destination=$destination repo=$repo revision=$revision file=$file"
                 mkdir -p "$(dirname "$destination")"
                 if [ -f "$destination" ]; then
                   if printf '%s  %s\n' "$expected_sha256" "$destination" | sha256sum -c - >/dev/null; then
-                    echo "Verified $destination"
+                    echo "[model-download] VERIFIED model=$label destination=$destination state=already-present"
                     return
                   fi
-                  echo "Removing invalid $destination" >&2
+                  echo "[model-download] INVALID model=$label destination=$destination action=remove" >&2
                   rm -f "$destination"
                 fi
 
-                curl --fail --location --show-error --retry 5 --retry-all-errors --continue-at - --output "$partial" "$url"
-                printf '%s  %s\n' "$expected_sha256" "$partial" | sha256sum -c -
+                if [ -f "$partial" ]; then
+                  echo "[model-download] REMOVE_PARTIAL model=$label reason=legacy-or-unverified"
+                  rm -f "$partial"
+                fi
+
+                mkdir -p "$cache_dir"
+                cache_before=$(du -sk "$cache_dir" 2>/dev/null | awk '{print $1 * 1024}')
+                cache_before=${cache_before:-0}
+                echo "[model-download] FETCH model=$label cache_dir=$cache_dir"
+                HF_HUB_DISABLE_PROGRESS_BARS=1 HF_HUB_CACHE="$cache_dir" \
+                  python3.14 - "$repo" "$revision" "$file" "$partial" <<'PY' &
+              import os
+              import sys
+
+              from huggingface_hub import hf_hub_download
+
+              repo, revision, file, partial = sys.argv[1:]
+              cached_file = hf_hub_download(
+                  repo_id=repo,
+                  revision=revision,
+                  filename=file,
+                  cache_dir=os.environ["HF_HUB_CACHE"],
+              )
+              os.link(cached_file, partial)
+              PY
+                download_pid=$!
+                while kill -0 "$download_pid" 2>/dev/null; do
+                  cache_now=$(du -sk "$cache_dir" 2>/dev/null | awk '{print $1 * 1024}')
+                  cache_now=${cache_now:-0}
+                  echo "[model-download] PROGRESS model=$label cache_delta_bytes=$((cache_now - cache_before))"
+                  sleep 30
+                done
+                if ! wait "$download_pid"; then
+                  echo "[model-download] FAILED model=$label phase=transfer" >&2
+                  return 1
+                fi
+                echo "[model-download] TRANSFER_COMPLETE model=$label source=huggingface_hub"
+
+                if ! printf '%s  %s\n' "$expected_sha256" "$partial" | sha256sum -c - >/dev/null; then
+                  echo "[model-download] FAILED model=$label phase=checksum expected_sha256=$expected_sha256" >&2
+                  return 1
+                fi
+                echo "[model-download] CHECKSUM_OK model=$label sha256=$expected_sha256"
                 mv "$partial" "$destination"
-                echo "Downloaded and verified $destination"
+                echo "[model-download] COMPLETE model=$label destination=$destination"
               }
               {{- range .Values.modelDownload.models }}
-              download {{ printf "%s/%s" $.Values.persistence.mountPath .destination | quote }} {{ .url | quote }} {{ .sha256 | quote }}
+              download {{ printf "%s/%s" $.Values.persistence.mountPath .destination | quote }} {{ .repo | quote }} {{ .revision | quote }} {{ .file | quote }} {{ .sha256 | quote }} {{ .destination | quote }}
               {{- end }}
           resources:
             {{- toYaml .Values.modelDownload.resources | nindent 12 }}
