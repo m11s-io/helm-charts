@@ -1,0 +1,90 @@
+{{- if .Values.modelDownload.enabled }}
+{{- if not .Values.persistence.enabled }}
+{{- fail "modelDownload.enabled requires persistence.enabled" }}
+{{- end }}
+{{- if not .Values.modelDownload.models }}
+{{- fail "modelDownload.enabled requires at least one model" }}
+{{- end }}
+{{- range .Values.modelDownload.models }}
+{{- if or (hasPrefix "/" .destination) (contains ".." .destination) }}
+{{- fail "modelDownload.models[].destination must be a relative path without '..'" }}
+{{- end }}
+{{- end }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "comfyui.fullname" . }}-model-download-{{ .Values.modelDownload.models | toJson | sha256sum | trunc 8 }}
+  labels:
+    {{- include "comfyui.labels" . | nindent 4 }}
+    app.kubernetes.io/component: model-download
+spec:
+  backoffLimit: {{ .Values.modelDownload.backoffLimit }}
+  {{- if ne .Values.modelDownload.ttlSecondsAfterFinished nil }}
+  ttlSecondsAfterFinished: {{ .Values.modelDownload.ttlSecondsAfterFinished }}
+  {{- end }}
+  template:
+    metadata:
+      labels:
+        {{- include "comfyui.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: model-download
+    spec:
+      restartPolicy: Never
+      serviceAccountName: {{ include "comfyui.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: model-download
+          image: {{ .Values.modelDownload.image }}
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          command:
+            - /bin/sh
+            - -ec
+            - |
+              download() {
+                destination="$1"
+                url="$2"
+                expected_sha256="$3"
+                partial="${destination}.part"
+
+                mkdir -p "$(dirname "$destination")"
+                if [ -f "$destination" ]; then
+                  if printf '%s  %s\n' "$expected_sha256" "$destination" | sha256sum -c - >/dev/null; then
+                    echo "Verified $destination"
+                    return
+                  fi
+                  echo "Removing invalid $destination" >&2
+                  rm -f "$destination"
+                fi
+
+                curl --fail --location --show-error --retry 5 --retry-all-errors --continue-at - --output "$partial" "$url"
+                printf '%s  %s\n' "$expected_sha256" "$partial" | sha256sum -c -
+                mv "$partial" "$destination"
+                echo "Downloaded and verified $destination"
+              }
+              {{- range .Values.modelDownload.models }}
+              download {{ printf "%s/%s" $.Values.persistence.mountPath .destination | quote }} {{ .url | quote }} {{ .sha256 | quote }}
+              {{- end }}
+          resources:
+            {{- toYaml .Values.modelDownload.resources | nindent 12 }}
+          volumeMounts:
+            - name: models
+              mountPath: {{ .Values.persistence.mountPath }}
+      volumes:
+        - name: models
+          persistentVolumeClaim:
+            claimName: {{ include "comfyui.modelsClaimName" . }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}

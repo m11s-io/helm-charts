@@ -2,7 +2,7 @@ apiVersion: v2
 name: comfyui
 description: Helm chart for ComfyUI, a node-based, modular visual AI engine for GPU nodes
 type: application
-version: 0.5.3
+version: 0.7.0
 # renovate: datasource=docker depName=m11s/comfyui
 appVersion: "0.5.2-gguf"
 home: https://github.com/comfyanonymous/ComfyUI
@@ -28,6 +28,10 @@ annotations:
     - name: image source
       url: https://github.com/m11s-io/docker-images
   artifacthub.io/changes: |-
+    - kind: removed
+      description: "Remove the optional nfsModels second-store feature; use persistence.storageClassName for the chart's single, storage-agnostic models PVC."
+    - kind: added
+      description: "Add an optional, checksummed model-download Job for fetching ComfyUI models directly into the persistent models PVC."
     - kind: fixed
       description: "Use the matched cu130 Torch 2.14.0, TorchVision 0.29.0, and TorchAudio 2.11.0 wheels; TorchAudio has no cu132 wheel and otherwise fails at startup with a CUDA ABI mismatch."
     - kind: changed

@@ -1,0 +1,31 @@
+suite: comfyui model download Job
+templates:
+  - model-download-job.yaml
+
+tests:
+  - it: does not render a model download Job by default
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: downloads configured models to the persistent models PVC
+    set:
+      persistence.enabled: true
+      modelDownload:
+        enabled: true
+        models:
+          - destination: diffusion_models/example.safetensors
+            url: https://example.invalid/example.safetensors
+            sha256: 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
+    asserts:
+      - isKind:
+          of: Job
+      - equal:
+          path: spec.template.spec.restartPolicy
+          value: Never
+      - equal:
+          path: spec.template.spec.volumes[0].persistentVolumeClaim.claimName
+          value: RELEASE-NAME-comfyui-models
+      - equal:
+          path: spec.template.spec.containers[0].volumeMounts[0].mountPath
+          value: /app/models

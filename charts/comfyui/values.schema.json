@@ -94,34 +94,51 @@
                 }
             }
         },
-        "nameOverride": {
-            "type": "string"
-        },
-        "nfsModels": {
+        "modelDownload": {
             "type": "object",
             "properties": {
-                "accessMode": {
-                    "type": "string"
-                },
-                "categories": {
-                    "type": "object"
+                "backoffLimit": {
+                    "type": "integer",
+                    "minimum": 0
                 },
                 "enabled": {
                     "type": "boolean"
                 },
-                "existingClaim": {
+                "image": {
                     "type": "string"
                 },
-                "mountPath": {
-                    "type": "string"
+                "models": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "required": ["destination", "url", "sha256"],
+                        "properties": {
+                            "destination": {
+                                "type": "string",
+                                "pattern": "^[^/].*"
+                            },
+                            "sha256": {
+                                "type": "string",
+                                "pattern": "^[a-fA-F0-9]{64}$"
+                            },
+                            "url": {
+                                "type": "string",
+                                "format": "uri"
+                            }
+                        }
+                    }
                 },
-                "size": {
-                    "type": "string"
+                "resources": {
+                    "type": "object"
                 },
-                "storageClassName": {
-                    "type": "string"
+                "ttlSecondsAfterFinished": {
+                    "type": ["integer", "null"],
+                    "minimum": 0
                 }
             }
+        },
+        "nameOverride": {
+            "type": "string"
         },
         "nodeSelector": {
             "type": "object"
