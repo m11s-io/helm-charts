@@ -33,7 +33,7 @@ tests:
           value: /app/models
       - equal:
           path: spec.template.spec.containers[0].image
-          value: m11s/comfyui:0.5.3-gguf
+          value: m11s/comfyui:0.5.4-gguf
       - equal:
           path: spec.template.spec.containers[0].resources.limits.memory
           value: 3Gi
