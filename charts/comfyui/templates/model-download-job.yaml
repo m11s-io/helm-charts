@@ -80,17 +80,17 @@ spec:
                 fi
 
                 mkdir -p "$cache_dir"
-                cache_before=$(du -sk "$cache_dir" 2>/dev/null | awk '{print $1 * 1024}')
+                cache_before=$(du -sk "$cache_dir" 2>/dev/null | awk '{printf "%.0f", $1 * 1024}')
                 cache_before=${cache_before:-0}
                 echo "[model-download] FETCH model=$label cache_dir=$cache_dir"
                 (
-                  cached_file=$(HF_HOME="$cache_dir" HF_HUB_DISABLE_PROGRESS_BARS=1 HF_HUB_CACHE="$cache_dir" \
+                  cached_file=$(HF_HOME="$cache_dir" HF_HUB_DISABLE_PROGRESS_BARS=1 HF_HUB_DISABLE_UPDATE_CHECK=1 HF_HUB_CACHE="$cache_dir" \
                     hf download "$repo" "$file" --revision "$revision" --cache-dir "$cache_dir" --quiet)
                   ln "$cached_file" "$partial"
                 ) &
                 download_pid=$!
                 while kill -0 "$download_pid" 2>/dev/null; do
-                  cache_now=$(du -sk "$cache_dir" 2>/dev/null | awk '{print $1 * 1024}')
+                  cache_now=$(du -sk "$cache_dir" 2>/dev/null | awk '{printf "%.0f", $1 * 1024}')
                   cache_now=${cache_now:-0}
                   echo "[model-download] PROGRESS model=$label cache_delta_bytes=$((cache_now - cache_before))"
                   sleep 30

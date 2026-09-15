@@ -55,6 +55,12 @@ tests:
       - matchRegex:
           path: spec.template.spec.containers[0].command[2]
           pattern: 'HF_HOME="\$cache_dir"'
+      - matchRegex:
+          path: spec.template.spec.containers[0].command[2]
+          pattern: 'HF_HUB_DISABLE_UPDATE_CHECK=1'
+      - matchRegex:
+          path: spec.template.spec.containers[0].command[2]
+          pattern: "awk '\\{printf \\\"%.0f\\\", \\$1 \\* 1024\\}'"
 
   - it: injects an optional Hugging Face token from an existing Secret
     set:
