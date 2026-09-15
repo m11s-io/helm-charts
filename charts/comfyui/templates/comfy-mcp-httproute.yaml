@@ -1,0 +1,37 @@
+{{- if .Values.comfyMcp.httpRoute.enabled }}
+{{- if not .Values.comfyMcp.enabled }}
+{{- fail "comfyMcp.httpRoute.enabled requires comfyMcp.enabled" }}
+{{- end }}
+{{- if not .Values.comfyMcp.httpRoute.parentRefs }}
+{{- fail "comfyMcp.httpRoute.parentRefs must contain at least one Gateway reference" }}
+{{- end }}
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: {{ include "comfyui.comfyMcpFullname" . }}
+  labels:
+    {{- include "comfyui.labels" . | nindent 4 }}
+    app.kubernetes.io/component: comfy-mcp
+    {{- with .Values.comfyMcp.httpRoute.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  {{- with .Values.comfyMcp.httpRoute.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  parentRefs:
+    {{- toYaml .Values.comfyMcp.httpRoute.parentRefs | nindent 4 }}
+  {{- with .Values.comfyMcp.httpRoute.hostnames }}
+  hostnames:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  rules:
+    - matches:
+        - path:
+            type: Exact
+            value: /mcp
+      backendRefs:
+        - name: {{ include "comfyui.comfyMcpFullname" . }}
+          port: {{ .Values.comfyMcp.service.port }}
+{{- end }}

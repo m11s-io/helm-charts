@@ -55,3 +55,12 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- define "comfyui.modelsClaimName" -}}
 {{- .Values.persistence.existingClaim | default (printf "%s-models" (include "comfyui.fullname" .)) }}
 {{- end }}
+
+{{- define "comfyui.comfyMcpFullname" -}}
+{{- printf "%s-mcp" (include "comfyui.fullname" .) | trunc 63 | trimSuffix "-" }}
+{{- end }}
+
+{{- define "comfyui.comfyMcpSelectorLabels" -}}
+{{ include "comfyui.selectorLabels" . }}
+app.kubernetes.io/component: comfy-mcp
+{{- end }}

@@ -29,6 +29,27 @@ service:
   # service.port is the port the Service listens on
   port: 8188
 
+# comfyMcp optionally deploys the thin MCP + comfy-cli image as a separate
+# HTTP workload. It never shares the ComfyUI container, GPU runtime, or models.
+comfyMcp:
+  enabled: false
+  image:
+    repository: m11s/comfy-mcp
+    tag: "0.2.0"
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 8080
+  resources: {}
+  # Optional Gateway API route for MCP clients. This route sends /mcp directly
+  # to comfy-mcp; no Envoy MCP filter or sidecar is required.
+  httpRoute:
+    enabled: false
+    annotations: {}
+    labels: {}
+    parentRefs: []
+    hostnames: []
+
 serviceAccount:
   # serviceAccount.create specifies whether a ServiceAccount should be created
   create: true

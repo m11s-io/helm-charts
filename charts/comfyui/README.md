@@ -9,6 +9,14 @@ This chart targets a single GPU-bound replica per release; it does not include H
 
 The chart's default GGUF image uses Python 3.14 and includes the pinned ComfyUI-GGUF extension. Python 3.14 is supported by ComfyUI and PyTorch, but community custom nodes may not yet support it; use a custom `image.tag` if a required node needs an older interpreter.
 
+## Optional Comfy MCP HTTP service
+
+Set `comfyMcp.enabled=true` to deploy `m11s/comfy-mcp` separately from ComfyUI.
+It exposes native Streamable HTTP on port 8080 at `/mcp`, with `COMFYUI_URL`
+set to this release's ComfyUI Service. It does not share ComfyUI's GPU runtime
+or model volume. `comfyMcp.httpRoute.enabled=true` adds a direct `/mcp`
+HTTPRoute backend with no MCP proxy filter.
+
 ## Installation
 
 ```bash
