@@ -86,7 +86,8 @@ spec:
                 (
                   cached_file=$(HF_HOME="$cache_dir" HF_HUB_DISABLE_PROGRESS_BARS=1 HF_HUB_DISABLE_UPDATE_CHECK=1 HF_HUB_CACHE="$cache_dir" \
                     hf download "$repo" "$file" --revision "$revision" --cache-dir "$cache_dir" --quiet)
-                  ln "$cached_file" "$partial"
+                  cache_blob=$(readlink -f "$cached_file")
+                  ln "$cache_blob" "$partial"
                 ) &
                 download_pid=$!
                 while kill -0 "$download_pid" 2>/dev/null; do
