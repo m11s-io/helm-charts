@@ -13,7 +13,10 @@ The chart's default GGUF image uses Python 3.14 and includes the pinned ComfyUI-
 
 Set `comfyMcp.enabled=true` to add the thin `m11s/comfy-mcp` image as a sidecar
 in the ComfyUI Pod. It exposes native Streamable HTTP on port 8080 at `/mcp`
-and reaches ComfyUI through `COMFY_LOCAL_URL=http://127.0.0.1:8188`. It does
+and reaches ComfyUI through both `COMFY_LOCAL_URL` and
+`COMFYUI_URL`, set to `http://127.0.0.1:8188`. The first supports local
+inspection; the second ensures workflow and job tools submit to the
+colocated ComfyUI rather than Kubernetes' service-link environment. It does
 not request another GPU or mount the models PVC.
 `comfyMcp.httpRoute.enabled=true` adds a direct `/mcp` HTTPRoute backend with
 no MCP proxy filter.
