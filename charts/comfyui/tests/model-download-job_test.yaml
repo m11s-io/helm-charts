@@ -49,6 +49,9 @@ tests:
       - matchRegex:
           path: spec.template.spec.containers[0].command[2]
           pattern: 'HF_HUB_DISABLE_PROGRESS_BARS=1'
+      - matchRegex:
+          path: spec.template.spec.containers[0].command[2]
+          pattern: 'HF_HOME="\$cache_dir"'
 
   - it: injects an optional Hugging Face token from an existing Secret
     set:

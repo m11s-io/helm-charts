@@ -83,7 +83,7 @@ spec:
                 cache_before=$(du -sk "$cache_dir" 2>/dev/null | awk '{print $1 * 1024}')
                 cache_before=${cache_before:-0}
                 echo "[model-download] FETCH model=$label cache_dir=$cache_dir"
-                HF_HUB_DISABLE_PROGRESS_BARS=1 HF_HUB_CACHE="$cache_dir" \
+                HF_HOME="$cache_dir" HF_HUB_DISABLE_PROGRESS_BARS=1 HF_HUB_CACHE="$cache_dir" \
                   python3.14 - "$repo" "$revision" "$file" "$partial" <<'PY' &
               import os
               import sys
