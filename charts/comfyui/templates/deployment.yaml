@@ -92,6 +92,8 @@ spec:
           env:
             - name: COMFY_LOCAL_URL
               value: http://127.0.0.1:8188
+            - name: COMFYUI_URL
+              value: http://127.0.0.1:8188
             - name: COMFY_MCP_TRANSPORT
               value: streamable-http
             - name: COMFY_MCP_HOST

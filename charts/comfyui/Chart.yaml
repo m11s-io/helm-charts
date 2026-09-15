@@ -2,7 +2,7 @@ apiVersion: v2
 name: comfyui
 description: Helm chart for ComfyUI, a node-based, modular visual AI engine for GPU nodes
 type: application
-version: 0.10.2
+version: 0.10.3
 # renovate: datasource=docker depName=m11s/comfyui
 appVersion: "0.5.4-gguf"
 home: https://github.com/comfyanonymous/ComfyUI
@@ -30,6 +30,8 @@ annotations:
     - name: image source
       url: https://github.com/m11s-io/docker-images
   artifacthub.io/changes: |-
+    - kind: fixed
+      description: "Set COMFYUI_URL for the MCP sidecar so execution and job tools target the colocated ComfyUI despite Kubernetes service-link variables."
     - kind: changed
       description: "Use the thin comfy-mcp image as a loopback sidecar, avoiding a second full CUDA image pull."
     - kind: changed

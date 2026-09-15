@@ -133,6 +133,11 @@ tests:
             name: COMFY_LOCAL_URL
             value: http://127.0.0.1:8188
       - equal:
+          path: spec.template.spec.containers[1].env[1]
+          value:
+            name: COMFYUI_URL
+            value: http://127.0.0.1:8188
+      - equal:
           path: spec.template.spec.containers[1].resources.requests.cpu
           value: 50m
       - notExists:
