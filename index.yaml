@@ -85,6 +85,108 @@ entries:
         url: https://keys.openpgp.org/search?q=hello%40m11s.io
     apiVersion: v2
     appVersion: 0.5.4-gguf
+    created: "2026-09-16T13:39:16.106038353Z"
+    description: Helm chart for ComfyUI, a node-based, modular visual AI engine for
+      GPU nodes
+    digest: f8baebcdde8f2f7d6173446fe50e243734558c80c0393e06f32f028eada5f48a
+    home: https://github.com/comfyanonymous/ComfyUI
+    icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/comfyui.svg
+    maintainers:
+    - name: m11s
+      url: https://m11s.io
+    name: comfyui
+    sources:
+    - https://github.com/comfyanonymous/ComfyUI
+    - https://github.com/m11s-io/docker-images
+    - https://github.com/m11s-io/helm-charts
+    type: application
+    urls:
+    - https://github.com/m11s-io/helm-charts/releases/download/comfyui-0.11.0/comfyui-0.11.0.tgz
+    version: 0.11.0
+  - annotations:
+      artifacthub.io/category: ai-machine-learning
+      artifacthub.io/changes: |-
+        - kind: changed
+          description: "Use the simpler modelDownload.prune boolean setting."
+        - kind: changed
+          description: "Remove the Hugging Face download cache after every successful model-download Job while preserving it after failures for recovery."
+        - kind: added
+          description: "Optionally prune undeclared model files and Hugging Face cache entries after verified model downloads."
+        - kind: added
+          description: "Add independent optional PVCs for generated output, user state, inputs, and temporary execution files."
+        - kind: fixed
+          description: "Set COMFYUI_URL for the MCP sidecar so execution and job tools target the colocated ComfyUI despite Kubernetes service-link variables."
+        - kind: changed
+          description: "Use the thin comfy-mcp image as a loopback sidecar, avoiding a second full CUDA image pull."
+        - kind: changed
+          description: "Raise the model-download Job memory limit to 5Gi for large Hugging Face transfers."
+        - kind: fixed
+          description: "Include GCC and Python development headers required for Triton's CUDA driver compilation."
+        - kind: fixed
+          description: "Create the non-root comfyui user's home directory so Triton can compile and cache CUDA helpers."
+        - kind: fixed
+          description: "Resolve hf download snapshot symlinks before hard-linking verified models into ComfyUI paths."
+        - kind: fixed
+          description: "Keep model-download progress counters as shell-compatible integers after the cache exceeds 2 GB."
+        - kind: fixed
+          description: "Disable Hugging Face CLI update hints in model-download Job logs."
+        - kind: changed
+          description: "Use the baked-in hf download CLI for model-download Jobs."
+        - kind: fixed
+          description: "Allocate sufficient memory for hf_xet's large-file download buffers in model-download Jobs."
+        - kind: fixed
+          description: "Store hf_xet state under the writable models PVC when model-download Jobs use the ComfyUI image."
+        - kind: added
+          description: "Allow model-download Jobs to use an optional Hugging Face token from an existing Kubernetes Secret."
+        - kind: changed
+          description: "Use huggingface_hub with pinned source revisions and a persistent cache for model-download Jobs."
+        - kind: changed
+          description: "Make model-download Job logs explicit and periodic, including model names, byte counts, transfer metrics, and checksum status."
+        - kind: removed
+          description: "Remove the optional nfsModels second-store feature; use persistence.storageClassName for the chart's single, storage-agnostic models PVC."
+        - kind: added
+          description: "Add an optional, checksummed model-download Job for fetching ComfyUI models directly into the persistent models PVC."
+        - kind: fixed
+          description: "Use the matched cu130 Torch 2.14.0, TorchVision 0.29.0, and TorchAudio 2.11.0 wheels; TorchAudio has no cu132 wheel and otherwise fails at startup with a CUDA ABI mismatch."
+        - kind: changed
+          description: "Bump to m11s/comfyui:0.5.0: CUDA 13.3.1 runtime base, torch 2.14.0/torchvision 0.29.0 (cu132), and ComfyUI v0.35.1 (from v0.28.2). New tag rather than reusing 0.4.0, since IfNotPresent-pulling nodes wouldn't otherwise see the change"
+        - kind: changed
+          description: "Bump to m11s/comfyui:0.4.0, adding the ComfyUI-GGUF custom node for GGUF-quantized model loaders (UnetLoaderGGUF, DualCLIPLoaderGGUF) alongside the existing safetensors loaders"
+        - kind: fixed
+          description: "Default strategy.type to Recreate (0.4.0-0.4.1 had a broken null-clearing branch for an existing object's leftover rollingUpdate field; a one-time delete+recreate of the live Deployment is the actual fix for that transition)"
+        - kind: added
+          description: "Add optional nfsModels PVC for splitting model categories (e.g. loras, embeddings) onto shared/NFS storage, wired in via a generated extra_model_paths.yaml"
+        - kind: fixed
+          description: "Drop --disable-cuda-malloc (m11s/comfyui:0.3.1): the allocator was never the cause of the startup hang, which was actually a missing NodeLocal DNS Cache on the ai cluster's GPU nodes"
+        - kind: fixed
+          description: "Run with --disable-cuda-malloc (m11s/comfyui:0.3.0) to fix a startup hang caused by torch's cudaMallocAsync allocator on CUDA 13.0 + torch 2.11"
+        - kind: fixed
+          description: "Revert PYTORCH_CUDA_ALLOC_CONF override: it crashes the CUDA 13.0 + torch 2.11 image at import instead of fixing the startup hang"
+        - kind: changed
+          description: "Upgrade image to CUDA 13.0 runtime base (m11s/comfyui:0.2.0)"
+        - kind: added
+          description: "Initial chart release"
+        - kind: fixed
+          description: "Fix broken icon URL (previously pointed at a nonexistent screenshot path)"
+        - kind: changed
+          description: "Broaden description from image/video generation to visual AI, matching upstream's own framing"
+        - kind: added
+          description: "Set artifacthub.io/category to ai-machine-learning"
+      artifacthub.io/containersImages: |
+        - name: comfyui
+          image: m11s/comfyui:0.5.4-gguf
+        - name: comfy-mcp
+          image: m11s/comfy-mcp:0.2.2
+      artifacthub.io/links: |
+        - name: source
+          url: https://github.com/comfyanonymous/ComfyUI
+        - name: image source
+          url: https://github.com/m11s-io/docker-images
+      artifacthub.io/signKey: |
+        fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
+        url: https://keys.openpgp.org/search?q=hello%40m11s.io
+    apiVersion: v2
+    appVersion: 0.5.4-gguf
     created: "2026-09-16T11:52:02.673587862Z"
     description: Helm chart for ComfyUI, a node-based, modular visual AI engine for
       GPU nodes
@@ -2495,6 +2597,41 @@ entries:
           image: m11s/decap-cms:0.2.11-s3
         - name: s3-upload-proxy
           image: m11s/s3-upload-proxy:0.1.3
+      artifacthub.io/links: |
+        - name: source
+          url: https://github.com/decaporg/decap-cms
+      artifacthub.io/signKey: |
+        fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
+        url: https://keys.openpgp.org/search?q=hello%40m11s.io
+    apiVersion: v2
+    appVersion: 0.2.11-s3
+    created: "2026-09-16T13:39:16.284746032Z"
+    description: Multi-tenant Decap CMS with optional S3/MinIO upload proxy, served
+      by path prefix
+    digest: 1a1a4b33b25f2a80ed4b64d95f204fe9e95457bb014d2bf502c764ba66131606
+    home: https://decapcms.org
+    icon: https://decapcms.org/img/decap-logo.svg
+    maintainers:
+    - name: m11s
+      url: https://m11s.io
+    name: decap-cms
+    sources:
+    - https://github.com/decaporg/decap-cms
+    - https://github.com/m11s-io/docker-images
+    - https://github.com/m11s-io/helm-charts
+    type: application
+    urls:
+    - https://github.com/m11s-io/helm-charts/releases/download/decap-cms-0.4.0/decap-cms-0.4.0.tgz
+    version: 0.4.0
+  - annotations:
+      artifacthub.io/changes: |-
+        - kind: fixed
+          description: "Encode uploaded object URLs so filenames with spaces render correctly in Markdown"
+      artifacthub.io/containersImages: |
+        - name: decap-cms
+          image: m11s/decap-cms:0.2.11-s3
+        - name: s3-upload-proxy
+          image: m11s/s3-upload-proxy:0.1.3
       artifacthub.io/signKey: |
         fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
         url: https://keys.openpgp.org/search?q=hello%40m11s.io
@@ -3163,6 +3300,39 @@ entries:
         url: https://keys.openpgp.org/search?q=hello%40m11s.io
     apiVersion: v2
     appVersion: 0.1.0
+    created: "2026-09-16T13:39:16.518352673Z"
+    description: Helm chart for dub self-hosted URL shortener
+    digest: 7b4290d7a21cba4be3583d9af153d357c1fead40a1b9527b0d325a2df646c53c
+    home: https://dub.co
+    icon: https://assets.dub.co/brand/logo.svg
+    maintainers:
+    - name: m11s
+      url: https://m11s.io
+    name: dub
+    sources:
+    - https://github.com/dubinc/dub
+    - https://github.com/m11s-io/helm-charts
+    type: application
+    urls:
+    - https://github.com/m11s-io/helm-charts/releases/download/dub-0.2.0/dub-0.2.0.tgz
+    version: 0.2.0
+  - annotations:
+      artifacthub.io/changes: |-
+        - kind: added
+          description: "Initial chart release"
+      artifacthub.io/containersImages: |
+        - name: dub
+          image: m11s/dub:0.1.0
+      artifacthub.io/links: |
+        - name: source
+          url: https://github.com/dubinc/dub
+        - name: docs
+          url: https://dub.co/docs/self-hosting
+      artifacthub.io/signKey: |
+        fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
+        url: https://keys.openpgp.org/search?q=hello%40m11s.io
+    apiVersion: v2
+    appVersion: 0.1.0
     created: "2026-06-29T07:34:30.033718219Z"
     description: Helm chart for dub self-hosted URL shortener
     digest: a94ee2caed40c18ca0dff88cdaa7081c2c65bdb80a2e81a97ecd6fc104bcab4c
@@ -3246,6 +3416,34 @@ entries:
     - https://github.com/m11s-io/helm-charts/releases/download/dub-0.1.0/dub-0.1.0.tgz
     version: 0.1.0
   fider:
+  - annotations:
+      artifacthub.io/containersImages: |
+        - name: fider
+          image: getfider/fider:v0.36.0
+      artifacthub.io/links: |
+        - name: source
+          url: https://github.com/getfider/fider
+      artifacthub.io/signKey: |
+        fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
+        url: https://keys.openpgp.org/search?q=hello%40m11s.io
+    apiVersion: v2
+    appVersion: v0.36.0
+    created: "2026-09-16T13:39:16.791482793Z"
+    description: Helm chart for Fider self-hosted user feedback platform
+    digest: 91ba70a487e9e15529d79846eafa378cc53b6b683062b07da42f27fd28a2f271
+    home: https://fider.io
+    icon: https://raw.githubusercontent.com/getfider/fider/main/favicon.png
+    maintainers:
+    - name: m11s
+      url: https://m11s.io
+    name: fider
+    sources:
+    - https://github.com/getfider/fider
+    - https://github.com/m11s-io/helm-charts
+    type: application
+    urls:
+    - https://github.com/m11s-io/helm-charts/releases/download/fider-0.4.0/fider-0.4.0.tgz
+    version: 0.4.0
   - annotations:
       artifacthub.io/containersImages: |
         - name: fider
@@ -3421,6 +3619,26 @@ entries:
       artifacthub.io/license: Apache-2.0
     apiVersion: v2
     appVersion: 2026.3.1
+    created: "2026-09-16T13:39:17.034887971Z"
+    description: Deploy OpenVINO Model Server for any supported task
+    digest: 457a1dde13e93161fbd718e1a983f083a450ad2a8f1f6d5a9400798fa34392f7
+    home: https://github.com/m11s-io/helm-charts/tree/main/charts/ovms
+    icon: https://cdn-avatars.huggingface.co/v1/production/uploads/1671615670447-6346651be2dcb5422bcd13dd.png
+    maintainers:
+    - name: m11s
+      url: https://github.com/m11s-io
+    name: ovms
+    sources:
+    - https://github.com/openvinotoolkit/model_server
+    - https://huggingface.co/OpenVINO
+    type: application
+    urls:
+    - https://github.com/m11s-io/helm-charts/releases/download/ovms-0.3.0/ovms-0.3.0.tgz
+    version: 0.3.0
+  - annotations:
+      artifacthub.io/license: Apache-2.0
+    apiVersion: v2
+    appVersion: 2026.3.1
     created: "2026-09-14T19:42:46.621456981Z"
     description: Deploy OpenVINO Model Server for any supported task
     digest: a4bc77fd08fd415b5d20c75407c956cc8d1860eedb4e684fc5ecefccce0e1058
@@ -3492,6 +3710,49 @@ entries:
     - https://github.com/m11s-io/helm-charts/releases/download/ovms-0.1.0/ovms-0.1.0.tgz
     version: 0.1.0
   searxng:
+  - annotations:
+      artifacthub.io/category: networking
+      artifacthub.io/changes: |-
+        - kind: fixed
+          description: "Disable ServiceAccount token automount; SearXNG never calls the Kubernetes API"
+        - kind: added
+          description: "Initial chart release"
+      artifacthub.io/containersImages: |
+        - name: searxng
+          image: searxng/searxng:2026.9.12-56b1f6454
+        - name: valkey
+          image: docker.io/valkey/valkey:9.1.2
+      artifacthub.io/links: |
+        - name: source
+          url: https://github.com/searxng/searxng
+        - name: docs
+          url: https://docs.searxng.org/
+      artifacthub.io/signKey: |
+        fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
+        url: https://keys.openpgp.org/search?q=hello%40m11s.io
+    apiVersion: v2
+    appVersion: 2026.9.15-ca4965040
+    created: "2026-09-16T13:39:17.233060364Z"
+    dependencies:
+    - condition: valkey.enabled
+      name: valkey
+      repository: https://valkey.io/valkey-helm/
+      version: ~0.12.0
+    description: Helm chart for SearXNG, a privacy-respecting metasearch engine
+    digest: d3a4c971c1779f84d558676b4c6efc1e933dd681403cf973de63b1182764805f
+    home: https://searxng.org
+    icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/searxng.svg
+    maintainers:
+    - name: m11s
+      url: https://m11s.io
+    name: searxng
+    sources:
+    - https://github.com/searxng/searxng
+    - https://github.com/m11s-io/helm-charts
+    type: application
+    urls:
+    - https://github.com/m11s-io/helm-charts/releases/download/searxng-0.3.0/searxng-0.3.0.tgz
+    version: 0.3.0
   - annotations:
       artifacthub.io/category: networking
       artifacthub.io/changes: |-
@@ -3749,6 +4010,41 @@ entries:
     - https://github.com/m11s-io/helm-charts/releases/download/searxng-0.1.0/searxng-0.1.0.tgz
     version: 0.1.0
   shlink:
+  - annotations:
+      artifacthub.io/changes: |-
+        - kind: changed
+          description: "Bump Shlink to 5.1.6"
+        - kind: fixed
+          description: "Fix service selector to exclude web-client pods (app.kubernetes.io/component: api)"
+      artifacthub.io/containersImages: |
+        - name: shlink
+          image: shlinkio/shlink:5.1.6
+      artifacthub.io/links: |
+        - name: source
+          url: https://github.com/shlinkio/shlink
+        - name: docs
+          url: https://shlink.io/documentation/install-docker-image/
+      artifacthub.io/signKey: |
+        fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
+        url: https://keys.openpgp.org/search?q=hello%40m11s.io
+    apiVersion: v2
+    appVersion: 5.1.6
+    created: "2026-09-16T13:39:17.425295834Z"
+    description: Helm chart for Shlink self-hosted URL shortener
+    digest: daf87c7e55be786be01bf93047b7ff648919f1175adb0e86de4d150582570c3f
+    home: https://shlink.io
+    icon: https://shlink.io/images/shlink-logo-blue.svg
+    maintainers:
+    - name: m11s
+      url: https://m11s.io
+    name: shlink
+    sources:
+    - https://github.com/shlinkio/shlink
+    - https://github.com/m11s-io/helm-charts
+    type: application
+    urls:
+    - https://github.com/m11s-io/helm-charts/releases/download/shlink-0.3.0/shlink-0.3.0.tgz
+    version: 0.3.0
   - annotations:
       artifacthub.io/changes: |-
         - kind: changed
@@ -4078,6 +4374,38 @@ entries:
         url: https://keys.openpgp.org/search?q=hello%40m11s.io
     apiVersion: v2
     appVersion: v1.12.0
+    created: "2026-09-16T13:39:17.57982284Z"
+    description: Helm chart for whoami, a tiny HTTP server that prints OS info and
+      HTTP request details
+    digest: 47adf544bd2a694158c2dc0844145784eda28a1dfcabbb6b4bd444b3380462e7
+    home: https://github.com/traefik/whoami
+    icon: https://www.gravatar.com/avatar/27caca9bcd7fd7f7412ca5255c9ae2d0?s=120&r=g&d=404
+    maintainers:
+    - name: m11s
+      url: https://m11s.io
+    name: whoami
+    sources:
+    - https://github.com/traefik/whoami
+    - https://github.com/m11s-io/helm-charts
+    type: application
+    urls:
+    - https://github.com/m11s-io/helm-charts/releases/download/whoami-0.3.0/whoami-0.3.0.tgz
+    version: 0.3.0
+  - annotations:
+      artifacthub.io/changes: |-
+        - kind: added
+          description: "Add helm-unittest tests and ci values"
+      artifacthub.io/containersImages: |
+        - name: whoami
+          image: traefik/whoami:v1.12.0
+      artifacthub.io/links: |
+        - name: source
+          url: https://github.com/traefik/whoami
+      artifacthub.io/signKey: |
+        fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
+        url: https://keys.openpgp.org/search?q=hello%40m11s.io
+    apiVersion: v2
+    appVersion: v1.12.0
     created: "2026-09-14T19:34:43.033535003Z"
     description: Helm chart for whoami, a tiny HTTP server that prints OS info and
       HTTP request details
@@ -4290,4 +4618,4 @@ entries:
     urls:
     - https://github.com/m11s-io/helm-charts/releases/download/whoami-0.1.0/whoami-0.1.0.tgz
     version: 0.1.0
-generated: "2026-09-16T11:52:02.673920927Z"
+generated: "2026-09-16T13:39:17.58026711Z"
