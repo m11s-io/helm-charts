@@ -5,21 +5,18 @@
 
 [ComfyUI](https://github.com/comfyanonymous/ComfyUI) is a modular, node-based visual AI engine — image, video, audio, and 3D generation, not just Stable Diffusion. Upstream publishes no official container image, so this chart deploys [m11s/comfyui](https://github.com/m11s-io/docker-images/tree/main/comfyui), built from ComfyUI source on a CUDA runtime base.
 
-This chart targets a single GPU-bound replica per release; it does not include HPA or PodDisruptionBudget resources. `strategy` defaults to `Recreate` rather than Kubernetes' default `RollingUpdate`, since GPU nodes typically expose exactly one `nvidia.com/gpu` and RollingUpdate's create-before-destroy behavior deadlocks — the new pod can never schedule while the old one still holds the only GPU.
+This chart targets a single GPU-bound replica per release and uses the `Recreate`
+update strategy by default, which is suited to nodes with one GPU.
 
-The chart's default GGUF image uses Python 3.14 and includes the pinned ComfyUI-GGUF extension. Python 3.14 is supported by ComfyUI and PyTorch, but community custom nodes may not yet support it; use a custom `image.tag` if a required node needs an older interpreter.
+The default image includes the ComfyUI-GGUF extension. Use a custom `image.tag`
+if a required custom node needs a different runtime.
 
 ## Optional Comfy MCP HTTP service
 
-Set `comfyMcp.enabled=true` to add the thin `m11s/comfy-mcp` image as a sidecar
-in the ComfyUI Pod. It exposes native Streamable HTTP on port 8080 at `/mcp`
-and reaches ComfyUI through both `COMFY_LOCAL_URL` and
-`COMFYUI_URL`, set to `http://127.0.0.1:8188`. The first supports local
-inspection; the second ensures workflow and job tools submit to the
-colocated ComfyUI rather than Kubernetes' service-link environment. It does
-not request another GPU or mount the models PVC.
-`comfyMcp.httpRoute.enabled=true` adds a direct `/mcp` HTTPRoute backend with
-no MCP proxy filter.
+Set `comfyMcp.enabled=true` to add an MCP sidecar to the ComfyUI Pod. It
+exposes Streamable HTTP at `/mcp`, connects directly to the colocated ComfyUI,
+and does not request another GPU. Set `comfyMcp.httpRoute.enabled=true` to
+expose that endpoint through a Gateway API HTTPRoute.
 
 ## Installation
 
@@ -63,9 +60,9 @@ GPU scheduling (`runtimeClassName`, `nodeSelector`, `tolerations`, `resources`) 
 | `modelDownload.huggingFaceToken.key` | Key in that Secret containing the token | `token` |
 | `modelDownload.backoffLimit` | Maximum downloader Job retries | `3` |
 | `modelDownload.models` | Model entries with relative destination, HF repo/file/revision, and SHA-256 hash | `[]` |
-| `modelDownload.prune.enabled` | After all downloads verify, remove unlisted files from the top-level model directories represented in `models` | `false` |
-| `modelDownload.resources` | CPU and memory requests/limits for the downloader Job; defaults reserve 512Mi and allow 5Gi for `hf_xet` buffers | `{requests: ..., limits: ...}` |
-| `modelDownload.ttlSecondsAfterFinished` | Optional TTL for completed Jobs; unset by default for Argo CD reconciliation | `null` |
+| `modelDownload.prune.enabled` | After successful downloads, remove model files not listed in `models` | `false` |
+| `modelDownload.resources` | CPU and memory requests/limits for the downloader Job | `{requests: ..., limits: ...}` |
+| `modelDownload.ttlSecondsAfterFinished` | Optional TTL for completed Jobs | `null` |
 | `httpRoute.enabled` | Enable a Gateway API HTTPRoute | `false` |
 | `httpRoute.parentRefs` | Gateways the HTTPRoute attaches to; required when enabled | `[]` |
 | `httpRoute.hostnames` | Hostnames the HTTPRoute matches | `[]` |
@@ -95,28 +92,19 @@ userPersistence:
 
 ## Downloading models into the PVC
 
-`modelDownload` renders a one-shot Kubernetes Job that uses the official
+`modelDownload` creates a one-shot Kubernetes Job that uses the official
 [`hf download` CLI](https://huggingface.co/docs/huggingface_hub/guides/cli#hf-download)
-to fetch model files directly into the persistent models PVC. Each destination
-is relative to `persistence.mountPath`; the Hub cache stays on that PVC so
-interrupted downloads resume, and the cached blob is hard-linked into the
-requested ComfyUI path only after its configured SHA-256 verifies. Pin every
-`revision` to the source repository's 40-character commit SHA. The Job inherits
-the chart's node selector, affinity, tolerations, and pod security context, so
-it can safely share a node-local ReadWriteOnce models PVC with ComfyUI.
+to fetch model files into the persistent models PVC. Each destination is
+relative to `persistence.mountPath`. Pin every `revision` to the source
+repository's 40-character commit SHA and provide its SHA-256 hash.
 
-Set `modelDownload.prune.enabled` only when `models` is the complete desired
-state for every top-level directory it names. Pruning occurs after all model
-downloads verify, and affects only those directories; unrelated model
-directories are not touched. The Job always removes its Hugging Face cache
-after all downloads verify. Destination files are hard-linked first, so this
-reclaims only temporary/stale cache blobs; a failed Job exits before cleanup
-so its cache remains available for recovery.
+`modelDownload.prune.enabled` is disabled by default. When enabled, the Job
+removes model files not listed in `modelDownload.models` after all configured
+downloads complete successfully.
 
 For private or gated repositories, or to use Hugging Face's authenticated rate
 limit, create a [fine-grained read token](https://huggingface.co/docs/hub/security-tokens)
-in a Kubernetes Secret outside Helm and configure its name and key. The token
-is injected only into the downloader Job as `HF_TOKEN`.
+in a Kubernetes Secret outside Helm and configure its name and key.
 
 ```yaml
 modelDownload:
@@ -143,7 +131,8 @@ modelDownload:
 
 ## Probes
 
-ComfyUI's HTTP listener comes up before models finish loading, so probes use `/system_stats` rather than a bare TCP or `/` check. `startupProbe` is tuned for a multi-minute cold start (`failureThreshold: 30` at 10s intervals, ~5 minutes) so `livenessProbe` doesn't restart the pod mid model-load.
+ComfyUI can take several minutes to load models. The default probes allow for
+that cold start before liveness checks begin.
 
 ## Example: GPU node with dedicated model storage
 
