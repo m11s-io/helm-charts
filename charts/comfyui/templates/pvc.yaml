@@ -15,3 +15,75 @@ spec:
   storageClassName: {{ . | quote }}
   {{- end }}
 {{- end }}
+---
+{{- if and .Values.inputPersistence.enabled (not .Values.inputPersistence.existingClaim) }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "comfyui.inputClaimName" . }}
+  labels:
+    {{- include "comfyui.labels" . | nindent 4 }}
+spec:
+  accessModes:
+    - {{ .Values.inputPersistence.accessMode }}
+  resources:
+    requests:
+      storage: {{ .Values.inputPersistence.size | quote }}
+  {{- with .Values.inputPersistence.storageClassName }}
+  storageClassName: {{ . | quote }}
+  {{- end }}
+{{- end }}
+---
+{{- if and .Values.tempPersistence.enabled (not .Values.tempPersistence.existingClaim) }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "comfyui.tempClaimName" . }}
+  labels:
+    {{- include "comfyui.labels" . | nindent 4 }}
+spec:
+  accessModes:
+    - {{ .Values.tempPersistence.accessMode }}
+  resources:
+    requests:
+      storage: {{ .Values.tempPersistence.size | quote }}
+  {{- with .Values.tempPersistence.storageClassName }}
+  storageClassName: {{ . | quote }}
+  {{- end }}
+{{- end }}
+---
+{{- if and .Values.outputPersistence.enabled (not .Values.outputPersistence.existingClaim) }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "comfyui.outputClaimName" . }}
+  labels:
+    {{- include "comfyui.labels" . | nindent 4 }}
+spec:
+  accessModes:
+    - {{ .Values.outputPersistence.accessMode }}
+  resources:
+    requests:
+      storage: {{ .Values.outputPersistence.size | quote }}
+  {{- with .Values.outputPersistence.storageClassName }}
+  storageClassName: {{ . | quote }}
+  {{- end }}
+{{- end }}
+---
+{{- if and .Values.userPersistence.enabled (not .Values.userPersistence.existingClaim) }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "comfyui.userClaimName" . }}
+  labels:
+    {{- include "comfyui.labels" . | nindent 4 }}
+spec:
+  accessModes:
+    - {{ .Values.userPersistence.accessMode }}
+  resources:
+    requests:
+      storage: {{ .Values.userPersistence.size | quote }}
+  {{- with .Values.userPersistence.storageClassName }}
+  storageClassName: {{ . | quote }}
+  {{- end }}
+{{- end }}

@@ -56,6 +56,26 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- .Values.persistence.existingClaim | default (printf "%s-models" (include "comfyui.fullname" .)) }}
 {{- end }}
 
+{{/* comfyui.outputClaimName returns the PVC name for generated output */}}
+{{- define "comfyui.outputClaimName" -}}
+{{- .Values.outputPersistence.existingClaim | default (printf "%s-output" (include "comfyui.fullname" .)) }}
+{{- end }}
+
+{{/* comfyui.userClaimName returns the PVC name for user state */}}
+{{- define "comfyui.userClaimName" -}}
+{{- .Values.userPersistence.existingClaim | default (printf "%s-user" (include "comfyui.fullname" .)) }}
+{{- end }}
+
+{{/* comfyui.inputClaimName returns the PVC name for uploaded inputs */}}
+{{- define "comfyui.inputClaimName" -}}
+{{- .Values.inputPersistence.existingClaim | default (printf "%s-input" (include "comfyui.fullname" .)) }}
+{{- end }}
+
+{{/* comfyui.tempClaimName returns the PVC name for temporary execution files */}}
+{{- define "comfyui.tempClaimName" -}}
+{{- .Values.tempPersistence.existingClaim | default (printf "%s-temp" (include "comfyui.fullname" .)) }}
+{{- end }}
+
 {{- define "comfyui.comfyMcpFullname" -}}
 {{- printf "%s-mcp" (include "comfyui.fullname" .) | trunc 63 | trimSuffix "-" }}
 {{- end }}

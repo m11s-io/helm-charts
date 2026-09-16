@@ -1,3 +1,12 @@
+{{- $persistencePaths := dict }}
+{{- range $name, $config := dict "persistence" .Values.persistence "outputPersistence" .Values.outputPersistence "userPersistence" .Values.userPersistence "inputPersistence" .Values.inputPersistence "tempPersistence" .Values.tempPersistence }}
+{{- if $config.enabled }}
+{{- if hasKey $persistencePaths $config.mountPath }}
+{{- fail (printf "%s.mountPath and %s.mountPath must differ" (get $persistencePaths $config.mountPath) $name) }}
+{{- end }}
+{{- $_ := set $persistencePaths $config.mountPath $name }}
+{{- end }}
+{{- end }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -73,10 +82,28 @@ spec:
           {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          {{- if .Values.persistence.enabled }}
+          {{- if or .Values.persistence.enabled .Values.outputPersistence.enabled .Values.userPersistence.enabled .Values.inputPersistence.enabled .Values.tempPersistence.enabled }}
           volumeMounts:
+            {{- if .Values.persistence.enabled }}
             - name: models
               mountPath: {{ .Values.persistence.mountPath }}
+            {{- end }}
+            {{- if .Values.outputPersistence.enabled }}
+            - name: output
+              mountPath: {{ .Values.outputPersistence.mountPath }}
+            {{- end }}
+            {{- if .Values.userPersistence.enabled }}
+            - name: user
+              mountPath: {{ .Values.userPersistence.mountPath }}
+            {{- end }}
+            {{- if .Values.inputPersistence.enabled }}
+            - name: input
+              mountPath: {{ .Values.inputPersistence.mountPath }}
+            {{- end }}
+            {{- if .Values.tempPersistence.enabled }}
+            - name: temp
+              mountPath: {{ .Values.tempPersistence.mountPath }}
+            {{- end }}
           {{- end }}
         {{- if .Values.comfyMcp.enabled }}
         - name: comfy-mcp
@@ -109,11 +136,33 @@ spec:
           resources:
             {{- toYaml .Values.comfyMcp.resources | nindent 12 }}
         {{- end }}
-      {{- if .Values.persistence.enabled }}
+      {{- if or .Values.persistence.enabled .Values.outputPersistence.enabled .Values.userPersistence.enabled .Values.inputPersistence.enabled .Values.tempPersistence.enabled }}
       volumes:
+        {{- if .Values.persistence.enabled }}
         - name: models
           persistentVolumeClaim:
             claimName: {{ include "comfyui.modelsClaimName" . }}
+        {{- end }}
+        {{- if .Values.outputPersistence.enabled }}
+        - name: output
+          persistentVolumeClaim:
+            claimName: {{ include "comfyui.outputClaimName" . }}
+        {{- end }}
+        {{- if .Values.userPersistence.enabled }}
+        - name: user
+          persistentVolumeClaim:
+            claimName: {{ include "comfyui.userClaimName" . }}
+        {{- end }}
+        {{- if .Values.inputPersistence.enabled }}
+        - name: input
+          persistentVolumeClaim:
+            claimName: {{ include "comfyui.inputClaimName" . }}
+        {{- end }}
+        {{- if .Values.tempPersistence.enabled }}
+        - name: temp
+          persistentVolumeClaim:
+            claimName: {{ include "comfyui.tempClaimName" . }}
+        {{- end }}
       {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:

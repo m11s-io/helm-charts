@@ -57,6 +57,34 @@ tests:
           path: spec.template.spec.volumes[0].persistentVolumeClaim.claimName
           value: my-existing-pvc
 
+  - it: mounts independently configurable output, user, input, and temporary PVCs
+    set:
+      outputPersistence:
+        enabled: true
+        existingClaim: output-pvc
+      userPersistence:
+        enabled: true
+        existingClaim: user-pvc
+      inputPersistence:
+        enabled: true
+        existingClaim: input-pvc
+      tempPersistence:
+        enabled: true
+        existingClaim: temp-pvc
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].volumeMounts[0]
+          value: {name: output, mountPath: /app/output}
+      - equal:
+          path: spec.template.spec.containers[0].volumeMounts[3]
+          value: {name: temp, mountPath: /app/temp}
+      - equal:
+          path: spec.template.spec.volumes[0].persistentVolumeClaim.claimName
+          value: output-pvc
+      - equal:
+          path: spec.template.spec.volumes[3].persistentVolumeClaim.claimName
+          value: temp-pvc
+
   - it: defaults to Recreate strategy
     asserts:
       - equal:

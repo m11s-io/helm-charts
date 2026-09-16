@@ -220,6 +220,50 @@
                 }
             }
         },
+        "outputPersistence": {
+            "type": "object",
+            "properties": {
+                "accessMode": {"type": "string"},
+                "enabled": {"type": "boolean"},
+                "existingClaim": {"type": "string"},
+                "mountPath": {"type": "string"},
+                "size": {"type": "string"},
+                "storageClassName": {"type": "string"}
+            }
+        },
+        "userPersistence": {
+            "type": "object",
+            "properties": {
+                "accessMode": {"type": "string"},
+                "enabled": {"type": "boolean"},
+                "existingClaim": {"type": "string"},
+                "mountPath": {"type": "string"},
+                "size": {"type": "string"},
+                "storageClassName": {"type": "string"}
+            }
+        },
+        "inputPersistence": {
+            "type": "object",
+            "properties": {
+                "accessMode": {"type": "string"},
+                "enabled": {"type": "boolean"},
+                "existingClaim": {"type": "string"},
+                "mountPath": {"type": "string"},
+                "size": {"type": "string"},
+                "storageClassName": {"type": "string"}
+            }
+        },
+        "tempPersistence": {
+            "type": "object",
+            "properties": {
+                "accessMode": {"type": "string"},
+                "enabled": {"type": "boolean"},
+                "existingClaim": {"type": "string"},
+                "mountPath": {"type": "string"},
+                "size": {"type": "string"},
+                "storageClassName": {"type": "string"}
+            }
+        },
         "podAnnotations": {
             "type": "object"
         },

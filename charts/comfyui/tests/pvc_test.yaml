@@ -1,0 +1,24 @@
+suite: comfyui persistence PVCs
+templates:
+  - pvc.yaml
+
+tests:
+  - it: creates a PVC for each enabled configured store
+    set:
+      persistence.enabled: true
+      outputPersistence.enabled: true
+      userPersistence.enabled: true
+      inputPersistence.enabled: true
+      tempPersistence.enabled: true
+    asserts:
+      - hasDocuments:
+          count: 5
+
+  - it: does not create a PVC when an existing claim is used
+    set:
+      outputPersistence:
+        enabled: true
+        existingClaim: output-s3
+    asserts:
+      - hasDocuments:
+          count: 0

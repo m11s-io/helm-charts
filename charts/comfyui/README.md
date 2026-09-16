@@ -53,6 +53,10 @@ GPU scheduling (`runtimeClassName`, `nodeSelector`, `tolerations`, `resources`) 
 | `persistence.accessMode` | PVC access mode | `ReadWriteOnce` |
 | `persistence.size` | PVC storage request | `200Gi` |
 | `persistence.mountPath` | Where the models volume is mounted | `/app/models` |
+| `outputPersistence.*` | Optional PVC for generated images; supports `enabled`, `existingClaim`, `storageClassName`, `accessMode`, `size`, and `mountPath` | disabled; `/app/output` |
+| `userPersistence.*` | Optional PVC for user settings and workflows; supports the same fields | disabled; `/app/user` |
+| `inputPersistence.*` | Optional PVC for uploaded workflow inputs; supports the same fields | disabled; `/app/input` |
+| `tempPersistence.*` | Optional PVC for intermediate execution files and previews; supports the same fields | disabled; `/app/temp` |
 | `modelDownload.enabled` | Create a Job to download models into the persistent PVC | `false` |
 | `modelDownload.image` | Optional downloader image; empty uses the ComfyUI workload image | `""` |
 | `modelDownload.huggingFaceToken.existingSecret` | Optional existing Secret with an HF read token | `""` |
@@ -69,13 +73,23 @@ GPU scheduling (`runtimeClassName`, `nodeSelector`, `tolerations`, `resources`) 
 
 ## Persistence
 
-Without `persistence.enabled`, downloaded models, LoRAs, and checkpoints do not survive pod restarts. The chart mounts a single PVC at `persistence.mountPath` (default `/app/models`); ComfyUI's `output`, `input`, and `user` directories stay on the container filesystem, since this chart targets one replica per release rather than a horizontally-scaled deployment.
+`persistence` retains models, LoRAs, and checkpoints at `/app/models`. Four independent optional stores can retain ComfyUI runtime data: `outputPersistence` for generated images, `userPersistence` for settings and workflows, `inputPersistence` for uploaded files, and `tempPersistence` for intermediate files and previews. All are disabled by default, so only configured paths receive a PVC; input and temp normally stay ephemeral.
 
 ```yaml
 persistence:
   enabled: true
   storageClassName: local-path
   size: 200Gi
+
+# For an S3/MinIO CSI-backed claim, reuse the claim rather than create one.
+outputPersistence:
+  enabled: true
+  existingClaim: comfyui-output-s3
+
+userPersistence:
+  enabled: true
+  storageClassName: local-path
+  size: 5Gi
 ```
 
 ## Downloading models into the PVC
