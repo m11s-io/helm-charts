@@ -63,6 +63,7 @@ GPU scheduling (`runtimeClassName`, `nodeSelector`, `tolerations`, `resources`) 
 | `modelDownload.huggingFaceToken.key` | Key in that Secret containing the token | `token` |
 | `modelDownload.backoffLimit` | Maximum downloader Job retries | `3` |
 | `modelDownload.models` | Model entries with relative destination, HF repo/file/revision, and SHA-256 hash | `[]` |
+| `modelDownload.prune.enabled` | After all downloads verify, remove unlisted files from the top-level model directories represented in `models` | `false` |
 | `modelDownload.resources` | CPU and memory requests/limits for the downloader Job; defaults reserve 512Mi and allow 5Gi for `hf_xet` buffers | `{requests: ..., limits: ...}` |
 | `modelDownload.ttlSecondsAfterFinished` | Optional TTL for completed Jobs; unset by default for Argo CD reconciliation | `null` |
 | `httpRoute.enabled` | Enable a Gateway API HTTPRoute | `false` |
@@ -104,6 +105,14 @@ requested ComfyUI path only after its configured SHA-256 verifies. Pin every
 the chart's node selector, affinity, tolerations, and pod security context, so
 it can safely share a node-local ReadWriteOnce models PVC with ComfyUI.
 
+Set `modelDownload.prune.enabled` only when `models` is the complete desired
+state for every top-level directory it names. Pruning occurs after all model
+downloads verify, and affects only those directories; unrelated model
+directories are not touched. The Job always removes its Hugging Face cache
+after all downloads verify. Destination files are hard-linked first, so this
+reclaims only temporary/stale cache blobs; a failed Job exits before cleanup
+so its cache remains available for recovery.
+
 For private or gated repositories, or to use Hugging Face's authenticated rate
 limit, create a [fine-grained read token](https://huggingface.co/docs/hub/security-tokens)
 in a Kubernetes Secret outside Helm and configure its name and key. The token
@@ -122,6 +131,8 @@ persistence:
 
 modelDownload:
   enabled: true
+  prune:
+    enabled: true
   models:
     - destination: diffusion_models/example.safetensors
       repo: example-org/example-model

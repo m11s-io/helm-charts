@@ -15,7 +15,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  {{- $modelSpecHash := printf "%s:%s" .Chart.Version (.Values.modelDownload.models | toJson) | sha256sum | trunc 8 }}
+  {{- $modelSpecHash := printf "%s:%s:%s" .Chart.Version (.Values.modelDownload.models | toJson) (.Values.modelDownload.prune | toJson) | sha256sum | trunc 8 }}
   name: {{ include "comfyui.fullname" . }}-model-download-{{ $modelSpecHash }}
   labels:
     {{- include "comfyui.labels" . | nindent 4 }}
@@ -53,6 +53,27 @@ spec:
             - /bin/sh
             - -ec
             - |
+              models_root="{{ $.Values.persistence.mountPath }}"
+              cache_dir="$models_root/.cache/huggingface"
+
+              is_desired_model() {
+                case "$1" in
+                {{- range .Values.modelDownload.models }}
+                  {{ .destination | quote }}) return 0 ;;
+                {{- end }}
+                  *) return 1 ;;
+                esac
+              }
+
+              is_managed_directory() {
+                case "$1" in
+                {{- range .Values.modelDownload.models }}
+                  {{ (index (splitList "/" .destination) 0) | quote }}) return 0 ;;
+                {{- end }}
+                  *) return 1 ;;
+                esac
+              }
+
               download() {
                 destination="$1"
                 repo="$2"
@@ -61,7 +82,6 @@ spec:
                 expected_sha256="$5"
                 label="$6"
                 partial="${destination}.part"
-                cache_dir="{{ $.Values.persistence.mountPath }}/.cache/huggingface"
 
                 echo "[model-download] START model=$label destination=$destination repo=$repo revision=$revision file=$file"
                 mkdir -p "$(dirname "$destination")"
@@ -113,6 +133,23 @@ spec:
               {{- range .Values.modelDownload.models }}
               download {{ printf "%s/%s" $.Values.persistence.mountPath .destination | quote }} {{ .repo | quote }} {{ .revision | quote }} {{ .file | quote }} {{ .sha256 | quote }} {{ .destination | quote }}
               {{- end }}
+              {{- if .Values.modelDownload.prune.enabled }}
+              echo "[model-download] PRUNE_START scope=derived-from-model-destinations"
+              find "$models_root" -type f -print0 | while IFS= read -r -d '' existing; do
+                relative="${existing#"$models_root"/}"
+                directory="${relative%%/*}"
+                if [ "$directory" = "$relative" ]; then
+                  continue
+                fi
+                if is_managed_directory "$directory" && ! is_desired_model "$relative"; then
+                  echo "[model-download] PRUNE_REMOVE destination=$relative"
+                  rm -f "$existing"
+                fi
+              done
+              echo "[model-download] PRUNE_COMPLETE"
+              {{- end }}
+              echo "[model-download] CACHE_REMOVE path=$cache_dir"
+              rm -rf "$cache_dir"
           resources:
             {{- toYaml .Values.modelDownload.resources | nindent 12 }}
           volumeMounts:
