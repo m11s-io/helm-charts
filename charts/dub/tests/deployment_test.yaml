@@ -125,3 +125,23 @@ tests:
       - equal:
           path: spec.template.spec.containers[0].securityContext.capabilities.drop[0]
           value: ALL
+
+  - it: sets hostUsers when provided
+    set:
+      dub.appUrl: https://dub.example.com
+      auth.existingSecret.name: dub-auth
+      db.existingSecret.name: dub-db
+      hostUsers: false
+    asserts:
+      - equal:
+          path: spec.template.spec.hostUsers
+          value: false
+
+  - it: omits hostUsers by default
+    set:
+      dub.appUrl: https://dub.example.com
+      auth.existingSecret.name: dub-auth
+      db.existingSecret.name: dub-db
+    asserts:
+      - notExists:
+          path: spec.template.spec.hostUsers

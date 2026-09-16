@@ -145,3 +145,21 @@ tests:
       - equal:
           path: spec.template.spec.containers[0].securityContext.capabilities.drop[0]
           value: ALL
+
+  - it: sets hostUsers when provided
+    set:
+      shlink.defaultDomain: s.example.com
+      geolite.skipDownload: true
+      hostUsers: false
+    asserts:
+      - equal:
+          path: spec.template.spec.hostUsers
+          value: false
+
+  - it: omits hostUsers by default
+    set:
+      shlink.defaultDomain: s.example.com
+      geolite.skipDownload: true
+    asserts:
+      - notExists:
+          path: spec.template.spec.hostUsers

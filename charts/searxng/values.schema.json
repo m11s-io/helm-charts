@@ -17,6 +17,12 @@
         "fullnameOverride": {
             "type": "string"
         },
+        "hostUsers": {
+            "type": [
+                "boolean",
+                "null"
+            ]
+        },
         "httpRoute": {
             "type": "object",
             "properties": {
@@ -95,8 +101,15 @@
         "networkPolicy": {
             "type": "object",
             "properties": {
-                "enabled": {"type": "boolean"},
-                "extraIngress": {"type": "array", "items": {"type": "object"}}
+                "enabled": {
+                    "type": "boolean"
+                },
+                "extraIngress": {
+                    "type": "array",
+                    "items": {
+                        "type": "object"
+                    }
+                }
             }
         },
         "nodeSelector": {

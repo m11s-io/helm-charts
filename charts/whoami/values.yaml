@@ -73,6 +73,12 @@ resources:
 podAnnotations: {}
 # nodeSelector constrains the whoami pod to nodes matching the given labels
 nodeSelector: {}
+# hostUsers sets spec.hostUsers on the pod. Requires user-namespace support
+# (stable in Kubernetes 1.37; alpha/beta earlier) and a userns-capable runtime.
+# Leave empty to use the cluster default; set false to run containers in a new
+# user namespace.
+# @schema type:[boolean, null]
+hostUsers: null
 # tolerations allow the whoami pod to be scheduled on tainted nodes
 tolerations: []
 # affinity sets pod affinity and anti-affinity rules

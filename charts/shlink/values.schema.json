@@ -101,6 +101,12 @@
                 }
             }
         },
+        "hostUsers": {
+            "type": [
+                "boolean",
+                "null"
+            ]
+        },
         "httpRoute": {
             "type": "object",
             "properties": {

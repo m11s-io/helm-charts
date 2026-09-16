@@ -11,6 +11,12 @@ podSecurityContext:
   fsGroup: 1000
   seccompProfile:
     type: RuntimeDefault
+# hostUsers sets spec.hostUsers on the pod. Requires user-namespace support
+# (stable in Kubernetes 1.37; alpha/beta earlier) and a userns-capable runtime.
+# Leave empty to use the cluster default; set false to run containers in a new
+# user namespace.
+# @schema type:[boolean, null]
+hostUsers: null
 nodeSelector: {}
 tolerations: []
 affinity: {}

@@ -2,7 +2,7 @@ apiVersion: v2
 name: searxng
 description: Helm chart for SearXNG, a privacy-respecting metasearch engine
 type: application
-version: 0.2.2
+version: 0.3.0
 # renovate: datasource=docker depName=searxng/searxng
 appVersion: "2026.9.15-ca4965040"
 home: https://searxng.org

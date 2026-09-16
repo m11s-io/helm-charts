@@ -233,3 +233,18 @@ tests:
       - equal:
           path: spec.template.spec.automountServiceAccountToken
           value: false
+
+  - it: sets hostUsers when provided
+    template: deployment.yaml
+    set:
+      hostUsers: false
+    asserts:
+      - equal:
+          path: spec.template.spec.hostUsers
+          value: false
+
+  - it: omits hostUsers by default
+    template: deployment.yaml
+    asserts:
+      - notExists:
+          path: spec.template.spec.hostUsers

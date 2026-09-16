@@ -25,6 +25,12 @@
         "fullnameOverride": {
             "type": "string"
         },
+        "hostUsers": {
+            "type": [
+                "boolean",
+                "null"
+            ]
+        },
         "httpRoute": {
             "type": "object",
             "properties": {

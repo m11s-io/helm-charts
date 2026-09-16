@@ -170,3 +170,16 @@ tests:
           value: 50m
       - notExists:
           path: spec.template.spec.containers[1].volumeMounts
+
+  - it: sets hostUsers when provided
+    set:
+      hostUsers: false
+    asserts:
+      - equal:
+          path: spec.template.spec.hostUsers
+          value: false
+
+  - it: omits hostUsers by default
+    asserts:
+      - notExists:
+          path: spec.template.spec.hostUsers

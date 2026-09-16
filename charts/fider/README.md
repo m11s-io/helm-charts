@@ -17,6 +17,7 @@ helm install fider m11s/fider -n fider --create-namespace -f values.yaml
 
 | Parameter | Description | Default |
 |---|---|---|
+| `hostUsers` | Set `spec.hostUsers` for user namespaces (requires a userns-capable cluster/runtime; stable in Kubernetes 1.37) | `null` |
 | `fider.hostMode` | Host mode: `single` or `multi` | `single` |
 | `fider.baseURL` | Public URL of this Fider instance (required when `hostMode=single`) | `""` |
 | `fider.hostDomain` | Base domain for multi-tenant subdomain routing (required when `hostMode=multi`) | `""` |

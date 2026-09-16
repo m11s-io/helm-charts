@@ -36,6 +36,7 @@ GPU scheduling (`runtimeClassName`, `nodeSelector`, `tolerations`, `resources`) 
 
 | Parameter | Description | Default |
 |---|---|---|
+| `hostUsers` | Set `spec.hostUsers` for user namespaces (requires a userns-capable cluster/runtime; stable in Kubernetes 1.37) | `null` |
 | `image.repository` | Container image repository | `m11s/comfyui` |
 | `image.tag` | Image tag; defaults to the chart appVersion | `""` |
 | `replicaCount` | Number of pod replicas | `1` |

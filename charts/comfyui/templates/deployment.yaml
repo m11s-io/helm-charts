@@ -34,6 +34,9 @@ spec:
         app.kubernetes.io/component: comfy-mcp
         {{- end }}
     spec:
+      {{- if ne .Values.hostUsers nil }}
+      hostUsers: {{ .Values.hostUsers }}
+      {{- end }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}

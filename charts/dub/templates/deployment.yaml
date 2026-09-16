@@ -18,6 +18,9 @@ spec:
       labels:
         {{- include "dub.selectorLabels" . | nindent 8 }}
     spec:
+      {{- if ne .Values.hostUsers nil }}
+      hostUsers: {{ .Values.hostUsers }}
+      {{- end }}
       serviceAccountName: {{ include "dub.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}

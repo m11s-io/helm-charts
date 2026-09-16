@@ -17,6 +17,7 @@ helm install whoami m11s/whoami -n whoami --create-namespace
 
 | Parameter | Description | Default |
 |---|---|---|
+| `hostUsers` | Set `spec.hostUsers` for user namespaces (requires a userns-capable cluster/runtime; stable in Kubernetes 1.37) | `null` |
 | `whoami.port` | Port whoami listens on inside the container | `80` |
 | `whoami.name` | Display name printed in responses (useful with multiple replicas) | `""` |
 | `whoami.verbose` | Enable verbose request logging | `false` |

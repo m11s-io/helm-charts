@@ -111,7 +111,7 @@ networkPolicy:
   # networkPolicy.enabled protects bundled Valkey and defaults to enabled
   enabled: true
   # networkPolicy.extraIngress adds explicit clients to bundled Valkey
-  extraIngress: []
+  extraIngress: [] # @schema item: object
 
 serviceAccount:
   # serviceAccount.create specifies whether a ServiceAccount should be created
@@ -156,6 +156,12 @@ extraEnvFrom: []
 # podAnnotations are extra annotations added to the SearXNG pod
 podAnnotations: {}
 # nodeSelector constrains the SearXNG pod to nodes matching the given labels
+# hostUsers sets spec.hostUsers on the pod. Requires user-namespace support
+# (stable in Kubernetes 1.37; alpha/beta earlier) and a userns-capable runtime.
+# Leave empty to use the cluster default; set false to run containers in a new
+# user namespace.
+# @schema type:[boolean, null]
+hostUsers: null
 nodeSelector: {}
 # tolerations allow the SearXNG pod to be scheduled on tainted nodes
 tolerations: []

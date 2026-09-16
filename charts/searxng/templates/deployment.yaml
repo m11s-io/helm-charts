@@ -21,6 +21,9 @@ spec:
       labels:
         {{- include "searxng.selectorLabels" . | nindent 8 }}
     spec:
+      {{- if ne .Values.hostUsers nil }}
+      hostUsers: {{ .Values.hostUsers }}
+      {{- end }}
       serviceAccountName: {{ include "searxng.serviceAccountName" . }}
       automountServiceAccountToken: false
       securityContext:

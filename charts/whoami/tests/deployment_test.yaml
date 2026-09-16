@@ -83,3 +83,16 @@ tests:
       - equal:
           path: spec.template.spec.securityContext.runAsUser
           value: 65534
+
+  - it: sets hostUsers when provided
+    set:
+      hostUsers: false
+    asserts:
+      - equal:
+          path: spec.template.spec.hostUsers
+          value: false
+
+  - it: omits hostUsers by default
+    asserts:
+      - notExists:
+          path: spec.template.spec.hostUsers

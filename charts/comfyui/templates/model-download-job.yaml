@@ -31,6 +31,9 @@ spec:
         {{- include "comfyui.selectorLabels" . | nindent 8 }}
         app.kubernetes.io/component: model-download
     spec:
+      {{- if ne .Values.hostUsers nil }}
+      hostUsers: {{ .Values.hostUsers }}
+      {{- end }}
       restartPolicy: Never
       serviceAccountName: {{ include "comfyui.serviceAccountName" . }}
       securityContext:

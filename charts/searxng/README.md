@@ -34,6 +34,7 @@ searxng:
 
 | Parameter | Description | Default |
 |---|---|---|
+| `hostUsers` | Set `spec.hostUsers` for user namespaces (requires a userns-capable cluster/runtime; stable in Kubernetes 1.37) | `null` |
 | `searxng.baseURL` | Public URL of this instance (required) | `""` |
 | `searxng.instanceName` | Instance name shown in the web UI | `SearXNG` |
 | `searxng.imageProxy` | Proxy image results instead of hotlinking them | `true` |

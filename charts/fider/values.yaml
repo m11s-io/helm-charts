@@ -220,6 +220,12 @@ extraEnvFrom: []
 # podAnnotations are extra annotations added to the Fider pod
 podAnnotations: {}
 # nodeSelector constrains the Fider pod to nodes matching the given labels
+# hostUsers sets spec.hostUsers on the pod. Requires user-namespace support
+# (stable in Kubernetes 1.37; alpha/beta earlier) and a userns-capable runtime.
+# Leave empty to use the cluster default; set false to run containers in a new
+# user namespace.
+# @schema type:[boolean, null]
+hostUsers: null
 nodeSelector: {}
 # tolerations allow the Fider pod to be scheduled on tainted nodes
 tolerations: []

@@ -18,6 +18,9 @@ spec:
         {{- include "shlink.selectorLabels" . | nindent 8 }}
         app.kubernetes.io/component: web-client
     spec:
+      {{- if ne .Values.hostUsers nil }}
+      hostUsers: {{ .Values.hostUsers }}
+      {{- end }}
       containers:
         - name: web-client
           image: {{ .Values.webClient.image.repository }}:{{ .Values.webClient.image.tag | default "stable" }}
