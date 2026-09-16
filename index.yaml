@@ -3619,6 +3619,26 @@ entries:
       artifacthub.io/license: Apache-2.0
     apiVersion: v2
     appVersion: 2026.3.1
+    created: "2026-09-16T14:32:03.641998187Z"
+    description: Deploy OpenVINO Model Server for any supported task
+    digest: dcb3b4742109550ffd8cdbe930df7bcb04bb528160a6ceeeccfad4fbaa2127b7
+    home: https://github.com/m11s-io/helm-charts/tree/main/charts/ovms
+    icon: https://raw.githubusercontent.com/m11s-io/helm-charts/main/charts/ovms/assets/icon.png
+    maintainers:
+    - name: m11s
+      url: https://github.com/m11s-io
+    name: ovms
+    sources:
+    - https://github.com/openvinotoolkit/model_server
+    - https://huggingface.co/OpenVINO
+    type: application
+    urls:
+    - https://github.com/m11s-io/helm-charts/releases/download/ovms-0.3.2/ovms-0.3.2.tgz
+    version: 0.3.2
+  - annotations:
+      artifacthub.io/license: Apache-2.0
+    apiVersion: v2
+    appVersion: 2026.3.1
     created: "2026-09-16T14:11:30.728771747Z"
     description: Deploy OpenVINO Model Server for any supported task
     digest: 88a12da34e132669374d1c6db00841334b20e935e877a034cbd4992b3fda3f47
@@ -4638,4 +4658,4 @@ entries:
     urls:
     - https://github.com/m11s-io/helm-charts/releases/download/whoami-0.1.0/whoami-0.1.0.tgz
     version: 0.1.0
-generated: "2026-09-16T14:11:30.729194672Z"
+generated: "2026-09-16T14:32:03.642418218Z"
