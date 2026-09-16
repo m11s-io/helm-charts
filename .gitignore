@@ -1,4 +1,5 @@
 .cr-release-packages/
 .cr-index/
+.worktrees/
 # Subchart tarballs fetched by `helm dependency update`; Chart.lock is committed instead.
 charts/*/charts/
