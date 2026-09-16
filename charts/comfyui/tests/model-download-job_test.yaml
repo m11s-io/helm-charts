@@ -95,8 +95,7 @@ tests:
       persistence.enabled: true
       modelDownload:
         enabled: true
-        prune:
-          enabled: true
+        prune: true
         models:
           - destination: diffusion_models/example.safetensors
             repo: example-org/example-model

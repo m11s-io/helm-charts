@@ -2,7 +2,7 @@ apiVersion: v2
 name: comfyui
 description: Helm chart for ComfyUI, a node-based, modular visual AI engine for GPU nodes
 type: application
-version: 0.10.6
+version: 0.10.7
 # renovate: datasource=docker depName=m11s/comfyui
 appVersion: "0.5.4-gguf"
 home: https://github.com/comfyanonymous/ComfyUI
@@ -30,6 +30,8 @@ annotations:
     - name: image source
       url: https://github.com/m11s-io/docker-images
   artifacthub.io/changes: |-
+    - kind: changed
+      description: "Use the simpler modelDownload.prune boolean setting."
     - kind: changed
       description: "Remove the Hugging Face download cache after every successful model-download Job while preserving it after failures for recovery."
     - kind: added

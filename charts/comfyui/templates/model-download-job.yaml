@@ -133,7 +133,7 @@ spec:
               {{- range .Values.modelDownload.models }}
               download {{ printf "%s/%s" $.Values.persistence.mountPath .destination | quote }} {{ .repo | quote }} {{ .revision | quote }} {{ .file | quote }} {{ .sha256 | quote }} {{ .destination | quote }}
               {{- end }}
-              {{- if .Values.modelDownload.prune.enabled }}
+              {{- if .Values.modelDownload.prune }}
               echo "[model-download] PRUNE_START scope=derived-from-model-destinations"
               find "$models_root" -type f -print0 | while IFS= read -r -d '' existing; do
                 relative="${existing#"$models_root"/}"

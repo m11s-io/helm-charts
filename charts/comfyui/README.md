@@ -60,7 +60,7 @@ GPU scheduling (`runtimeClassName`, `nodeSelector`, `tolerations`, `resources`) 
 | `modelDownload.huggingFaceToken.key` | Key in that Secret containing the token | `token` |
 | `modelDownload.backoffLimit` | Maximum downloader Job retries | `3` |
 | `modelDownload.models` | Model entries with relative destination, HF repo/file/revision, and SHA-256 hash | `[]` |
-| `modelDownload.prune.enabled` | After successful downloads, remove model files not listed in `models` | `false` |
+| `modelDownload.prune` | After successful downloads, remove model files not listed in `models` | `false` |
 | `modelDownload.resources` | CPU and memory requests/limits for the downloader Job | `{requests: ..., limits: ...}` |
 | `modelDownload.ttlSecondsAfterFinished` | Optional TTL for completed Jobs | `null` |
 | `httpRoute.enabled` | Enable a Gateway API HTTPRoute | `false` |
@@ -98,7 +98,7 @@ to fetch model files into the persistent models PVC. Each destination is
 relative to `persistence.mountPath`. Pin every `revision` to the source
 repository's 40-character commit SHA and provide its SHA-256 hash.
 
-`modelDownload.prune.enabled` is disabled by default. When enabled, the Job
+`modelDownload.prune` is disabled by default. When enabled, the Job
 removes model files not listed in `modelDownload.models` after all configured
 downloads complete successfully.
 
@@ -119,8 +119,7 @@ persistence:
 
 modelDownload:
   enabled: true
-  prune:
-    enabled: true
+  prune: true
   models:
     - destination: diffusion_models/example.safetensors
       repo: example-org/example-model

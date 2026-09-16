@@ -205,11 +205,8 @@ modelDownload:
       # headroom for Python and filesystem accounting during large transfers.
       memory: 5Gi
   models: []
-  # prune makes models[] authoritative within the top-level directories used
-  # by its destinations. It runs only after every configured download passes
-  # checksum verification; leave disabled to preserve manually managed files.
-  prune:
-    enabled: false
+  # Remove model files not listed in models after successful downloads.
+  prune: false
   # example:
   #   - destination: diffusion_models/example.safetensors
   #     repo: example-org/example-model
