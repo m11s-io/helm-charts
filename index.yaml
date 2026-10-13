@@ -3427,6 +3427,34 @@ entries:
         fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
         url: https://keys.openpgp.org/search?q=hello%40m11s.io
     apiVersion: v2
+    appVersion: v0.38.2
+    created: "2026-10-13T04:57:10.178461337Z"
+    description: Helm chart for Fider self-hosted user feedback platform
+    digest: 40d52bc37a08fa5a847ecf6047bd9aaf26b0809066878276ceb82a3ef4673b7d
+    home: https://fider.io
+    icon: https://raw.githubusercontent.com/getfider/fider/main/favicon.png
+    maintainers:
+    - name: m11s
+      url: https://m11s.io
+    name: fider
+    sources:
+    - https://github.com/getfider/fider
+    - https://github.com/m11s-io/helm-charts
+    type: application
+    urls:
+    - https://github.com/m11s-io/helm-charts/releases/download/fider-0.4.1/fider-0.4.1.tgz
+    version: 0.4.1
+  - annotations:
+      artifacthub.io/containersImages: |
+        - name: fider
+          image: getfider/fider:v0.36.0
+      artifacthub.io/links: |
+        - name: source
+          url: https://github.com/getfider/fider
+      artifacthub.io/signKey: |
+        fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
+        url: https://keys.openpgp.org/search?q=hello%40m11s.io
+    apiVersion: v2
     appVersion: v0.36.0
     created: "2026-09-16T13:39:16.791482793Z"
     description: Helm chart for Fider self-hosted user feedback platform
@@ -4693,4 +4721,4 @@ entries:
     urls:
     - https://github.com/m11s-io/helm-charts/releases/download/whoami-0.1.0/whoami-0.1.0.tgz
     version: 0.1.0
-generated: "2026-10-13T04:57:00.711757703Z"
+generated: "2026-10-13T04:57:10.178661442Z"
