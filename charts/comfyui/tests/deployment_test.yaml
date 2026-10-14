@@ -10,9 +10,9 @@ tests:
       - equal:
           path: spec.replicas
           value: 1
-      - matchRegex:
+      - equal:
           path: spec.template.spec.containers[0].image
-          pattern: "m11s/comfyui:[0-9]+\\.[0-9]+\\.[0-9]+"
+          value: m11s/comfyui:0.5.6-gguf@sha256:7b2a371982a9db64d67ce1d45d963595778653840791e5a5311c67d0ee58bd56
       - equal:
           path: spec.template.spec.containers[0].imagePullPolicy
           value: IfNotPresent

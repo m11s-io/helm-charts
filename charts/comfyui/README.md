@@ -8,7 +8,7 @@
 This chart targets a single GPU-bound replica per release and uses the `Recreate`
 update strategy by default, which is suited to nodes with one GPU.
 
-The default image includes the ComfyUI-GGUF extension. Use a custom `image.tag`
+The default image includes the ComfyUI-GGUF extension and is pinned by digest. Use a custom `image.tag`
 if a required custom node needs a different runtime.
 
 ## Optional Comfy MCP HTTP service
@@ -38,7 +38,7 @@ GPU scheduling (`runtimeClassName`, `nodeSelector`, `tolerations`, `resources`) 
 |---|---|---|
 | `hostUsers` | Set `spec.hostUsers` for user namespaces (requires a userns-capable cluster/runtime; stable in Kubernetes 1.37) | `null` |
 | `image.repository` | Container image repository | `m11s/comfyui` |
-| `image.tag` | Image tag; defaults to the chart appVersion | `""` |
+| `image.tag` | Image tag and digest; set empty to use chart appVersion | `0.5.6-gguf@sha256:7b2a371982a9db64d67ce1d45d963595778653840791e5a5311c67d0ee58bd56` |
 | `replicaCount` | Number of pod replicas | `1` |
 | `strategy` | Deployment update strategy | `{type: Recreate}` |
 | `service.type` | Kubernetes Service type | `ClusterIP` |
