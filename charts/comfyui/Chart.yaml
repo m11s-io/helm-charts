@@ -2,9 +2,9 @@ apiVersion: v2
 name: comfyui
 description: Helm chart for ComfyUI, a node-based, modular visual AI engine for GPU nodes
 type: application
-version: 0.11.1
+version: 0.11.2
 # renovate: datasource=docker depName=m11s/comfyui
-appVersion: "0.5.5-gguf"
+appVersion: "0.5.6-gguf"
 home: https://github.com/comfyanonymous/ComfyUI
 icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/comfyui.svg
 sources:
@@ -21,7 +21,7 @@ annotations:
     url: https://keys.openpgp.org/search?q=hello%40m11s.io
   artifacthub.io/containersImages: |
     - name: comfyui
-      image: m11s/comfyui:0.5.5-gguf
+      image: m11s/comfyui:0.5.6-gguf
     - name: comfy-mcp
       image: m11s/comfy-mcp:0.2.3
   artifacthub.io/links: |
@@ -30,6 +30,8 @@ annotations:
     - name: image source
       url: https://github.com/m11s-io/docker-images
   artifacthub.io/changes: |-
+    - kind: changed
+      description: "Upgrade to ComfyUI v0.40.0 via image 0.5.6-gguf, including frontend 1.55.17, workflow templates 0.11.82, embedded docs 0.5.14, and comfy-aimdo 0.5.6."
     - kind: changed
       description: "Upgrade ComfyUI to image 0.5.5-gguf with CUDA 13.4.2, ComfyUI v0.39.0, and Torch 2.14.1. Upgrade the optional comfy-mcp sidecar to image 0.2.3 with Python 3.14.8 and comfy-cli 1.22.0."
     - kind: changed
