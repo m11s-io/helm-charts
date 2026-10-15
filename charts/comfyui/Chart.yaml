@@ -2,9 +2,9 @@ apiVersion: v2
 name: comfyui
 description: Helm chart for ComfyUI, a node-based, modular visual AI engine for GPU nodes
 type: application
-version: 0.11.4
+version: 0.11.5
 # renovate: datasource=docker depName=m11s/comfyui
-appVersion: "0.5.6-gguf"
+appVersion: "0.40.0-gguf"
 home: https://github.com/comfyanonymous/ComfyUI
 icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/comfyui.svg
 sources:
@@ -21,15 +21,17 @@ annotations:
     url: https://keys.openpgp.org/search?q=hello%40m11s.io
   artifacthub.io/containersImages: |
     - name: comfyui
-      image: m11s/comfyui:0.5.6-gguf@sha256:0748e9d5561be8925dbb4dd83f2d25090b7debd9a6f4cd99ac32b5cac152a377
+      image: m11s/comfyui:0.40.0-gguf@sha256:6157a750d7d4399398fce3fbb9e2d50ac28836791a63b97fbf7df8c2c5d3cd03
     - name: comfy-mcp
-      image: m11s/comfy-mcp:0.2.3@sha256:85e48c23ae436c921cb77a91cc14dc90bdb6d8efde789a16284f2cabd4ffd46b
+      image: m11s/comfy-mcp:0.10.0@sha256:80ef7b5f08291e55fab025c3809081ac7d461b3fcc76445c6c2ba679da1cec0a
   artifacthub.io/links: |
     - name: source
       url: https://github.com/comfyanonymous/ComfyUI
     - name: image source
       url: https://github.com/m11s-io/docker-images
   artifacthub.io/changes: |-
+    - kind: changed
+      description: "Follow upstream ComfyUI 0.40.0 and Comfy MCP 0.10.0 versions in image tags and pin the published image digests."
     - kind: fixed
       description: "Pin maintained images by digest and track image rebuilds through Renovate."
     - kind: fixed

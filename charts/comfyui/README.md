@@ -38,7 +38,7 @@ GPU scheduling (`runtimeClassName`, `nodeSelector`, `tolerations`, `resources`) 
 |---|---|---|
 | `hostUsers` | Set `spec.hostUsers` for user namespaces (requires a userns-capable cluster/runtime; stable in Kubernetes 1.37) | `null` |
 | `image.repository` | Container image repository | `m11s/comfyui` |
-| `image.tag` | Image tag and digest; set empty to use chart appVersion | `0.5.6-gguf@sha256:7b2a371982a9db64d67ce1d45d963595778653840791e5a5311c67d0ee58bd56` |
+| `image.tag` | Image tag and digest; set empty to use chart appVersion | `0.40.0-gguf@sha256:…` (see values.yaml for the current digest) |
 | `replicaCount` | Number of pod replicas | `1` |
 | `strategy` | Deployment update strategy | `{type: Recreate}` |
 | `service.type` | Kubernetes Service type | `ClusterIP` |
@@ -168,3 +168,7 @@ persistence:
 - Chart: [github.com/m11s-io/helm-charts](https://github.com/m11s-io/helm-charts)
 - Image: [github.com/m11s-io/docker-images](https://github.com/m11s-io/docker-images/tree/main/comfyui)
 - Upstream: [github.com/comfyanonymous/ComfyUI](https://github.com/comfyanonymous/ComfyUI)
+
+Image tags follow the upstream ComfyUI version, with `-gguf` for the default
+variant. The optional MCP sidecar follows the upstream Comfy MCP version.
+Dependency and wrapper rebuilds are adopted through digest updates.
