@@ -9,7 +9,7 @@
   ],
   "prConcurrentLimit": 5,
   "helm-values": {
-    "enabled": false
+    "enabled": true
   },
   "customManagers": [
     {
@@ -36,6 +36,19 @@
       ],
       "datasourceTemplate": "{{{datasource}}}",
       "depNameTemplate": "{{{depName}}}"
+    },
+    {
+      "customType": "regex",
+      "description": "Keep Artifact Hub image references synchronized with chart values",
+      "managerFilePatterns": [
+        "/^charts\\/(comfyui|decap-cms|dub)\\/Chart\\.yaml$/"
+      ],
+      "matchStrings": [
+        "image: (?<depName>m11s/(?:comfyui|comfy-mcp|decap-cms|s3-upload-proxy|redis-http-proxy)):(?<currentValue>[^\\s@]+)(?:@(?<currentDigest>sha256:[a-f0-9]{64}))?"
+      ],
+      "datasourceTemplate": "docker",
+      "depTypeTemplate": "chart-image",
+      "versioningTemplate": "docker"
     }
   ],
   "packageRules": [
@@ -45,6 +58,88 @@
         "custom.regex"
       ],
       "pinDigests": false
+    },
+    {
+      "description": "Track Helm image values only for the maintained images in the affected charts",
+      "matchManagers": [
+        "helm-values"
+      ],
+      "enabled": false
+    },
+    {
+      "matchManagers": [
+        "helm-values"
+      ],
+      "matchFileNames": [
+        "charts/comfyui/values.yaml",
+        "charts/decap-cms/values.yaml",
+        "charts/dub/values.yaml"
+      ],
+      "matchPackageNames": [
+        "m11s/comfyui",
+        "m11s/comfy-mcp",
+        "m11s/decap-cms",
+        "m11s/s3-upload-proxy",
+        "m11s/redis-http-proxy"
+      ],
+      "enabled": true,
+      "pinDigests": true,
+      "automerge": false
+    },
+    {
+      "description": "Artifact Hub references are full image references and must retain digest pins",
+      "matchManagers": [
+        "custom.regex"
+      ],
+      "matchDepTypes": [
+        "chart-image"
+      ],
+      "pinDigests": true
+    },
+    {
+      "description": "Compare Docker application tags using their compatibility suffixes",
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchFileNames": [
+        "charts/comfyui/**",
+        "charts/decap-cms/**",
+        "charts/dub/**"
+      ],
+      "versioning": "docker"
+    },
+    {
+      "description": "Update image values, appVersion, and image metadata together",
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchFileNames": [
+        "charts/comfyui/**"
+      ],
+      "groupName": "comfyui chart images",
+      "automerge": false
+    },
+    {
+      "description": "Update image values, appVersion, and image metadata together",
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchFileNames": [
+        "charts/decap-cms/**"
+      ],
+      "groupName": "decap-cms chart images",
+      "automerge": false
+    },
+    {
+      "description": "Update image values, appVersion, and image metadata together",
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchFileNames": [
+        "charts/dub/**"
+      ],
+      "groupName": "dub chart images",
+      "automerge": false
     },
     {
       "description": "SearXNG publishes date-stamped tags with a git SHA suffix; the SHA is not orderable, so it is matched but excluded from comparison",

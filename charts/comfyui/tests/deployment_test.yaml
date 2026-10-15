@@ -3,6 +3,24 @@ templates:
   - deployment.yaml
 
 tests:
+  - it: preserves an explicit image tag and digest
+    set:
+      image.tag: "9.9.9-gguf@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: m11s/comfyui:9.9.9-gguf@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+
+  - it: uses appVersion when the image tag is explicitly cleared
+    chart:
+      appVersion: 9.9.9-gguf
+    set:
+      image.tag: ""
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: m11s/comfyui:9.9.9-gguf
+
   - it: renders with default values
     asserts:
       - isKind:
@@ -10,9 +28,9 @@ tests:
       - equal:
           path: spec.replicas
           value: 1
-      - equal:
+      - matchRegex:
           path: spec.template.spec.containers[0].image
-          value: m11s/comfyui:0.5.6-gguf@sha256:7b2a371982a9db64d67ce1d45d963595778653840791e5a5311c67d0ee58bd56
+          pattern: '^m11s/comfyui:[^@]+@sha256:[a-f0-9]{64}$'
       - equal:
           path: spec.template.spec.containers[0].imagePullPolicy
           value: IfNotPresent
@@ -146,9 +164,9 @@ tests:
       - equal:
           path: spec.template.spec.containers[1].name
           value: comfy-mcp
-      - equal:
+      - matchRegex:
           path: spec.template.spec.containers[1].image
-          value: m11s/comfy-mcp:0.2.3
+          pattern: '^m11s/comfy-mcp:[^@]+@sha256:[a-f0-9]{64}$'
       - equal:
           path: spec.template.spec.containers[1].ports[0].containerPort
           value: 8080

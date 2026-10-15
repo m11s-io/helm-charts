@@ -1,0 +1,41 @@
+suite: decap-cms image references
+templates:
+  - deployment.yaml
+  - nginx-config.yaml
+tests:
+  - it: uses appVersion when the image tag is explicitly cleared
+    chart:
+      appVersion: 9.9.9-s3
+    set:
+      image.tag: ""
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: m11s/decap-cms:9.9.9-s3
+        template: deployment.yaml
+  - it: pins the default CMS image by digest
+    asserts:
+      - matchRegex:
+          path: spec.template.spec.containers[0].image
+          pattern: '^m11s/decap-cms:[^@]+@sha256:[a-f0-9]{64}$'
+        template: deployment.yaml
+      - equal:
+          path: spec.template.spec.containers[0].imagePullPolicy
+          value: IfNotPresent
+        template: deployment.yaml
+  - it: pins the optional upload proxy by digest
+    set:
+      uploadProxy.enabled: true
+    asserts:
+      - matchRegex:
+          path: spec.template.spec.containers[1].image
+          pattern: '^m11s/s3-upload-proxy:[^@]+@sha256:[a-f0-9]{64}$'
+        template: deployment.yaml
+  - it: preserves an explicit CMS image tag and digest
+    set:
+      image.tag: "9.9.9-s3@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: m11s/decap-cms:9.9.9-s3@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+        template: deployment.yaml

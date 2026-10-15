@@ -2,7 +2,7 @@ apiVersion: v2
 name: dub
 description: Helm chart for dub self-hosted URL shortener
 type: application
-version: 0.2.0
+version: 0.2.1
 # renovate: datasource=docker depName=m11s/dub
 appVersion: "0.1.0"
 home: https://dub.co
@@ -20,11 +20,15 @@ annotations:
   artifacthub.io/containersImages: |
     - name: dub
       image: m11s/dub:0.1.0
+    - name: redis-http-proxy
+      image: m11s/redis-http-proxy:0.1.0@sha256:224633f9eba7a3fa9a341205f711447aedbbe1c94e245ceab6a43354c6d74ec9
   artifacthub.io/links: |
     - name: source
       url: https://github.com/dubinc/dub
     - name: docs
       url: https://dub.co/docs/self-hosting
   artifacthub.io/changes: |-
+    - kind: fixed
+      description: "Pin maintained images by digest and track image rebuilds through Renovate."
     - kind: added
       description: "Initial chart release"

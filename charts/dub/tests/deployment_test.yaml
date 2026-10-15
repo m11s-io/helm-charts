@@ -101,6 +101,9 @@ tests:
       - equal:
           path: spec.template.spec.containers[1].name
           value: srh
+      - matchRegex:
+          path: spec.template.spec.containers[1].image
+          pattern: '^m11s/redis-http-proxy:[^@]+@sha256:[a-f0-9]{64}$'
 
   - it: respects replicaCount
     set:

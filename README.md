@@ -40,3 +40,16 @@ helm install my-release m11s/<chart-name>
 ## Publishing
 
 Charts are maintained in the private monorepo and published here via CI.
+
+ComfyUI, Decap CMS, and Dub's Redis HTTP proxy sidecar use version tags pinned
+to image digests. Rebuilding an image under the same version requires a digest
+update in chart values; `IfNotPresent` remains appropriate for these exact image
+references. Setting the primary `image.tag` to empty still uses `appVersion`.
+
+Renovate tracks the five maintained image references in these charts' values
+and Artifact Hub metadata. Each chart's image updates are grouped with its
+primary `appVersion` update, when applicable, and bump the chart patch version
+for publishing. `appVersion` stays a plain version without a digest. Image
+updates require review; CI tool updates retain their existing automerge policy.
+Dub's main image keeps its existing reference until a published digest can be
+resolved.

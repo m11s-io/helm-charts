@@ -10,6 +10,7 @@ tests:
 
   - it: downloads configured models to the persistent models PVC
     set:
+      image.tag: "9.9.9-gguf@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
       persistence.enabled: true
       modelDownload:
         enabled: true
@@ -33,7 +34,7 @@ tests:
           value: /app/models
       - equal:
           path: spec.template.spec.containers[0].image
-          value: m11s/comfyui:0.5.6-gguf@sha256:7b2a371982a9db64d67ce1d45d963595778653840791e5a5311c67d0ee58bd56
+          value: m11s/comfyui:9.9.9-gguf@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
       - equal:
           path: spec.template.spec.containers[0].resources.limits.memory
           value: 5Gi
