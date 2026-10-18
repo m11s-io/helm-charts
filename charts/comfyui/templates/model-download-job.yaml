@@ -15,7 +15,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  {{- $modelSpecHash := printf "%s:%s:%s" .Chart.Version (.Values.modelDownload.models | toJson) (.Values.modelDownload.prune | toJson) | sha256sum | trunc 8 }}
+  {{- $modelSpecHash := printf "%s:%s:%s" .Chart.Version (.Values.modelDownload.models | toJson) (dict "prune" .Values.modelDownload.prune "environment" .Values.modelDownload.environment "token" .Values.modelDownload.huggingFaceToken "image" .Values.modelDownload.image | toJson) | sha256sum | trunc 8 }}
   name: {{ include "comfyui.fullname" . }}-model-download-{{ $modelSpecHash }}
   labels:
     {{- include "comfyui.labels" . | nindent 4 }}
@@ -44,13 +44,22 @@ spec:
           imagePullPolicy: IfNotPresent
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          {{- with .Values.modelDownload.huggingFaceToken.existingSecret }}
+          {{- if or .Values.modelDownload.huggingFaceToken.existingSecret .Values.modelDownload.environment }}
           env:
+            {{- range $name, $value := .Values.modelDownload.environment }}
+            {{- if eq $name "HF_TOKEN" }}
+            {{- fail "Use modelDownload.huggingFaceToken for HF_TOKEN" }}
+            {{- end }}
+            - name: {{ $name }}
+              value: {{ $value | quote }}
+            {{- end }}
+            {{- with .Values.modelDownload.huggingFaceToken.existingSecret }}
             - name: HF_TOKEN
               valueFrom:
                 secretKeyRef:
                   name: {{ . }}
                   key: {{ $.Values.modelDownload.huggingFaceToken.key }}
+            {{- end }}
           {{- end }}
           command:
             - /bin/sh

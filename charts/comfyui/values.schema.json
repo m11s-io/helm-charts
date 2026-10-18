@@ -301,6 +301,15 @@
                         "null"
                     ],
                     "minimum": 0
+                },
+                "environment": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "propertyNames": {
+                        "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
+                    }
                 }
             }
         },

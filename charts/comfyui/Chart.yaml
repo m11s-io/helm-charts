@@ -2,7 +2,7 @@ apiVersion: v2
 name: comfyui
 description: Helm chart for ComfyUI, a node-based, modular visual AI engine for GPU nodes
 type: application
-version: 0.11.5
+version: 0.12.0
 # renovate: datasource=docker depName=m11s/comfyui
 appVersion: "0.40.0-gguf"
 home: https://github.com/comfyanonymous/ComfyUI
@@ -30,6 +30,8 @@ annotations:
     - name: image source
       url: https://github.com/m11s-io/docker-images
   artifacthub.io/changes: |-
+    - kind: added
+      description: "Configure model download Job environment for Hugging Face proxies and recreate Jobs when download settings change."
     - kind: changed
       description: "Follow upstream ComfyUI 0.40.0 and Comfy MCP 0.10.0 versions in image tags and pin the published image digests."
     - kind: fixed

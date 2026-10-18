@@ -172,3 +172,23 @@ persistence:
 Image tags follow the upstream ComfyUI version, with `-gguf` for the default
 variant. The optional MCP sidecar follows the upstream Comfy MCP version.
 Dependency and wrapper rebuilds are adopted through digest updates.
+
+### Hugging Face proxy downloads
+
+`modelDownload.environment` configures the download Job independently of the
+ComfyUI container's `environment` setting. Values must be strings:
+
+```yaml
+modelDownload:
+  environment:
+    HF_ENDPOINT: https://nexus.example.com/repository/huggingface-proxy
+    HF_HUB_DISABLE_XET: "1"
+    HF_HUB_DOWNLOAD_TIMEOUT: "300"
+    HF_HUB_ETAG_TIMEOUT: "1800"
+```
+
+Keep credentials in `modelDownload.huggingFaceToken`, not `environment`. When
+using an authenticated Nexus endpoint, that Secret must contain a Nexus-issued
+token, not an upstream Hugging Face token. Model revisions and SHA-256 checks
+are unchanged. Changing Job environment, image or token Secret reference creates
+a new Job name. Rotating the contents of the same Secret does not create a Job.

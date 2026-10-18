@@ -183,6 +183,9 @@ tempPersistence:
 # interrupted downloads resume and cached blobs are hard-linked into place after
 # the configured SHA-256 check succeeds.
 modelDownload:
+  # Environment for the download Job, e.g. HF_ENDPOINT and HF_HUB_DISABLE_XET.
+  # Store credentials in huggingFaceToken instead.
+  environment: {}
   enabled: false
   # Leave empty to use the ComfyUI workload image, which includes the hf CLI.
   image: ""
