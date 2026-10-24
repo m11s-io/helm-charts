@@ -4135,6 +4135,43 @@ entries:
         - name: dub
           image: m11s/dub:0.1.0
         - name: redis-http-proxy
+          image: m11s/redis-http-proxy:0.1.0@sha256:3559b78d589e105e90002820584be1f913979eebc571675ce3cbc3095197bbbd
+      artifacthub.io/links: |
+        - name: source
+          url: https://github.com/dubinc/dub
+        - name: docs
+          url: https://dub.co/docs/self-hosting
+      artifacthub.io/signKey: |
+        fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
+        url: https://keys.openpgp.org/search?q=hello%40m11s.io
+    apiVersion: v2
+    appVersion: 0.1.0
+    created: "2026-10-24T13:05:02.964427986Z"
+    description: Helm chart for dub self-hosted URL shortener
+    digest: 6f1aafe776d803ee8c0dd26a6f290d999caf989553181abe966673d36684e8e3
+    home: https://dub.co
+    icon: https://assets.dub.co/brand/logo.svg
+    maintainers:
+    - name: m11s
+      url: https://m11s.io
+    name: dub
+    sources:
+    - https://github.com/dubinc/dub
+    - https://github.com/m11s-io/helm-charts
+    type: application
+    urls:
+    - https://github.com/m11s-io/helm-charts/releases/download/dub-0.2.2/dub-0.2.2.tgz
+    version: 0.2.2
+  - annotations:
+      artifacthub.io/changes: |-
+        - kind: fixed
+          description: "Pin maintained images by digest and track image rebuilds through Renovate."
+        - kind: added
+          description: "Initial chart release"
+      artifacthub.io/containersImages: |
+        - name: dub
+          image: m11s/dub:0.1.0
+        - name: redis-http-proxy
           image: m11s/redis-http-proxy:0.1.0@sha256:224633f9eba7a3fa9a341205f711447aedbbe1c94e245ceab6a43354c6d74ec9
       artifacthub.io/links: |
         - name: source
@@ -5764,4 +5801,4 @@ entries:
     urls:
     - https://github.com/m11s-io/helm-charts/releases/download/whoami-0.1.0/whoami-0.1.0.tgz
     version: 0.1.0
-generated: "2026-10-24T12:47:15.633444841Z"
+generated: "2026-10-24T13:05:02.964579109Z"
