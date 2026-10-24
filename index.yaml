@@ -4990,6 +4990,41 @@ entries:
         fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
         url: https://keys.openpgp.org/search?q=hello%40m11s.io
     apiVersion: v2
+    appVersion: 5.1.8
+    created: "2026-10-24T12:46:48.93381487Z"
+    description: Helm chart for Shlink self-hosted URL shortener
+    digest: f2efa9b84a9c347166684a032d6254f3d1ae29128dc57eb18f7d39f4e2ad6c10
+    home: https://shlink.io
+    icon: https://shlink.io/images/shlink-logo-blue.svg
+    maintainers:
+    - name: m11s
+      url: https://m11s.io
+    name: shlink
+    sources:
+    - https://github.com/shlinkio/shlink
+    - https://github.com/m11s-io/helm-charts
+    type: application
+    urls:
+    - https://github.com/m11s-io/helm-charts/releases/download/shlink-0.3.2/shlink-0.3.2.tgz
+    version: 0.3.2
+  - annotations:
+      artifacthub.io/changes: |-
+        - kind: changed
+          description: "Bump Shlink to 5.1.6"
+        - kind: fixed
+          description: "Fix service selector to exclude web-client pods (app.kubernetes.io/component: api)"
+      artifacthub.io/containersImages: |
+        - name: shlink
+          image: shlinkio/shlink:5.1.6
+      artifacthub.io/links: |
+        - name: source
+          url: https://github.com/shlinkio/shlink
+        - name: docs
+          url: https://shlink.io/documentation/install-docker-image/
+      artifacthub.io/signKey: |
+        fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
+        url: https://keys.openpgp.org/search?q=hello%40m11s.io
+    apiVersion: v2
     appVersion: 5.1.7
     created: "2026-10-13T04:57:00.711530307Z"
     description: Helm chart for Shlink self-hosted URL shortener
@@ -5615,4 +5650,4 @@ entries:
     urls:
     - https://github.com/m11s-io/helm-charts/releases/download/whoami-0.1.0/whoami-0.1.0.tgz
     version: 0.1.0
-generated: "2026-10-24T12:46:24.422012532Z"
+generated: "2026-10-24T12:46:48.93397394Z"
