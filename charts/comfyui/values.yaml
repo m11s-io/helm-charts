@@ -39,7 +39,7 @@ comfyMcp:
     pullPolicy: IfNotPresent
   service:
     type: ClusterIP
-    port: 8080 # @schema minimum:1;maximum:65535
+    port: 8080  # @schema minimum:1;maximum:65535
   resources:
     requests:
       cpu: 50m
@@ -193,8 +193,8 @@ modelDownload:
   # only needed for private/gated models or to use an authenticated rate limit.
   huggingFaceToken:
     existingSecret: ""
-    key: token # @schema minLength:1
-  backoffLimit: 3 # @schema minimum:0
+    key: token  # @schema minLength:1
+  backoffLimit: 3  # @schema minimum:0
   # Keep completed Jobs so Argo CD does not recreate them during self-heal.
   # Set this only when the release is not continuously reconciled.
 # @schema type:[integer, null];minimum:0
@@ -208,7 +208,7 @@ modelDownload:
       # hf_xet's default download buffer is 2GiB (512MiB per file); leave
       # headroom for Python and filesystem accounting during large transfers.
       memory: 5Gi
-  models: [] # @schema item: object; itemRequired: [destination,repo,revision,file,sha256]; itemProperties: {destination: {type: string, pattern: "^[^/].*"}, file: {type: string, pattern: "^[^/].*"}, repo: {type: string, pattern: "^[^/]+/[^/]+$"}, revision: {type: string, pattern: "^[a-fA-F0-9]{40}$"}, sha256: {type: string, pattern: "^[a-fA-F0-9]{64}$"}}
+  models: []  # @schema item: object; itemRequired: [destination,repo,revision,file,sha256]; itemProperties: {destination: {type: string, pattern: "^[^/].*"}, file: {type: string, pattern: "^[^/].*"}, repo: {type: string, pattern: "^[^/]+/[^/]+$"}, revision: {type: string, pattern: "^[a-fA-F0-9]{40}$"}, sha256: {type: string, pattern: "^[a-fA-F0-9]{64}$"}}
   # Remove model files not listed in models after successful downloads.
   prune: false
   # example:
