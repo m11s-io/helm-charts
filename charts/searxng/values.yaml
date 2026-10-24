@@ -111,7 +111,7 @@ networkPolicy:
   # networkPolicy.enabled protects bundled Valkey and defaults to enabled
   enabled: true
   # networkPolicy.extraIngress adds explicit clients to bundled Valkey
-  extraIngress: [] # @schema item: object
+  extraIngress: []  # @schema item: object
 
 serviceAccount:
   # serviceAccount.create specifies whether a ServiceAccount should be created

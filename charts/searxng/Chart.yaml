@@ -2,9 +2,9 @@ apiVersion: v2
 name: searxng
 description: Helm chart for SearXNG, a privacy-respecting metasearch engine
 type: application
-version: 0.3.3
+version: 0.3.5
 # renovate: datasource=docker depName=searxng/searxng
-appVersion: "2026.10.17-decdfa6f7"
+appVersion: "2026.10.24-ef0ec03da"
 home: https://searxng.org
 icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/searxng.svg
 sources:
@@ -23,9 +23,9 @@ annotations:
   artifacthub.io/signKey: |
     fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
     url: https://keys.openpgp.org/search?q=hello%40m11s.io
-  artifacthub.io/containersImages: |
+  artifacthub.io/images: |
     - name: searxng
-      image: searxng/searxng:2026.9.12-56b1f6454
+      image: searxng/searxng:2026.10.24-ef0ec03da
     - name: valkey
       image: docker.io/valkey/valkey:9.1.2
   artifacthub.io/links: |
@@ -34,6 +34,8 @@ annotations:
     - name: docs
       url: https://docs.searxng.org/
   artifacthub.io/changes: |-
+    - kind: fixed
+      description: "Correct the Artifact Hub image annotation and synchronize image metadata with chart defaults."
     - kind: fixed
       description: "Disable ServiceAccount token automount; SearXNG never calls the Kubernetes API"
     - kind: added

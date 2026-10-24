@@ -2,7 +2,7 @@ apiVersion: v2
 name: dub
 description: Helm chart for dub self-hosted URL shortener
 type: application
-version: 0.2.2
+version: 0.2.3
 # renovate: datasource=docker depName=m11s/dub
 appVersion: "0.1.0"
 home: https://dub.co
@@ -17,7 +17,7 @@ annotations:
   artifacthub.io/signKey: |
     fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
     url: https://keys.openpgp.org/search?q=hello%40m11s.io
-  artifacthub.io/containersImages: |
+  artifacthub.io/images: |
     - name: dub
       image: m11s/dub:0.1.0
     - name: redis-http-proxy
@@ -28,6 +28,8 @@ annotations:
     - name: docs
       url: https://dub.co/docs/self-hosting
   artifacthub.io/changes: |-
+    - kind: fixed
+      description: "Correct the Artifact Hub image annotation and synchronize image metadata with chart defaults."
     - kind: fixed
       description: "Pin maintained images by digest and track image rebuilds through Renovate."
     - kind: added
