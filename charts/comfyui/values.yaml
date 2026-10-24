@@ -2,7 +2,7 @@ image:
   # image.repository is the container image repository
   repository: m11s/comfyui
   # image.tag pins the image tag and digest; set empty to use chart appVersion
-  tag: "0.40.0-gguf@sha256:cf10c878fb2fb825eb5131136912fe5ef04cbb2f1fad3dca76b598509d7b364a"
+  tag: "0.42.5-gguf@sha256:a94eba0bb203a2d4a9f5f6bebb7e9cf32368f927b2ddcc740d8f3792d7473612"
   # image.pullPolicy is the image pull policy
   pullPolicy: IfNotPresent
 
@@ -35,7 +35,7 @@ comfyMcp:
   enabled: false
   image:
     repository: m11s/comfy-mcp
-    tag: "0.10.0@sha256:283c70265f57162a9196f2379d2293e22e7852e8e014afb109be2eb7fb7db317"
+    tag: "0.10.0@sha256:f8194b206a3125f3f0f4bd292510c64e0bed172179315bf485dd1f6546ab43cf"
     pullPolicy: IfNotPresent
   service:
     type: ClusterIP
