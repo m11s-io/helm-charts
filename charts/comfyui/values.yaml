@@ -2,7 +2,7 @@ image:
   # image.repository is the container image repository
   repository: m11s/comfyui
   # image.tag pins the image tag and digest; set empty to use chart appVersion
-  tag: "0.40.0-gguf@sha256:cf10c878fb2fb825eb5131136912fe5ef04cbb2f1fad3dca76b598509d7b364a"
+  tag: "0.42.5-gguf@sha256:a94eba0bb203a2d4a9f5f6bebb7e9cf32368f927b2ddcc740d8f3792d7473612"
   # image.pullPolicy is the image pull policy
   pullPolicy: IfNotPresent
 
@@ -35,11 +35,11 @@ comfyMcp:
   enabled: false
   image:
     repository: m11s/comfy-mcp
-    tag: "0.10.0@sha256:283c70265f57162a9196f2379d2293e22e7852e8e014afb109be2eb7fb7db317"
+    tag: "0.10.0@sha256:f8194b206a3125f3f0f4bd292510c64e0bed172179315bf485dd1f6546ab43cf"
     pullPolicy: IfNotPresent
   service:
     type: ClusterIP
-    port: 8080 # @schema minimum:1;maximum:65535
+    port: 8080  # @schema minimum:1;maximum:65535
   resources:
     requests:
       cpu: 50m
@@ -193,8 +193,8 @@ modelDownload:
   # only needed for private/gated models or to use an authenticated rate limit.
   huggingFaceToken:
     existingSecret: ""
-    key: token # @schema minLength:1
-  backoffLimit: 3 # @schema minimum:0
+    key: token  # @schema minLength:1
+  backoffLimit: 3  # @schema minimum:0
   # Keep completed Jobs so Argo CD does not recreate them during self-heal.
   # Set this only when the release is not continuously reconciled.
 # @schema type:[integer, null];minimum:0
@@ -208,7 +208,7 @@ modelDownload:
       # hf_xet's default download buffer is 2GiB (512MiB per file); leave
       # headroom for Python and filesystem accounting during large transfers.
       memory: 5Gi
-  models: [] # @schema item: object; itemRequired: [destination,repo,revision,file,sha256]; itemProperties: {destination: {type: string, pattern: "^[^/].*"}, file: {type: string, pattern: "^[^/].*"}, repo: {type: string, pattern: "^[^/]+/[^/]+$"}, revision: {type: string, pattern: "^[a-fA-F0-9]{40}$"}, sha256: {type: string, pattern: "^[a-fA-F0-9]{64}$"}}
+  models: []  # @schema item: object; itemRequired: [destination,repo,revision,file,sha256]; itemProperties: {destination: {type: string, pattern: "^[^/].*"}, file: {type: string, pattern: "^[^/].*"}, repo: {type: string, pattern: "^[^/]+/[^/]+$"}, revision: {type: string, pattern: "^[a-fA-F0-9]{40}$"}, sha256: {type: string, pattern: "^[a-fA-F0-9]{64}$"}}
   # Remove model files not listed in models after successful downloads.
   prune: false
   # example:
