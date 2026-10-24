@@ -100,7 +100,7 @@ uploadProxy:
   enabled: false
   image:
     repository: m11s/s3-upload-proxy
-    tag: "0.1.3@sha256:b6a032d9066de0a893630eeae262ceb06cd9b97e198fea002a15b91aeb2263a9"
+    tag: "0.1.3@sha256:b13c85dc47aaf21c81eb350fa788b11470977d1338903776ce2cf76a63a4eb79"
     pullPolicy: IfNotPresent
   s3:
     # uploadProxy.s3.endpoint is the S3-compatible endpoint URL
