@@ -3250,6 +3250,43 @@ entries:
           description: "Encode uploaded object URLs so filenames with spaces render correctly in Markdown"
       artifacthub.io/containersImages: |
         - name: decap-cms
+          image: m11s/decap-cms:0.2.11-s3@sha256:734a15c14680110eb1b6e8a92e21dfaa79852cefeaf3848e9757bc7496d245e0
+        - name: s3-upload-proxy
+          image: m11s/s3-upload-proxy:0.1.3@sha256:b6a032d9066de0a893630eeae262ceb06cd9b97e198fea002a15b91aeb2263a9
+      artifacthub.io/links: |
+        - name: source
+          url: https://github.com/decaporg/decap-cms
+      artifacthub.io/signKey: |
+        fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
+        url: https://keys.openpgp.org/search?q=hello%40m11s.io
+    apiVersion: v2
+    appVersion: 0.2.11-s3
+    created: "2026-10-24T12:46:24.421661899Z"
+    description: Multi-tenant Decap CMS with optional S3/MinIO upload proxy, served
+      by path prefix
+    digest: 9c73a4a388f79537cbce4752ae6980feb1595b06d84f5bc6d7d003f8de607add
+    home: https://decapcms.org
+    icon: https://decapcms.org/img/decap-logo.svg
+    maintainers:
+    - name: m11s
+      url: https://m11s.io
+    name: decap-cms
+    sources:
+    - https://github.com/decaporg/decap-cms
+    - https://github.com/m11s-io/docker-images
+    - https://github.com/m11s-io/helm-charts
+    type: application
+    urls:
+    - https://github.com/m11s-io/helm-charts/releases/download/decap-cms-0.4.2/decap-cms-0.4.2.tgz
+    version: 0.4.2
+  - annotations:
+      artifacthub.io/changes: |-
+        - kind: fixed
+          description: "Pin maintained images by digest and track image rebuilds through Renovate."
+        - kind: fixed
+          description: "Encode uploaded object URLs so filenames with spaces render correctly in Markdown"
+      artifacthub.io/containersImages: |
+        - name: decap-cms
           image: m11s/decap-cms:0.2.11-s3@sha256:18bf5dd04f1caf7fbb56f7d13bfaa8492e4281bcd79faef05f8e4b07e90508d2
         - name: s3-upload-proxy
           image: m11s/s3-upload-proxy:0.1.3@sha256:b6a032d9066de0a893630eeae262ceb06cd9b97e198fea002a15b91aeb2263a9
@@ -5578,4 +5615,4 @@ entries:
     urls:
     - https://github.com/m11s-io/helm-charts/releases/download/whoami-0.1.0/whoami-0.1.0.tgz
     version: 0.1.0
-generated: "2026-10-18T22:19:11.733212137Z"
+generated: "2026-10-24T12:46:24.422012532Z"
