@@ -2,7 +2,7 @@ apiVersion: v2
 name: comfyui
 description: Helm chart for ComfyUI, a node-based, modular visual AI engine for GPU nodes
 type: application
-version: 0.12.2
+version: 0.12.3
 # renovate: datasource=docker depName=m11s/comfyui
 appVersion: "0.42.5-gguf"
 home: https://github.com/comfyanonymous/ComfyUI
@@ -19,7 +19,7 @@ annotations:
   artifacthub.io/signKey: |
     fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
     url: https://keys.openpgp.org/search?q=hello%40m11s.io
-  artifacthub.io/containersImages: |
+  artifacthub.io/images: |
     - name: comfyui
       image: m11s/comfyui:0.42.5-gguf@sha256:a94eba0bb203a2d4a9f5f6bebb7e9cf32368f927b2ddcc740d8f3792d7473612
     - name: comfy-mcp
@@ -30,6 +30,8 @@ annotations:
     - name: image source
       url: https://github.com/m11s-io/docker-images
   artifacthub.io/changes: |-
+    - kind: fixed
+      description: "Correct the Artifact Hub image annotation and synchronize image metadata with chart defaults."
     - kind: added
       description: "Configure model download Job environment for Hugging Face proxies and recreate Jobs when download settings change."
     - kind: changed

@@ -2,7 +2,7 @@ apiVersion: v2
 name: decap-cms
 description: Multi-tenant Decap CMS with optional S3/MinIO upload proxy, served by path prefix
 type: application
-version: 0.4.3
+version: 0.4.4
 # renovate: datasource=docker depName=m11s/decap-cms
 appVersion: "0.2.11-s3"
 home: https://decapcms.org
@@ -18,7 +18,7 @@ annotations:
   artifacthub.io/signKey: |
     fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
     url: https://keys.openpgp.org/search?q=hello%40m11s.io
-  artifacthub.io/containersImages: |
+  artifacthub.io/images: |
     - name: decap-cms
       image: m11s/decap-cms:0.2.11-s3@sha256:734a15c14680110eb1b6e8a92e21dfaa79852cefeaf3848e9757bc7496d245e0
     - name: s3-upload-proxy
@@ -27,6 +27,8 @@ annotations:
     - name: source
       url: https://github.com/decaporg/decap-cms
   artifacthub.io/changes: |-
+    - kind: fixed
+      description: "Correct the Artifact Hub image annotation and synchronize image metadata with chart defaults."
     - kind: fixed
       description: "Pin maintained images by digest and track image rebuilds through Renovate."
     - kind: fixed
