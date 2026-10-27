@@ -1,7 +1,7 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:best-practices"
+    "github>m11s-io/.github:renovate-config"
   ],
   "timezone": "UTC",
   "labels": [
@@ -52,15 +52,6 @@
     }
   ],
   "packageRules": [
-    {
-      "description": "Wait seven days before proposing npm version updates",
-      "matchDatasources": [
-        "npm"
-      ],
-      "minimumReleaseAge": "7 days",
-      "minimumReleaseAgeBehaviour": "timestamp-required",
-      "internalChecksFilter": "strict"
-    },
     {
       "description": "appVersion and pinned CI tool versions are plain strings, not image references -- never append a digest",
       "matchManagers": [
