@@ -70,6 +70,10 @@ jobs:
               # Needs the repo registered by the step above, not ct lint's side effects.
               [[ -f "$chart/Chart.lock" ]] && helm dependency build "$chart"
               helm unittest "$chart"
+              if [[ -f "$chart/tests/verify-integer-overrides.sh" ]]; then
+                echo "Running CLI rendering regression checks for $chart"
+                bash "$chart/tests/verify-integer-overrides.sh"
+              fi
             else
               echo "No tests found for $chart, skipping"
             fi

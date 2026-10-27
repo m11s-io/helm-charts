@@ -1,0 +1,87 @@
+nameOverride: ""
+fullnameOverride: ""
+replicaCount: 1
+imagePullSecrets: []
+podAnnotations: {}
+podLabels: {}
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  runAsGroup: 1000
+  fsGroup: 1000
+  seccompProfile:
+    type: RuntimeDefault
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+image:
+  repository: m11s/timestral
+  tag: 0.1.0-cpu
+  # Set to a published sha256 digest for release deployments. When set, the
+  # rendered image uses repository@digest and ignores tag.
+  digest: "" # @schema pattern: ^(|sha256:[a-f0-9]{64})$
+  pullPolicy: IfNotPresent
+
+model:
+  id: mistralai/Timestral-209M # @schema minLength: 1
+  # Immutable Hugging Face commit for the published 209M checkpoint.
+  revision: 9874d252ab0aae16f7f7c999f98f98d6ad7d8365 # @schema pattern: ^[0-9a-fA-F]{40}$
+  device: cpu # @schema enum: [cpu, cuda]
+
+runtime:
+  port: 8000 # @schema const: 8000
+  torchNumThreads: 2
+  # Values are passed to the service through its bounded request contract.
+  limits:
+    maxRequestBytes: 8388608
+    maxBatchSize: 8
+    maxRowsPerSeries: 32
+    maxContextSteps: 32768
+    maxPredictionLength: 1024
+    maxOutputElements: 1000000
+  # Add secret-backed entries here, for example HF_TOKEN from a Secret.
+  extraEnv: []
+  resources:
+    requests:
+      cpu: "2"
+      memory: 2Gi
+    limits:
+      memory: 4Gi
+  startupProbe:
+    periodSeconds: 10
+    failureThreshold: 180
+  readinessProbe:
+    periodSeconds: 10
+    failureThreshold: 3
+  livenessProbe:
+    periodSeconds: 30
+    failureThreshold: 3
+  securityContext:
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: true
+    capabilities:
+      drop: [ALL]
+
+persistence:
+  enabled: true
+  existingClaim: ""
+  nameOverride: ""
+  storageClass: ""
+  accessModes: [ReadWriteOnce]
+  size: 2Gi
+
+service:
+  type: ClusterIP
+  port: 8000
+
+# Example override for a GPU node:
+# model:
+#   device: cuda
+# runtime:
+#   resources:
+#     limits:
+#       memory: 4Gi
+#       nvidia.com/gpu: 1
+# nodeSelector:
+#   nvidia.com/gpu.present: "true"

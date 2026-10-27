@@ -1,0 +1,15 @@
+apiVersion: v2
+name: timestral
+description: Serve Mistral Timestral time-series forecasts over an internal HTTP API
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+home: https://github.com/m11s-io/helm-charts/tree/main/charts/timestral
+sources:
+  - https://github.com/mistralai/timestral
+  - https://huggingface.co/mistralai/Timestral-209M
+maintainers:
+  - name: m11s
+    url: https://github.com/m11s-io
+annotations:
+  artifacthub.io/license: Apache-2.0
