@@ -1,3 +1,6 @@
+{{- if and .Values.persistence.enabled (gt (int .Values.replicaCount) 1) }}
+{{- fail "persistent model cache requires replicaCount <= 1; use separate releases or disable persistence" }}
+{{- end }}
 {{- if not .Values.model.id }}{{ fail "model.id is required" }}{{ end }}
 {{- if not .Values.model.revision }}{{ fail "model.revision must be an immutable Hugging Face commit" }}{{ end }}
 {{- if not (regexMatch "^[0-9a-fA-F]{40}$" .Values.model.revision) }}{{ fail "model.revision must be a 40-character Hugging Face commit" }}{{ end }}

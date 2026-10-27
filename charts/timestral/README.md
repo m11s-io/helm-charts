@@ -5,9 +5,10 @@
 
 Deploys the Timestral forecasting API as a single Kubernetes Deployment with an internal ClusterIP Service. The process loads one checkpoint during startup and exposes forecasts on port 8000.
 
-## Release gate
+## Image and model
 
-The chart defaults make local rendering and CI validation possible. The image tags follow upstream Timestral `1.0.0`; each image build verifies that version against the installed package metadata. This does not mean the image has been published. Before a release deployment, publish the matching CPU or CUDA image and set `image.digest` to its verified `sha256:` digest. When `image.digest` is set, it takes precedence over `image.tag`. Do not add a registry or GitOps release reference until both the image digest and chart package have been published and reviewed.
+Image tags follow the upstream package version (`1.0.0-cpu` or `1.0.0-cuda`).
+Set `image.digest` to pin a published image; it takes precedence over `image.tag`.
 
 The chart defaults to Timestral-209M at pinned revision `9874d252ab0aae16f7f7c999f98f98d6ad7d8365`. The image version identifies the inference package; choose the checkpoint with `model.id` and `model.revision`. The same CPU or CUDA image can load any compatible Timestral size. For example, select Timestral-123M with:
 
@@ -69,7 +70,7 @@ nodeSelector:
 
 ## Cache and credentials
 
-The chart creates a 2 GiB `ReadWriteOnce` PVC by default and uses a `Recreate` rollout strategy so two pods do not contend for a single-writer cache. Set `persistence.existingClaim` to use an existing claim; set `persistence.enabled: false` for an ephemeral cache. The cache is mounted at `/models`, and `HF_HOME` is set to `/models/huggingface`. `/tmp` is an `emptyDir`, allowing the container to run with a read-only root filesystem. The API binds to port 8000; the container port is fixed while `service.port` can change the in-cluster Service port.
+The chart creates a 2 GiB `ReadWriteOnce` PVC by default and uses a `Recreate` rollout strategy so two pods do not contend for a single-writer cache. Persistent caches require `replicaCount <= 1`, including when using an existing claim. For multiple replicas, disable persistence so each pod has an independent cache, or deploy separate releases with separate PVCs. Set `persistence.existingClaim` to use an existing claim; set `persistence.enabled: false` for an ephemeral cache. The cache is mounted at `/models`, and `HF_HOME` is set to `/models/huggingface`. `/tmp` is an `emptyDir`, allowing the container to run with a read-only root filesystem. The API binds to port 8000; the container port is fixed while `service.port` can change the in-cluster Service port.
 
 Use `runtime.extraEnv` to reference a Secret for gated model access when required. Do not place tokens in Helm values committed to Git:
 

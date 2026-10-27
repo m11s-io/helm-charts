@@ -22,6 +22,20 @@ tests:
     asserts:
       - exists:
           path: spec.template.spec.volumes[0].emptyDir
+  - it: rejects multiple replicas sharing a persistent cache
+    set:
+      replicaCount: 2
+    asserts:
+      - failedTemplate:
+          errorMessage: persistent model cache requires replicaCount <= 1; use separate releases or disable persistence
+  - it: permits multiple replicas with independent ephemeral caches
+    set:
+      replicaCount: 2
+      persistence.enabled: false
+    asserts:
+      - equal:
+          path: spec.replicas
+          value: 2
 
 ---
 suite: timestral persistent volume claim

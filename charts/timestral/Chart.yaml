@@ -2,7 +2,7 @@ apiVersion: v2
 name: timestral
 description: Deploy Timestral, a time-series forecasting API based on Mistral Timestral
 type: application
-version: 0.1.3
+version: 0.1.4
 appVersion: "1.0.0"
 home: https://github.com/m11s-io/helm-charts/tree/main/charts/timestral
 icon: https://mistral.ai/cms-media/api/media/file/timestral-icon-model.svg
