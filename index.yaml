@@ -4954,6 +4954,45 @@ entries:
         - name: dub
           image: m11s/dub:0.1.0
         - name: redis-http-proxy
+          image: m11s/redis-http-proxy:0.1.0@sha256:8ad23b808eb90b9f9a1221be7aaffc2bab5012338600e4b923c16aefc6f3e2b4
+      artifacthub.io/links: |
+        - name: source
+          url: https://github.com/dubinc/dub
+        - name: docs
+          url: https://dub.co/docs/self-hosting
+      artifacthub.io/signKey: |
+        fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
+        url: https://keys.openpgp.org/search?q=hello%40m11s.io
+    apiVersion: v2
+    appVersion: 0.1.0
+    created: "2026-10-27T23:41:19.501160526Z"
+    description: Deploy Dub, a self-hosted link management platform
+    digest: a328e5f05446c0996c8a54b584f263547d56506d5c32646253a6f84199125097
+    home: https://dub.co
+    icon: https://assets.dub.co/brand/logo.svg
+    maintainers:
+    - name: m11s
+      url: https://m11s.io
+    name: dub
+    sources:
+    - https://github.com/dubinc/dub
+    - https://github.com/m11s-io/helm-charts
+    type: application
+    urls:
+    - https://github.com/m11s-io/helm-charts/releases/download/dub-0.2.6/dub-0.2.6.tgz
+    version: 0.2.6
+  - annotations:
+      artifacthub.io/changes: |-
+        - kind: fixed
+          description: "Correct the Artifact Hub image annotation and synchronize image metadata with chart defaults."
+        - kind: fixed
+          description: "Pin maintained images by digest and track image rebuilds through Renovate."
+        - kind: added
+          description: "Initial chart release"
+      artifacthub.io/images: |
+        - name: dub
+          image: m11s/dub:0.1.0
+        - name: redis-http-proxy
           image: m11s/redis-http-proxy:0.1.0@sha256:f9b02406287dc19ef781e570f7729ea3cd54d921e79df15b15bafb3f7ce7ae13
       artifacthub.io/links: |
         - name: source
@@ -7098,4 +7137,4 @@ entries:
     urls:
     - https://github.com/m11s-io/helm-charts/releases/download/whoami-0.1.0/whoami-0.1.0.tgz
     version: 0.1.0
-generated: "2026-10-27T19:01:47.111695913Z"
+generated: "2026-10-27T23:41:19.501391578Z"
