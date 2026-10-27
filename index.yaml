@@ -6162,6 +6162,27 @@ entries:
     urls:
     - https://github.com/m11s-io/helm-charts/releases/download/shlink-0.1.0/shlink-0.1.0.tgz
     version: 0.1.0
+  timestral:
+  - annotations:
+      artifacthub.io/license: Apache-2.0
+    apiVersion: v2
+    appVersion: 0.1.0
+    created: "2026-10-27T08:19:06.959305908Z"
+    description: Serve Mistral Timestral time-series forecasts over an internal HTTP
+      API
+    digest: 1c7eaedcff4fb82515a795f7e7852c07b67fbc2a88c07abb20005c688646f977
+    home: https://github.com/m11s-io/helm-charts/tree/main/charts/timestral
+    maintainers:
+    - name: m11s
+      url: https://github.com/m11s-io
+    name: timestral
+    sources:
+    - https://github.com/mistralai/timestral
+    - https://huggingface.co/mistralai/Timestral-209M
+    type: application
+    urls:
+    - https://github.com/m11s-io/helm-charts/releases/download/timestral-0.1.0/timestral-0.1.0.tgz
+    version: 0.1.0
   whoami:
   - annotations:
       artifacthub.io/changes: |-
@@ -6456,4 +6477,4 @@ entries:
     urls:
     - https://github.com/m11s-io/helm-charts/releases/download/whoami-0.1.0/whoami-0.1.0.tgz
     version: 0.1.0
-generated: "2026-10-24T15:58:38.954077534Z"
+generated: "2026-10-27T08:19:06.95956675Z"
