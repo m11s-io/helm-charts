@@ -1,6 +1,6 @@
 apiVersion: v2
 name: dub
-description: Helm chart for dub self-hosted URL shortener
+description: Deploy Dub, a self-hosted link management platform
 type: application
 version: 0.2.4
 # renovate: datasource=docker depName=m11s/dub

@@ -1,6 +1,6 @@
 apiVersion: v2
 name: timestral
-description: Serve Mistral Timestral time-series forecasts over an internal HTTP API
+description: Deploy Timestral, a time-series forecasting API based on Mistral Timestral
 type: application
 version: 0.1.3
 appVersion: "1.0.0"
@@ -13,4 +13,5 @@ maintainers:
   - name: m11s
     url: https://github.com/m11s-io
 annotations:
+  artifacthub.io/category: ai-machine-learning
   artifacthub.io/license: Apache-2.0

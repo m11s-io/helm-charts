@@ -1,6 +1,6 @@
 apiVersion: v2
 name: comfyui
-description: Helm chart for ComfyUI, a node-based, modular visual AI engine for GPU nodes
+description: Deploy ComfyUI, a node-based visual AI engine for image and video generation on GPU nodes
 type: application
 version: 0.12.4
 # renovate: datasource=docker depName=m11s/comfyui

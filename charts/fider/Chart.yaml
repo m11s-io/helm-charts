@@ -1,6 +1,6 @@
 apiVersion: v2
 name: fider
-description: Helm chart for Fider self-hosted user feedback platform
+description: Deploy Fider, a self-hosted user feedback platform
 type: application
 version: 0.4.2
 # renovate: datasource=docker depName=getfider/fider

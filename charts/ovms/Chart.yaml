@@ -1,6 +1,6 @@
 apiVersion: v2
 name: ovms
-description: Deploy OpenVINO Model Server for any supported task
+description: Deploy OpenVINO Model Server for inference tasks including reranking, embeddings, and text generation
 type: application
 version: 0.3.2
 appVersion: "2026.3.1"
@@ -13,4 +13,5 @@ maintainers:
   - name: m11s
     url: https://github.com/m11s-io
 annotations:
+  artifacthub.io/category: ai-machine-learning
   artifacthub.io/license: Apache-2.0
