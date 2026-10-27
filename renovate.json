@@ -174,7 +174,7 @@
       ]
     },
     {
-      "description": "Automerge maintained chart image digest, patch, and minor updates after checks pass; major tag upgrades remain manual",
+      "description": "Automerge maintained chart image digest and all tag version updates after checks pass",
       "matchDatasources": [
         "docker"
       ],
@@ -193,7 +193,8 @@
       "matchUpdateTypes": [
         "digest",
         "patch",
-        "minor"
+        "minor",
+        "major"
       ],
       "automerge": true,
       "automergeType": "pr",
