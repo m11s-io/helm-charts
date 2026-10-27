@@ -1,5 +1,8 @@
 # Timestral
 
+[![Docker Pulls](https://img.shields.io/docker/pulls/m11s/timestral.svg)](https://hub.docker.com/r/m11s/timestral/)
+[![Build and push](https://github.com/m11s-io/docker-images/actions/workflows/build.yaml/badge.svg)](https://github.com/m11s-io/docker-images/actions/workflows/build.yaml)
+
 Deploys the Timestral forecasting API as a single Kubernetes Deployment with an internal ClusterIP Service. The process loads one checkpoint during startup and exposes forecasts on port 8000.
 
 ## Release gate
