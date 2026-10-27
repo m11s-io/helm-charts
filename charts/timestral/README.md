@@ -4,7 +4,7 @@ Deploys the Timestral forecasting API as a single Kubernetes Deployment with an 
 
 ## Release gate
 
-The chart defaults make local rendering and CI validation possible. `image.tag: 0.1.0-cpu` is a proposed tag, not evidence that an image has been published. Before a release deployment, publish the matching CPU or CUDA image and set `image.digest` to its verified `sha256:` digest. When `image.digest` is set, it takes precedence over `image.tag`. Do not add a registry or GitOps release reference until both the image digest and chart package have been published and reviewed.
+The chart defaults make local rendering and CI validation possible. The image tags follow upstream Timestral `1.0.0`; each image build verifies that version against the installed package metadata. This does not mean the image has been published. Before a release deployment, publish the matching CPU or CUDA image and set `image.digest` to its verified `sha256:` digest. When `image.digest` is set, it takes precedence over `image.tag`. Do not add a registry or GitOps release reference until both the image digest and chart package have been published and reviewed.
 
 The model defaults to `mistralai/Timestral-209M` at immutable Hugging Face revision `9874d252ab0aae16f7f7c999f98f98d6ad7d8365`. Keep the revision pinned so cached weights and restart behavior remain reproducible.
 
@@ -13,7 +13,7 @@ The model defaults to `mistralai/Timestral-209M` at immutable Hugging Face revis
 ```yaml
 image:
   repository: m11s/timestral
-  tag: 0.1.0-cpu
+  tag: 1.0.0-cpu
   digest: sha256:REPLACE_WITH_PUBLISHED_DIGEST
 model:
   device: cpu
@@ -36,7 +36,7 @@ Setting `model.device: cuda` alone does not allocate a GPU. Select compatible NV
 ```yaml
 image:
   repository: m11s/timestral
-  tag: 0.1.0-cuda
+  tag: 1.0.0-cuda
   digest: sha256:REPLACE_WITH_PUBLISHED_DIGEST
 model:
   device: cuda
