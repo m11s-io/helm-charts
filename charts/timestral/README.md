@@ -6,7 +6,15 @@ Deploys the Timestral forecasting API as a single Kubernetes Deployment with an 
 
 The chart defaults make local rendering and CI validation possible. The image tags follow upstream Timestral `1.0.0`; each image build verifies that version against the installed package metadata. This does not mean the image has been published. Before a release deployment, publish the matching CPU or CUDA image and set `image.digest` to its verified `sha256:` digest. When `image.digest` is set, it takes precedence over `image.tag`. Do not add a registry or GitOps release reference until both the image digest and chart package have been published and reviewed.
 
-The model defaults to `mistralai/Timestral-209M` at immutable Hugging Face revision `9874d252ab0aae16f7f7c999f98f98d6ad7d8365`. The image version identifies the Timestral inference package, not the checkpoint size. To select another compatible checkpoint, set `model.id` and its matching `model.revision` together; the same CPU or CUDA image can load each size. For example, upstream Timestral-123M is available at revision `5a147287addda85f6acd8da3fb8858fe9af7e8f7`. Keep the revision pinned so cached weights and restart behavior remain reproducible.
+The chart defaults to Timestral-209M at pinned revision `9874d252ab0aae16f7f7c999f98f98d6ad7d8365`. The image version identifies the inference package; choose the checkpoint with `model.id` and `model.revision`. The same CPU or CUDA image can load any compatible Timestral size. For example, select Timestral-123M with:
+
+```yaml
+model:
+  id: mistralai/Timestral-123M
+  revision: 5a147287addda85f6acd8da3fb8858fe9af7e8f7
+```
+
+Keep the model revision pinned so restarts use the same weights.
 
 ## CPU
 
