@@ -231,6 +231,9 @@
                 }
             }
         },
+        "runtimeClassName": {
+            "type": "string"
+        },
         "service": {
             "type": "object",
             "properties": {

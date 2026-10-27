@@ -127,3 +127,14 @@ tests:
               secretKeyRef:
                 name: model-access
                 key: token
+  - it: selects the configured NVIDIA runtime class
+    set:
+      runtimeClassName: nvidia
+    asserts:
+      - equal:
+          path: spec.template.spec.runtimeClassName
+          value: nvidia
+  - it: leaves runtime class to the cluster by default
+    asserts:
+      - notExists:
+          path: spec.template.spec.runtimeClassName
