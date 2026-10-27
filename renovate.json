@@ -1,7 +1,7 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:best-practices"
+    "github>m11s-io/.github:renovate-config"
   ],
   "timezone": "UTC",
   "labels": [
@@ -174,7 +174,7 @@
       ]
     },
     {
-      "description": "Automerge maintained chart image digest updates after checks pass; override the manual-merge defaults above without enabling tag upgrades",
+      "description": "Automerge maintained chart image digest and all tag version updates after checks pass",
       "matchDatasources": [
         "docker"
       ],
@@ -191,11 +191,15 @@
         "m11s/redis-http-proxy"
       ],
       "matchUpdateTypes": [
-        "digest"
+        "digest",
+        "patch",
+        "minor",
+        "major"
       ],
       "automerge": true,
       "automergeType": "pr",
       "platformAutomerge": true,
+      "rebaseWhen": "behind-base-branch",
       "ignoreTests": false
     },
     {

@@ -4,8 +4,6 @@ on:
   pull_request:
     branches:
       - main
-    paths:
-      - "charts/**/values.yaml"
   workflow_dispatch:
     inputs:
       charts:
@@ -53,7 +51,7 @@ jobs:
             # Detect from changed values.yaml files in the PR
             BASE_SHA="${{ github.event.pull_request.base.sha }}"
             changed=$(git diff --name-only "$BASE_SHA" HEAD -- 'charts/**/values.yaml' \
-              | grep -o 'charts/[^/]*' | cut -d/ -f2 | sort -u | tr '\n' ',' | sed 's/,$//')
+              | awk -F/ 'NF >= 3 {print $2}' | sort -u | tr '\n' ',' | sed 's/,$//')
             echo "charts=$changed" >> $GITHUB_OUTPUT
           fi
 
@@ -74,6 +72,7 @@ jobs:
           done
 
       - name: Commit schema changes
+        if: steps.charts.outputs.charts != ''
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
