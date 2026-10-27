@@ -53,6 +53,15 @@
   ],
   "packageRules": [
     {
+      "description": "Wait seven days before proposing npm version updates",
+      "matchDatasources": [
+        "npm"
+      ],
+      "minimumReleaseAge": "7 days",
+      "minimumReleaseAgeBehaviour": "timestamp-required",
+      "internalChecksFilter": "strict"
+    },
+    {
       "description": "appVersion and pinned CI tool versions are plain strings, not image references -- never append a digest",
       "matchManagers": [
         "custom.regex"
