@@ -174,7 +174,7 @@
       ]
     },
     {
-      "description": "Automerge maintained chart image digest updates after checks pass; override the manual-merge defaults above without enabling tag upgrades",
+      "description": "Automerge maintained chart image digest, patch, and minor updates after checks pass; major tag upgrades remain manual",
       "matchDatasources": [
         "docker"
       ],
@@ -191,11 +191,14 @@
         "m11s/redis-http-proxy"
       ],
       "matchUpdateTypes": [
-        "digest"
+        "digest",
+        "patch",
+        "minor"
       ],
       "automerge": true,
       "automergeType": "pr",
       "platformAutomerge": true,
+      "rebaseWhen": "behind-base-branch",
       "ignoreTests": false
     },
     {
