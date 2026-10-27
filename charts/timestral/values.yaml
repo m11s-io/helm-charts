@@ -1,6 +1,7 @@
 nameOverride: ""
 fullnameOverride: ""
 replicaCount: 1
+runtimeClassName: ""
 imagePullSecrets: []
 podAnnotations: {}
 podLabels: {}

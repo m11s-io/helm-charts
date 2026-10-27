@@ -43,9 +43,10 @@ persistence:
 
 ## CUDA
 
-Setting `model.device: cuda` alone does not allocate a GPU. Select compatible NVIDIA nodes and request a GPU resource. Adjust labels and tolerations to match the cluster's device plugin and node policy.
+Set `runtimeClassName: nvidia` when the cluster requires its NVIDIA runtime handler. Setting `model.device: cuda` alone does not allocate a GPU. Select compatible NVIDIA nodes and request a GPU resource. Adjust labels and tolerations to match the cluster's device plugin and node policy.
 
 ```yaml
+runtimeClassName: nvidia
 image:
   repository: m11s/timestral
   tag: 1.0.0-cuda
