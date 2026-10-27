@@ -6251,6 +6251,26 @@ entries:
       artifacthub.io/license: Apache-2.0
     apiVersion: v2
     appVersion: 1.0.0
+    created: "2026-10-27T11:16:22.245301189Z"
+    description: Serve Mistral Timestral time-series forecasts over an internal HTTP
+      API
+    digest: ea155b3784b69ff303695a770a57a6f24edbcca5a9a3b82923e2545aec65a3cf
+    home: https://github.com/m11s-io/helm-charts/tree/main/charts/timestral
+    maintainers:
+    - name: m11s
+      url: https://github.com/m11s-io
+    name: timestral
+    sources:
+    - https://github.com/mistralai/timestral
+    - https://huggingface.co/mistralai/Timestral-209M
+    type: application
+    urls:
+    - https://github.com/m11s-io/helm-charts/releases/download/timestral-0.1.2/timestral-0.1.2.tgz
+    version: 0.1.2
+  - annotations:
+      artifacthub.io/license: Apache-2.0
+    apiVersion: v2
+    appVersion: 1.0.0
     created: "2026-10-27T10:33:38.658734696Z"
     description: Serve Mistral Timestral time-series forecasts over an internal HTTP
       API
@@ -6581,4 +6601,4 @@ entries:
     urls:
     - https://github.com/m11s-io/helm-charts/releases/download/whoami-0.1.0/whoami-0.1.0.tgz
     version: 0.1.0
-generated: "2026-10-27T10:33:38.659138722Z"
+generated: "2026-10-27T11:16:22.245470135Z"
