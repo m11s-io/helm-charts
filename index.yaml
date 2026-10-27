@@ -5250,6 +5250,51 @@ entries:
         fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
         url: https://keys.openpgp.org/search?q=hello%40m11s.io
     apiVersion: v2
+    appVersion: 2026.10.27-cb74e7f81
+    created: "2026-10-27T08:40:08.639432853Z"
+    dependencies:
+    - condition: valkey.enabled
+      name: valkey
+      repository: https://valkey.io/valkey-helm/
+      version: ~0.12.0
+    description: Helm chart for SearXNG, a privacy-respecting metasearch engine
+    digest: 6be9d223024964df3f3fdcb01b08db8d0c470272780ebf9088a9b58acf2ad6c4
+    home: https://searxng.org
+    icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/searxng.svg
+    maintainers:
+    - name: m11s
+      url: https://m11s.io
+    name: searxng
+    sources:
+    - https://github.com/searxng/searxng
+    - https://github.com/m11s-io/helm-charts
+    type: application
+    urls:
+    - https://github.com/m11s-io/helm-charts/releases/download/searxng-0.3.6/searxng-0.3.6.tgz
+    version: 0.3.6
+  - annotations:
+      artifacthub.io/category: networking
+      artifacthub.io/changes: |-
+        - kind: fixed
+          description: "Correct the Artifact Hub image annotation and synchronize image metadata with chart defaults."
+        - kind: fixed
+          description: "Disable ServiceAccount token automount; SearXNG never calls the Kubernetes API"
+        - kind: added
+          description: "Initial chart release"
+      artifacthub.io/images: |
+        - name: searxng
+          image: searxng/searxng:2026.10.24-ef0ec03da
+        - name: valkey
+          image: docker.io/valkey/valkey:9.1.2
+      artifacthub.io/links: |
+        - name: source
+          url: https://github.com/searxng/searxng
+        - name: docs
+          url: https://docs.searxng.org/
+      artifacthub.io/signKey: |
+        fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
+        url: https://keys.openpgp.org/search?q=hello%40m11s.io
+    apiVersion: v2
     appVersion: 2026.10.24-ef0ec03da
     created: "2026-10-24T15:35:30.657062049Z"
     dependencies:
@@ -6516,4 +6561,4 @@ entries:
     urls:
     - https://github.com/m11s-io/helm-charts/releases/download/whoami-0.1.0/whoami-0.1.0.tgz
     version: 0.1.0
-generated: "2026-10-27T08:39:57.46114154Z"
+generated: "2026-10-27T08:40:08.639612092Z"
