@@ -47,8 +47,8 @@ over tag. Timestral defaults to the CPU variant. Sidecars have independent image
 versions.
 
 Renovate updates annotated `appVersion` fields and explicit sidecar image tags;
-it leaves empty overrides untouched. Run `python3 scripts/check-image-defaults.py`
-with Helm installed to check this convention across all charts.
+it leaves empty overrides untouched. The shared image helper is covered by the
+regular Helm unit tests.
 
 ## Publishing
 
@@ -94,7 +94,6 @@ for chart in charts/*; do
 done
 # Requires the helm-unittest plugin.
 helm unittest charts/*
-python3 scripts/check-image-defaults.py
 helm lint charts/whoami --strict
 ```
 
