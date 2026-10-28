@@ -80,6 +80,16 @@
       "automerge": false
     },
     {
+      "description": "Empty image tags inherit appVersion; never replace them with digest-only overrides",
+      "matchManagers": [
+        "helm-values"
+      ],
+      "matchJsonata": [
+        "$not(currentValue)"
+      ],
+      "enabled": false
+    },
+    {
       "description": "Artifact Hub references are full image references and must retain digest pins",
       "matchManagers": [
         "custom.regex"
@@ -88,6 +98,21 @@
         "chart-image"
       ],
       "pinDigests": true
+    },
+    {
+      "description": "Primary Artifact Hub references follow appVersion without digest pins",
+      "matchManagers": [
+        "custom.regex"
+      ],
+      "matchDepTypes": [
+        "chart-image"
+      ],
+      "matchPackageNames": [
+        "m11s/comfyui",
+        "m11s/decap-cms",
+        "m11s/dub"
+      ],
+      "pinDigests": false
     },
     {
       "description": "Compare Docker application tags using their compatibility suffixes",

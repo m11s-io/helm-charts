@@ -8,7 +8,7 @@
 This chart targets a single GPU-bound replica per release and uses the `Recreate`
 update strategy by default, which is suited to nodes with one GPU.
 
-The default image includes the ComfyUI-GGUF extension and is pinned by digest. Use a custom `image.tag`
+The default image includes the ComfyUI-GGUF extension and follows chart `appVersion`. Use a custom `image.tag`
 if a required custom node needs a different runtime.
 
 ## Optional Comfy MCP HTTP service
@@ -38,7 +38,7 @@ GPU scheduling (`runtimeClassName`, `nodeSelector`, `tolerations`, `resources`) 
 |---|---|---|
 | `hostUsers` | Set `spec.hostUsers` for user namespaces (requires a userns-capable cluster/runtime; stable in Kubernetes 1.37) | `null` |
 | `image.repository` | Container image repository | `m11s/comfyui` |
-| `image.tag` | Image tag and digest; set empty to use chart appVersion | `0.40.0-gguf@sha256:…` (see values.yaml for the current digest) |
+| `image.tag` | Optional tag or tag-and-digest override; empty uses chart appVersion | `""` |
 | `replicaCount` | Number of pod replicas | `1` |
 | `strategy` | Deployment update strategy | `{type: Recreate}` |
 | `service.type` | Kubernetes Service type | `ClusterIP` |
@@ -171,7 +171,7 @@ persistence:
 
 Image tags follow the upstream ComfyUI version, with `-gguf` for the default
 variant. The optional MCP sidecar follows the upstream Comfy MCP version.
-Dependency and wrapper rebuilds are adopted through digest updates.
+The main image follows `appVersion`; the MCP sidecar tracks rebuilds through digest updates.
 
 ### Hugging Face proxy downloads
 
