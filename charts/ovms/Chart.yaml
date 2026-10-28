@@ -2,7 +2,8 @@ apiVersion: v2
 name: ovms
 description: Deploy OpenVINO Model Server for inference tasks including reranking, embeddings, and text generation
 type: application
-version: 0.3.2
+version: 0.3.3
+# renovate: datasource=docker depName=openvino/model_server
 appVersion: "2026.3.1"
 home: https://github.com/m11s-io/helm-charts/tree/main/charts/ovms
 icon: https://raw.githubusercontent.com/m11s-io/helm-charts/main/charts/ovms/assets/icon.png
