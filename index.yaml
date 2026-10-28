@@ -101,6 +101,128 @@ entries:
         url: https://keys.openpgp.org/search?q=hello%40m11s.io
     apiVersion: v2
     appVersion: 0.43.0-gguf
+    created: "2026-10-28T08:51:14.276707062Z"
+    dependencies:
+    - name: m11s-common
+      repository: file://../common
+      version: 0.1.0
+    description: Deploy ComfyUI, a node-based visual AI engine for image and video
+      generation on GPU nodes
+    digest: 2f066f3328d6a99bddab147a8d85dc123ff6174b647ea70d9f1d166ecac2ab45
+    home: https://github.com/comfyanonymous/ComfyUI
+    icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/comfyui.svg
+    maintainers:
+    - name: m11s
+      url: https://m11s.io
+    name: comfyui
+    sources:
+    - https://github.com/comfyanonymous/ComfyUI
+    - https://github.com/m11s-io/docker-images
+    - https://github.com/m11s-io/helm-charts
+    type: application
+    urls:
+    - https://github.com/m11s-io/helm-charts/releases/download/comfyui-0.13.0/comfyui-0.13.0.tgz
+    version: 0.13.0
+  - annotations:
+      artifacthub.io/category: ai-machine-learning
+      artifacthub.io/changes: |-
+        - kind: changed
+          description: "Pin the rebuilt ComfyUI 0.42.5-gguf image digest."
+        - kind: fixed
+          description: "Correct the Artifact Hub image annotation and synchronize image metadata with chart defaults."
+        - kind: added
+          description: "Configure model download Job environment for Hugging Face proxies and recreate Jobs when download settings change."
+        - kind: changed
+          description: "Follow upstream ComfyUI 0.40.0 and Comfy MCP 0.10.0 versions in image tags and pin the published image digests."
+        - kind: fixed
+          description: "Pin maintained images by digest and track image rebuilds through Renovate."
+        - kind: fixed
+          description: "Pin the rebuilt ComfyUI 0.5.6-gguf image by digest so chart upgrades roll out the new image with IfNotPresent."
+        - kind: changed
+          description: "Upgrade to ComfyUI v0.40.0 via image 0.5.6-gguf, including frontend 1.55.17, workflow templates 0.11.82, embedded docs 0.5.14, and comfy-aimdo 0.5.6."
+        - kind: changed
+          description: "Upgrade ComfyUI to image 0.5.5-gguf with CUDA 13.4.2, ComfyUI v0.39.0, and Torch 2.14.1. Upgrade the optional comfy-mcp sidecar to image 0.2.3 with Python 3.14.8 and comfy-cli 1.22.0."
+        - kind: changed
+          description: "Use the simpler modelDownload.prune boolean setting."
+        - kind: changed
+          description: "Remove the Hugging Face download cache after every successful model-download Job while preserving it after failures for recovery."
+        - kind: added
+          description: "Optionally prune undeclared model files and Hugging Face cache entries after verified model downloads."
+        - kind: added
+          description: "Add independent optional PVCs for generated output, user state, inputs, and temporary execution files."
+        - kind: fixed
+          description: "Set COMFYUI_URL for the MCP sidecar so execution and job tools target the colocated ComfyUI despite Kubernetes service-link variables."
+        - kind: changed
+          description: "Use the thin comfy-mcp image as a loopback sidecar, avoiding a second full CUDA image pull."
+        - kind: changed
+          description: "Raise the model-download Job memory limit to 5Gi for large Hugging Face transfers."
+        - kind: fixed
+          description: "Include GCC and Python development headers required for Triton's CUDA driver compilation."
+        - kind: fixed
+          description: "Create the non-root comfyui user's home directory so Triton can compile and cache CUDA helpers."
+        - kind: fixed
+          description: "Resolve hf download snapshot symlinks before hard-linking verified models into ComfyUI paths."
+        - kind: fixed
+          description: "Keep model-download progress counters as shell-compatible integers after the cache exceeds 2 GB."
+        - kind: fixed
+          description: "Disable Hugging Face CLI update hints in model-download Job logs."
+        - kind: changed
+          description: "Use the baked-in hf download CLI for model-download Jobs."
+        - kind: fixed
+          description: "Allocate sufficient memory for hf_xet's large-file download buffers in model-download Jobs."
+        - kind: fixed
+          description: "Store hf_xet state under the writable models PVC when model-download Jobs use the ComfyUI image."
+        - kind: added
+          description: "Allow model-download Jobs to use an optional Hugging Face token from an existing Kubernetes Secret."
+        - kind: changed
+          description: "Use huggingface_hub with pinned source revisions and a persistent cache for model-download Jobs."
+        - kind: changed
+          description: "Make model-download Job logs explicit and periodic, including model names, byte counts, transfer metrics, and checksum status."
+        - kind: removed
+          description: "Remove the optional nfsModels second-store feature; use persistence.storageClassName for the chart's single, storage-agnostic models PVC."
+        - kind: added
+          description: "Add an optional, checksummed model-download Job for fetching ComfyUI models directly into the persistent models PVC."
+        - kind: fixed
+          description: "Use the matched cu130 Torch 2.14.0, TorchVision 0.29.0, and TorchAudio 2.11.0 wheels; TorchAudio has no cu132 wheel and otherwise fails at startup with a CUDA ABI mismatch."
+        - kind: changed
+          description: "Bump to m11s/comfyui:0.5.0: CUDA 13.3.1 runtime base, torch 2.14.0/torchvision 0.29.0 (cu132), and ComfyUI v0.35.1 (from v0.28.2). New tag rather than reusing 0.4.0, since IfNotPresent-pulling nodes wouldn't otherwise see the change"
+        - kind: changed
+          description: "Bump to m11s/comfyui:0.4.0, adding the ComfyUI-GGUF custom node for GGUF-quantized model loaders (UnetLoaderGGUF, DualCLIPLoaderGGUF) alongside the existing safetensors loaders"
+        - kind: fixed
+          description: "Default strategy.type to Recreate (0.4.0-0.4.1 had a broken null-clearing branch for an existing object's leftover rollingUpdate field; a one-time delete+recreate of the live Deployment is the actual fix for that transition)"
+        - kind: added
+          description: "Add optional nfsModels PVC for splitting model categories (e.g. loras, embeddings) onto shared/NFS storage, wired in via a generated extra_model_paths.yaml"
+        - kind: fixed
+          description: "Drop --disable-cuda-malloc (m11s/comfyui:0.3.1): the allocator was never the cause of the startup hang, which was actually a missing NodeLocal DNS Cache on the ai cluster's GPU nodes"
+        - kind: fixed
+          description: "Run with --disable-cuda-malloc (m11s/comfyui:0.3.0) to fix a startup hang caused by torch's cudaMallocAsync allocator on CUDA 13.0 + torch 2.11"
+        - kind: fixed
+          description: "Revert PYTORCH_CUDA_ALLOC_CONF override: it crashes the CUDA 13.0 + torch 2.11 image at import instead of fixing the startup hang"
+        - kind: changed
+          description: "Upgrade image to CUDA 13.0 runtime base (m11s/comfyui:0.2.0)"
+        - kind: added
+          description: "Initial chart release"
+        - kind: fixed
+          description: "Fix broken icon URL (previously pointed at a nonexistent screenshot path)"
+        - kind: changed
+          description: "Broaden description from image/video generation to visual AI, matching upstream's own framing"
+        - kind: added
+          description: "Set artifacthub.io/category to ai-machine-learning"
+      artifacthub.io/images: |
+        - name: comfyui
+          image: m11s/comfyui:0.43.0-gguf
+        - name: comfy-mcp
+          image: m11s/comfy-mcp:0.10.0@sha256:f2b904ba81cadc1476055b0f4dc731716b5e8dd476d169b3d2a06483e9acb8c9
+      artifacthub.io/links: |
+        - name: source
+          url: https://github.com/comfyanonymous/ComfyUI
+        - name: image source
+          url: https://github.com/m11s-io/docker-images
+      artifacthub.io/signKey: |
+        fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
+        url: https://keys.openpgp.org/search?q=hello%40m11s.io
+    apiVersion: v2
+    appVersion: 0.43.0-gguf
     created: "2026-10-28T08:06:50.433295917Z"
     description: Deploy ComfyUI, a node-based visual AI engine for image and video
       generation on GPU nodes
@@ -4433,6 +4555,49 @@ entries:
         url: https://keys.openpgp.org/search?q=hello%40m11s.io
     apiVersion: v2
     appVersion: 0.2.11-s3
+    created: "2026-10-28T08:51:14.466494928Z"
+    dependencies:
+    - name: m11s-common
+      repository: file://../common
+      version: 0.1.0
+    description: Deploy a multi-tenant Decap CMS with optional S3 or MinIO uploads,
+      served by path prefix
+    digest: 29081d9145f66409eb11b42bb46c3260d7bf68622bf13bb602749fc0ad891d3c
+    home: https://decapcms.org
+    icon: https://decapcms.org/img/decap-logo.svg
+    maintainers:
+    - name: m11s
+      url: https://m11s.io
+    name: decap-cms
+    sources:
+    - https://github.com/decaporg/decap-cms
+    - https://github.com/m11s-io/docker-images
+    - https://github.com/m11s-io/helm-charts
+    type: application
+    urls:
+    - https://github.com/m11s-io/helm-charts/releases/download/decap-cms-0.5.0/decap-cms-0.5.0.tgz
+    version: 0.5.0
+  - annotations:
+      artifacthub.io/changes: |-
+        - kind: fixed
+          description: "Correct the Artifact Hub image annotation and synchronize image metadata with chart defaults."
+        - kind: fixed
+          description: "Pin maintained images by digest and track image rebuilds through Renovate."
+        - kind: fixed
+          description: "Encode uploaded object URLs so filenames with spaces render correctly in Markdown"
+      artifacthub.io/images: |
+        - name: decap-cms
+          image: m11s/decap-cms:0.2.11-s3
+        - name: s3-upload-proxy
+          image: m11s/s3-upload-proxy:0.1.3@sha256:d4178f7181e2927ea51a7c93470e26a08ac9134a56a82dc173aeb37968e68071
+      artifacthub.io/links: |
+        - name: source
+          url: https://github.com/decaporg/decap-cms
+      artifacthub.io/signKey: |
+        fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
+        url: https://keys.openpgp.org/search?q=hello%40m11s.io
+    apiVersion: v2
+    appVersion: 0.2.11-s3
     created: "2026-10-28T08:06:50.682357743Z"
     description: Deploy a multi-tenant Decap CMS with optional S3 or MinIO uploads,
       served by path prefix
@@ -5358,6 +5523,49 @@ entries:
         url: https://keys.openpgp.org/search?q=hello%40m11s.io
     apiVersion: v2
     appVersion: 0.1.0
+    created: "2026-10-28T08:51:14.666522205Z"
+    dependencies:
+    - name: m11s-common
+      repository: file://../common
+      version: 0.1.0
+    description: Deploy Dub, a self-hosted link management platform
+    digest: 535acd34b764417b215b7511a65da4db6206f67729cb96c26f121d5d593d2979
+    home: https://dub.co
+    icon: https://assets.dub.co/brand/logo.svg
+    maintainers:
+    - name: m11s
+      url: https://m11s.io
+    name: dub
+    sources:
+    - https://github.com/dubinc/dub
+    - https://github.com/m11s-io/helm-charts
+    type: application
+    urls:
+    - https://github.com/m11s-io/helm-charts/releases/download/dub-0.3.0/dub-0.3.0.tgz
+    version: 0.3.0
+  - annotations:
+      artifacthub.io/changes: |-
+        - kind: fixed
+          description: "Correct the Artifact Hub image annotation and synchronize image metadata with chart defaults."
+        - kind: fixed
+          description: "Pin maintained images by digest and track image rebuilds through Renovate."
+        - kind: added
+          description: "Initial chart release"
+      artifacthub.io/images: |
+        - name: dub
+          image: m11s/dub:0.1.0
+        - name: redis-http-proxy
+          image: m11s/redis-http-proxy:0.1.0@sha256:8ad23b808eb90b9f9a1221be7aaffc2bab5012338600e4b923c16aefc6f3e2b4
+      artifacthub.io/links: |
+        - name: source
+          url: https://github.com/dubinc/dub
+        - name: docs
+          url: https://dub.co/docs/self-hosting
+      artifacthub.io/signKey: |
+        fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
+        url: https://keys.openpgp.org/search?q=hello%40m11s.io
+    apiVersion: v2
+    appVersion: 0.1.0
     created: "2026-10-27T23:41:19.501160526Z"
     description: Deploy Dub, a self-hosted link management platform
     digest: a328e5f05446c0996c8a54b584f263547d56506d5c32646253a6f84199125097
@@ -5713,6 +5921,41 @@ entries:
         url: https://keys.openpgp.org/search?q=hello%40m11s.io
     apiVersion: v2
     appVersion: v0.38.2
+    created: "2026-10-28T08:51:14.921576492Z"
+    dependencies:
+    - name: m11s-common
+      repository: file://../common
+      version: 0.1.0
+    description: Deploy Fider, a self-hosted user feedback platform
+    digest: 0f94fc89a672e94fc33ccf386c87c030e37677db28d9c40ddde3e84136b417c9
+    home: https://fider.io
+    icon: https://raw.githubusercontent.com/getfider/fider/main/favicon.png
+    maintainers:
+    - name: m11s
+      url: https://m11s.io
+    name: fider
+    sources:
+    - https://github.com/getfider/fider
+    - https://github.com/m11s-io/helm-charts
+    type: application
+    urls:
+    - https://github.com/m11s-io/helm-charts/releases/download/fider-0.5.0/fider-0.5.0.tgz
+    version: 0.5.0
+  - annotations:
+      artifacthub.io/changes: |-
+        - kind: fixed
+          description: "Correct the Artifact Hub image annotation and synchronize image metadata with chart defaults."
+      artifacthub.io/images: |
+        - name: fider
+          image: getfider/fider:v0.38.2
+      artifacthub.io/links: |
+        - name: source
+          url: https://github.com/getfider/fider
+      artifacthub.io/signKey: |
+        fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
+        url: https://keys.openpgp.org/search?q=hello%40m11s.io
+    apiVersion: v2
+    appVersion: v0.38.2
     created: "2026-10-24T15:35:30.462017726Z"
     description: Helm chart for Fider self-hosted user feedback platform
     digest: 8476b864e295aaa373cc91430762e34edc2d7c72718477ad09c5c68b56c9a481
@@ -5955,7 +6198,43 @@ entries:
     urls:
     - https://github.com/m11s-io/helm-charts/releases/download/fider-0.1.0/fider-0.1.0.tgz
     version: 0.1.0
+  m11s-common:
+  - apiVersion: v2
+    created: "2026-10-28T08:51:15.086798945Z"
+    description: Shared template helpers for m11s application charts
+    digest: 5ccfab61354e329ab869170a7638625bad0073312a1e6fd70112d853effb1928
+    name: m11s-common
+    type: library
+    urls:
+    - https://github.com/m11s-io/helm-charts/releases/download/m11s-common-0.1.0/m11s-common-0.1.0.tgz
+    version: 0.1.0
   ovms:
+  - annotations:
+      artifacthub.io/category: ai-machine-learning
+      artifacthub.io/license: Apache-2.0
+    apiVersion: v2
+    appVersion: 2026.4.1
+    created: "2026-10-28T08:51:15.283167375Z"
+    dependencies:
+    - name: m11s-common
+      repository: file://../common
+      version: 0.1.0
+    description: Deploy OpenVINO Model Server for inference tasks including reranking,
+      embeddings, and text generation
+    digest: 08714e97ebe43fc2850a3fc6550fa33e666cc0f7873985730fbdfec65cf5ed28
+    home: https://github.com/m11s-io/helm-charts/tree/main/charts/ovms
+    icon: https://raw.githubusercontent.com/m11s-io/helm-charts/main/charts/ovms/assets/icon.png
+    maintainers:
+    - name: m11s
+      url: https://github.com/m11s-io
+    name: ovms
+    sources:
+    - https://github.com/openvinotoolkit/model_server
+    - https://huggingface.co/OpenVINO
+    type: application
+    urls:
+    - https://github.com/m11s-io/helm-charts/releases/download/ovms-0.4.0/ovms-0.4.0.tgz
+    version: 0.4.0
   - annotations:
       artifacthub.io/category: ai-machine-learning
       artifacthub.io/license: Apache-2.0
@@ -6157,6 +6436,54 @@ entries:
     - https://github.com/m11s-io/helm-charts/releases/download/ovms-0.1.0/ovms-0.1.0.tgz
     version: 0.1.0
   searxng:
+  - annotations:
+      artifacthub.io/category: networking
+      artifacthub.io/changes: |-
+        - kind: fixed
+          description: "Correct the Artifact Hub image annotation and synchronize image metadata with chart defaults."
+        - kind: fixed
+          description: "Disable ServiceAccount token automount; SearXNG never calls the Kubernetes API"
+        - kind: added
+          description: "Initial chart release"
+      artifacthub.io/images: |
+        - name: searxng
+          image: searxng/searxng:2026.10.27-cb74e7f81
+        - name: valkey
+          image: docker.io/valkey/valkey:9.1.2
+      artifacthub.io/links: |
+        - name: source
+          url: https://github.com/searxng/searxng
+        - name: docs
+          url: https://docs.searxng.org/
+      artifacthub.io/signKey: |
+        fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
+        url: https://keys.openpgp.org/search?q=hello%40m11s.io
+    apiVersion: v2
+    appVersion: 2026.10.27-cb74e7f81
+    created: "2026-10-28T08:51:15.471088026Z"
+    dependencies:
+    - name: m11s-common
+      repository: file://../common
+      version: 0.1.0
+    - condition: valkey.enabled
+      name: valkey
+      repository: https://valkey.io/valkey-helm/
+      version: 0.12.0
+    description: Deploy SearXNG, a privacy-respecting metasearch engine
+    digest: 13f5ec5fe625f94dc2c435598d1e991398a27948961a126e46f6640548ac6ec1
+    home: https://searxng.org
+    icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/searxng.svg
+    maintainers:
+    - name: m11s
+      url: https://m11s.io
+    name: searxng
+    sources:
+    - https://github.com/searxng/searxng
+    - https://github.com/m11s-io/helm-charts
+    type: application
+    urls:
+    - https://github.com/m11s-io/helm-charts/releases/download/searxng-0.4.0/searxng-0.4.0.tgz
+    version: 0.4.0
   - annotations:
       artifacthub.io/category: networking
       artifacthub.io/changes: |-
@@ -6742,6 +7069,49 @@ entries:
         url: https://keys.openpgp.org/search?q=hello%40m11s.io
     apiVersion: v2
     appVersion: 5.1.8
+    created: "2026-10-28T08:51:15.68339641Z"
+    dependencies:
+    - name: m11s-common
+      repository: file://../common
+      version: 0.1.0
+    description: Deploy Shlink, a self-hosted URL shortener
+    digest: ac2c3084fc00750e5dfa8cdb9f5990a701785e38d2b6ec528a773308cd7754f7
+    home: https://shlink.io
+    icon: https://shlink.io/images/shlink-logo-blue.svg
+    maintainers:
+    - name: m11s
+      url: https://m11s.io
+    name: shlink
+    sources:
+    - https://github.com/shlinkio/shlink
+    - https://github.com/m11s-io/helm-charts
+    type: application
+    urls:
+    - https://github.com/m11s-io/helm-charts/releases/download/shlink-0.4.0/shlink-0.4.0.tgz
+    version: 0.4.0
+  - annotations:
+      artifacthub.io/changes: |-
+        - kind: fixed
+          description: "Correct the Artifact Hub image annotation and synchronize image metadata with chart defaults."
+        - kind: changed
+          description: "Bump Shlink to 5.1.6"
+        - kind: fixed
+          description: "Fix service selector to exclude web-client pods (app.kubernetes.io/component: api)"
+      artifacthub.io/images: |
+        - name: shlink
+          image: shlinkio/shlink:5.1.8
+        - name: shlink-web-client
+          image: shlinkio/shlink-web-client:stable
+      artifacthub.io/links: |
+        - name: source
+          url: https://github.com/shlinkio/shlink
+        - name: docs
+          url: https://shlink.io/documentation/install-docker-image/
+      artifacthub.io/signKey: |
+        fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
+        url: https://keys.openpgp.org/search?q=hello%40m11s.io
+    apiVersion: v2
+    appVersion: 5.1.8
     created: "2026-10-28T08:06:51.033151241Z"
     description: Deploy Shlink, a self-hosted URL shortener
     digest: 439a2300623ab13a14ac6d3e84b056e334df07ddf20073747e9e94b103a8bbc9
@@ -7221,6 +7591,32 @@ entries:
       artifacthub.io/license: Apache-2.0
     apiVersion: v2
     appVersion: 1.0.0-cpu
+    created: "2026-10-28T08:51:15.863619922Z"
+    dependencies:
+    - name: m11s-common
+      repository: file://../common
+      version: 0.1.0
+    description: Deploy Timestral, a time-series forecasting API based on Mistral
+      Timestral
+    digest: 598f084dcaadc34a3ef38521ba5d950711cf0e0ec0d51612f4835cc14720fa9b
+    home: https://github.com/m11s-io/helm-charts/tree/main/charts/timestral
+    icon: https://mistral.ai/cms-media/api/media/file/timestral-icon-model.svg
+    maintainers:
+    - name: m11s
+      url: https://github.com/m11s-io
+    name: timestral
+    sources:
+    - https://github.com/mistralai/timestral
+    - https://huggingface.co/mistralai/Timestral-209M
+    type: application
+    urls:
+    - https://github.com/m11s-io/helm-charts/releases/download/timestral-0.2.0/timestral-0.2.0.tgz
+    version: 0.2.0
+  - annotations:
+      artifacthub.io/category: ai-machine-learning
+      artifacthub.io/license: Apache-2.0
+    apiVersion: v2
+    appVersion: 1.0.0-cpu
     created: "2026-10-28T08:06:51.191108382Z"
     description: Deploy Timestral, a time-series forecasting API based on Mistral
       Timestral
@@ -7364,6 +7760,44 @@ entries:
     - https://github.com/m11s-io/helm-charts/releases/download/timestral-0.1.0/timestral-0.1.0.tgz
     version: 0.1.0
   whoami:
+  - annotations:
+      artifacthub.io/changes: |-
+        - kind: fixed
+          description: "Correct the Artifact Hub image annotation and synchronize image metadata with chart defaults."
+        - kind: added
+          description: "Add helm-unittest tests and ci values"
+      artifacthub.io/images: |
+        - name: whoami
+          image: traefik/whoami:v1.12.0
+      artifacthub.io/links: |
+        - name: source
+          url: https://github.com/traefik/whoami
+      artifacthub.io/signKey: |
+        fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
+        url: https://keys.openpgp.org/search?q=hello%40m11s.io
+    apiVersion: v2
+    appVersion: v1.12.0
+    created: "2026-10-28T08:51:16.039703671Z"
+    dependencies:
+    - name: m11s-common
+      repository: file://../common
+      version: 0.1.0
+    description: Deploy Traefik Whoami, an HTTP server that reports runtime and request
+      details
+    digest: 5a1b937911dfc7ba5686a2a7114d089b98080f63847972824bf141e1af51ebed
+    home: https://github.com/traefik/whoami
+    icon: https://www.gravatar.com/avatar/27caca9bcd7fd7f7412ca5255c9ae2d0?s=120&r=g&d=404
+    maintainers:
+    - name: m11s
+      url: https://m11s.io
+    name: whoami
+    sources:
+    - https://github.com/traefik/whoami
+    - https://github.com/m11s-io/helm-charts
+    type: application
+    urls:
+    - https://github.com/m11s-io/helm-charts/releases/download/whoami-0.4.0/whoami-0.4.0.tgz
+    version: 0.4.0
   - annotations:
       artifacthub.io/changes: |-
         - kind: fixed
@@ -7657,4 +8091,4 @@ entries:
     urls:
     - https://github.com/m11s-io/helm-charts/releases/download/whoami-0.1.0/whoami-0.1.0.tgz
     version: 0.1.0
-generated: "2026-10-28T08:23:23.77940008Z"
+generated: "2026-10-28T08:51:16.040004839Z"
