@@ -1,1 +1,1 @@
-{{ include "m11s-common.service" (dict "root" . "name" (include "m11s-common.fullname" .) "type" .Values.service.type "port" .Values.service.port "targetPort" "http" "selector" (include "m11s-common.selectorLabels" . | fromYaml)) }}
+{{ include "m11s-common.service" (dict "root" .) }}

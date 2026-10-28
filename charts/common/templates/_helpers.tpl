@@ -32,7 +32,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 
 {{- define "m11s-common.image" -}}
-{{- $root := .root -}}{{- $image := .image -}}{{- $tag := $image.tag | default $root.Chart.AppVersion -}}
+{{- $image := .Values.image -}}{{- $tag := $image.tag | default .Chart.AppVersion -}}
 {{- if $image.digest -}}{{ printf "%s@%s" $image.repository $image.digest }}{{- else -}}{{ printf "%s:%s" $image.repository $tag }}{{- end -}}
 {{- end -}}
 
@@ -54,44 +54,39 @@ automountServiceAccountToken: {{ $root.Values.serviceAccount.automountServiceAcc
 
 {{- define "m11s-common.service" -}}
 {{- $root := .root -}}
+{{- $labels := merge (dict) (include "m11s-common.labels" $root | fromYaml) (.extraLabels | default dict) -}}
+{{- $selector := merge (dict) (include "m11s-common.selectorLabels" $root | fromYaml) (.extraSelector | default dict) -}}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .name }}
+  name: {{ .name | default (include "m11s-common.fullname" $root) }}
   labels:
-    {{- include "m11s-common.labels" $root | nindent 4 }}
-    {{- with .extraLabels }}
-    {{- toYaml . | nindent 4 }}
-    {{- end }}
+    {{- toYaml $labels | nindent 4 }}
 spec:
-  type: {{ .type | default "ClusterIP" }}
+  type: {{ .type | default $root.Values.service.type }}
   ports:
-    - port: {{ .port }}
-      targetPort: {{ .targetPort | default .port }}
+    - port: {{ .port | default $root.Values.service.port }}
+      targetPort: {{ .targetPort | default "http" }}
       protocol: TCP
       name: {{ .portName | default "http" }}
   selector:
-    {{- toYaml .selector | nindent 4 }}
-    {{- with .extraSelector }}
-    {{- toYaml . | nindent 4 }}
-    {{- end }}
+    {{- toYaml $selector | nindent 4 }}
 {{- end -}}
 
 {{- define "m11s-common.httpRoute" -}}
 {{- $root := .root -}}{{- $route := .route | default $root.Values.httpRoute -}}
-{{- if not $route.parentRefs -}}{{ fail "httpRoute.parentRefs must contain at least one Gateway reference when httpRoute.enabled is true" }}{{- end }}
+{{- if $route.enabled -}}
+{{- if not $route.parentRefs -}}{{ fail "httpRoute.parentRefs must contain at least one Gateway reference when httpRoute.enabled is true" }}{{- end -}}
+{{- $name := .name | default (include "m11s-common.fullname" $root) -}}
+{{- $hostnames := $route.hostnames -}}
+{{- if hasKey . "hostnames" -}}{{- $hostnames = .hostnames -}}{{- end -}}
+{{- $labels := merge (dict) (include "m11s-common.labels" $root | fromYaml) (.extraLabels | default dict) ($route.labels | default dict) -}}
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
-  name: {{ .name }}
+  name: {{ $name }}
   labels:
-    {{- include "m11s-common.labels" $root | nindent 4 }}
-    {{- with .extraLabels }}
-    {{- toYaml . | nindent 4 }}
-    {{- end }}
-    {{- with $route.labels }}
-    {{- toYaml . | nindent 4 }}
-    {{- end }}
+    {{- toYaml $labels | nindent 4 }}
   {{- with $route.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
@@ -99,7 +94,7 @@ metadata:
 spec:
   parentRefs:
     {{- toYaml $route.parentRefs | nindent 4 }}
-  {{- with .hostnames }}
+  {{- with $hostnames }}
   hostnames:
     {{- toYaml . | nindent 4 }}
   {{- end }}
@@ -109,8 +104,9 @@ spec:
             type: {{ .pathType | default "PathPrefix" }}
             value: {{ .path | default "/" }}
       backendRefs:
-        - name: {{ .backendName | default .name }}
-          port: {{ .port }}
+        - name: {{ $name }}
+          port: {{ .port | default $root.Values.service.port }}
+{{- end -}}
 {{- end -}}
 
 {{- define "m11s-common.pvc" -}}
@@ -139,17 +135,12 @@ spec:
 {{- end -}}
 
 {{- define "m11s-common.podLabels" -}}
-{{- $custom := omit (.Values.podLabels | default dict) "app.kubernetes.io/name" "app.kubernetes.io/instance" -}}
-{{ include "m11s-common.selectorLabels" . }}
-{{- with $custom }}
-{{ toYaml . }}
-{{- end }}
+{{- $root := .root -}}
+{{- $custom := $root.Values.podLabels | default dict -}}
+{{- $fixed := include "m11s-common.selectorLabels" $root | fromYaml -}}
+{{- if hasKey . "component" -}}
+{{- $custom = omit $custom "app.kubernetes.io/component" -}}
+{{- with .component -}}{{- $_ := set $fixed "app.kubernetes.io/component" . -}}{{- end -}}
 {{- end -}}
-
-{{- define "m11s-common.podLabelsWithComponent" -}}
-{{- $custom := omit (.Values.podLabels | default dict) "app.kubernetes.io/name" "app.kubernetes.io/instance" "app.kubernetes.io/component" -}}
-{{ include "m11s-common.selectorLabels" . }}
-{{- with $custom }}
-{{ toYaml . }}
-{{- end }}
+{{- toYaml (merge (dict) $fixed $custom) -}}
 {{- end -}}

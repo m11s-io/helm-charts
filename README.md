@@ -62,6 +62,14 @@ ServiceAccount, Service, HTTPRoute, and PVC templates. Application charts keep
 workloads, environment, probes, host derivation, component selectors, and
 application-specific security settings local.
 
+Service and HTTPRoute renderers take a `root` chart context and derive the usual
+name, selectors, and service/route settings from it. Callers supply only actual
+exceptions such as sidecar ports, component selectors, or derived hostnames.
+The image helper takes the chart context directly. One pod-label helper accepts
+an optional component and protects fixed identity labels from custom overrides.
+Resource label maps are merged before rendering, with chart identity and fixed
+component labels taking precedence over custom labels.
+
 Common application values are `image`, `resources`, `securityContext`,
 `imagePullSecrets`, `podLabels`, `podAnnotations`, and `serviceAccount`. Service
 Accounts are created by default in all charts and token automount is disabled

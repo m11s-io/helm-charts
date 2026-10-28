@@ -1,5 +1,5 @@
-{{ include "m11s-common.service" (dict "root" . "name" (include "m11s-common.fullname" .) "type" .Values.service.type "port" .Values.service.port "targetPort" "http" "selector" (include "m11s-common.selectorLabels" . | fromYaml) "extraSelector" (dict "app.kubernetes.io/component" "api")) }}
+{{ include "m11s-common.service" (dict "root" . "extraSelector" (dict "app.kubernetes.io/component" "api")) }}
 {{- if .Values.webClient.enabled }}
 ---
-{{ include "m11s-common.service" (dict "root" . "name" (printf "%s-web-client" (include "m11s-common.fullname" .)) "type" "ClusterIP" "port" 8080 "targetPort" "http" "selector" (include "m11s-common.selectorLabels" . | fromYaml) "extraSelector" (dict "app.kubernetes.io/component" "web-client") "extraLabels" (dict "app.kubernetes.io/component" "web-client")) }}
+{{ include "m11s-common.service" (dict "root" . "name" (printf "%s-web-client" (include "m11s-common.fullname" .)) "type" "ClusterIP" "port" 8080 "extraSelector" (dict "app.kubernetes.io/component" "web-client") "extraLabels" (dict "app.kubernetes.io/component" "web-client")) }}
 {{- end }}

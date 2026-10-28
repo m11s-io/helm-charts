@@ -17,8 +17,7 @@ spec:
         {{- toYaml . | nindent 8 }}
         {{- end }}
       labels:
-        {{- include "m11s-common.podLabelsWithComponent" . | nindent 8 }}
-        app.kubernetes.io/component: api
+        {{- include "m11s-common.podLabels" (dict "root" . "component" "api") | nindent 8 }}
     spec:
       {{- if ne .Values.hostUsers nil }}
       hostUsers: {{ .Values.hostUsers }}
@@ -33,7 +32,7 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: shlink
-          image: {{ include "m11s-common.image" (dict "root" . "image" .Values.image) }}
+          image: {{ include "m11s-common.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}

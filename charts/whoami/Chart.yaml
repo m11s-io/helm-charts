@@ -2,7 +2,7 @@ apiVersion: v2
 name: whoami
 description: Deploy Traefik Whoami, an HTTP server that reports runtime and request details
 type: application
-version: 0.4.1
+version: 0.4.2
 # renovate: datasource=docker depName=traefik/whoami
 appVersion: "v1.12.0"
 home: https://github.com/traefik/whoami
@@ -31,5 +31,5 @@ annotations:
 
 dependencies:
   - name: m11s-common
-    version: 0.1.0
+    version: 0.2.0
     repository: file://../common

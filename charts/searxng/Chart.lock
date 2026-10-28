@@ -1,9 +1,9 @@
 dependencies:
 - name: m11s-common
   repository: file://../common
-  version: 0.1.0
+  version: 0.2.0
 - name: valkey
   repository: https://valkey.io/valkey-helm/
   version: 0.12.0
-digest: sha256:a3d5fefd4f89efb7681650883b8c34d7a6e9efee213f660185d23b7e5894255f
-generated: "2026-10-28T10:20:19.499006+02:00"
+digest: sha256:1a5e2eea167a61c0dcb1370dddc780e5a997ebbf93024d0da4fd3e9b0daa0935
+generated: "2026-10-28T11:13:33.716272+02:00"
