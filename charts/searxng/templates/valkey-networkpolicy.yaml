@@ -2,9 +2,9 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: {{ include "searxng.fullname" . }}-valkey
+  name: {{ include "m11s-common.fullname" . }}-valkey
   labels:
-    {{- include "searxng.labels" . | nindent 4 }}
+    {{- include "m11s-common.labels" . | nindent 4 }}
 spec:
   podSelector:
     matchLabels:
@@ -16,7 +16,7 @@ spec:
     - from:
         - podSelector:
             matchLabels:
-              {{- include "searxng.selectorLabels" . | nindent 14 }}
+              {{- include "m11s-common.selectorLabels" . | nindent 14 }}
       ports:
         - port: 6379
           protocol: TCP

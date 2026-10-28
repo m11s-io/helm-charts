@@ -8,16 +8,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "timestral.fullname" . }}
+  name: {{ include "m11s-common.fullname" . }}
   labels:
-    {{- include "timestral.labels" . | nindent 4 }}
+    {{- include "m11s-common.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   strategy:
     type: Recreate
   selector:
     matchLabels:
-      {{- include "timestral.selectorLabels" . | nindent 6 }}
+      {{- include "m11s-common.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -25,13 +25,16 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "timestral.selectorLabels" . | nindent 8 }}
-        {{- with .Values.podLabels }}{{ toYaml . | nindent 8 }}{{- end }}
+        {{- include "m11s-common.podLabels" . | nindent 8 }}
     spec:
       {{- with .Values.runtimeClassName }}
       runtimeClassName: {{ . | quote }}
       {{- end }}
-      automountServiceAccountToken: false
+      {{- if ne .Values.hostUsers nil }}
+      hostUsers: {{ .Values.hostUsers }}
+      {{- end }}
+      serviceAccountName: {{ include "m11s-common.serviceAccountName" . }}
+      automountServiceAccountToken: {{ .Values.serviceAccount.automountServiceAccountToken }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       {{- with .Values.imagePullSecrets }}
@@ -40,7 +43,7 @@ spec:
       {{- end }}
       containers:
         - name: timestral
-          image: {{- if .Values.image.digest }} {{ printf "%s@%s" .Values.image.repository .Values.image.digest | quote }}{{- else }} {{ printf "%s:%s" .Values.image.repository (.Values.image.tag | default .Chart.AppVersion) | quote }}{{- end }}
+          image: {{ include "m11s-common.image" (dict "root" . "image" .Values.image) | quote }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             - {name: MODEL_ID, value: {{ .Values.model.id | quote }}}
@@ -69,9 +72,9 @@ spec:
             httpGet: {path: /healthz, port: http}
             {{- toYaml .Values.runtime.livenessProbe | nindent 12 }}
           resources:
-            {{- toYaml .Values.runtime.resources | nindent 12 }}
+            {{- toYaml .Values.resources | nindent 12 }}
           securityContext:
-            {{- toYaml .Values.runtime.securityContext | nindent 12 }}
+            {{- toYaml .Values.securityContext | nindent 12 }}
           volumeMounts:
             - {name: model-cache, mountPath: /models}
             - {name: tmp, mountPath: /tmp}

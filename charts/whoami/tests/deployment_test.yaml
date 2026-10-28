@@ -96,3 +96,26 @@ tests:
     asserts:
       - notExists:
           path: spec.template.spec.hostUsers
+
+  - it: adds user pod labels without changing selectors
+    set:
+      podLabels.team: analytics
+    asserts:
+      - equal:
+          path: spec.template.metadata.labels.team
+          value: analytics
+      - equal:
+          path: spec.selector.matchLabels["app.kubernetes.io/name"]
+          value: whoami
+
+  - it: supports custom ServiceAccount names and token mounting
+    set:
+      serviceAccount.name: custom-account
+      serviceAccount.automountServiceAccountToken: true
+    asserts:
+      - equal:
+          path: spec.template.spec.serviceAccountName
+          value: custom-account
+      - equal:
+          path: spec.template.spec.automountServiceAccountToken
+          value: true

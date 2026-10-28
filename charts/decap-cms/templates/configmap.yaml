@@ -8,7 +8,7 @@ kind: ConfigMap
 metadata:
   name: {{ include "decap-cms.tenantsConfigMapName" . }}
   labels:
-    {{- include "decap-cms.labels" . | nindent 4 }}
+    {{- include "m11s-common.labels" . | nindent 4 }}
 data:
   tenants.json: |
     {{- .Values.tenants | toJson | nindent 4 }}

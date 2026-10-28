@@ -2,7 +2,7 @@ apiVersion: v2
 name: dub
 description: Deploy Dub, a self-hosted link management platform
 type: application
-version: 0.2.6
+version: 0.3.0
 # renovate: datasource=docker depName=m11s/dub
 appVersion: "0.1.0"
 home: https://dub.co
@@ -34,3 +34,8 @@ annotations:
       description: "Pin maintained images by digest and track image rebuilds through Renovate."
     - kind: added
       description: "Initial chart release"
+
+dependencies:
+  - name: m11s-common
+    version: 0.1.0
+    repository: file://../common

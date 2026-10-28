@@ -46,14 +46,21 @@ jobs:
       - name: Install helm-unittest
         run: helm plugin install https://github.com/helm-unittest/helm-unittest --verify=false
 
-      - name: Check primary image defaults across all charts
-        run: python3 scripts/check-image-defaults.py
-
       - name: Register chart dependency repositories
-        if: steps.list-changed.outputs.changed == 'true'
         # Needed by both `ct lint` and `helm dependency build` below: Helm resolves
         # subchart dependencies only against repos in repositories.yaml.
         run: helm repo add valkey https://valkey.io/valkey-helm/
+
+      - name: Build all application chart dependencies
+        run: |
+          for chart in charts/*; do
+            [[ -f "$chart/Chart.yaml" ]] || continue
+            grep -q '^type: library$' "$chart/Chart.yaml" && continue
+            helm dependency build --skip-refresh "$chart"
+          done
+
+      - name: Check primary image defaults across all charts
+        run: python3 scripts/check-image-defaults.py
 
       - name: Lint changed charts
         if: steps.list-changed.outputs.changed == 'true'
@@ -69,8 +76,6 @@ jobs:
             [[ -z "$chart" ]] && continue
             if [[ -d "$chart/tests" ]]; then
               echo "Running unittest for $chart"
-              # Needs the repo registered by the step above, not ct lint's side effects.
-              [[ -f "$chart/Chart.lock" ]] && helm dependency build "$chart"
               helm unittest "$chart"
               if [[ -f "$chart/tests/verify-integer-overrides.sh" ]]; then
                 echo "Running CLI rendering regression checks for $chart"

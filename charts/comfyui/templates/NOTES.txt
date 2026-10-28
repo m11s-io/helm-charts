@@ -1,10 +1,10 @@
 comfyui {{ .Chart.AppVersion }} has been deployed.
 
-  Service: {{ include "comfyui.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
+  Service: {{ include "m11s-common.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
 
   To test from inside the cluster:
     kubectl run -it --rm --restart=Never curl --image=curlimages/curl -- \
-      curl http://{{ include "comfyui.fullname" . }}.{{ .Release.Namespace }}/system_stats
+      curl http://{{ include "m11s-common.fullname" . }}.{{ .Release.Namespace }}/system_stats
 
 {{- if .Values.persistence.enabled }}
 

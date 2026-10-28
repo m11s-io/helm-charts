@@ -3,6 +3,8 @@ image:
   repository: traefik/whoami
   # image.tag overrides the image tag; defaults to the chart appVersion
   tag: ""
+  # image.digest overrides tag when set
+  digest: ""  # @schema pattern: ^(|sha256:[a-f0-9]{64})$
   # image.pullPolicy is the image pull policy
   pullPolicy: IfNotPresent
 
@@ -10,6 +12,7 @@ image:
 nameOverride: ""
 # fullnameOverride overrides the full release name used for all resources
 fullnameOverride: ""
+imagePullSecrets: []
 
 # replicaCount is the number of whoami pod replicas
 replicaCount: 1
@@ -47,6 +50,8 @@ serviceAccount:
   name: ""
   # serviceAccount.annotations are extra annotations added to the ServiceAccount
   annotations: {}
+  # Controls Kubernetes API token mounting for Pods using this account.
+  automountServiceAccountToken: false
 
 # podSecurityContext sets the security context for the whoami pod
 podSecurityContext:
@@ -71,6 +76,7 @@ resources:
 
 # podAnnotations are extra annotations added to the whoami pod
 podAnnotations: {}
+podLabels: {}
 # nodeSelector constrains the whoami pod to nodes matching the given labels
 nodeSelector: {}
 # hostUsers sets spec.hostUsers on the pod. Requires user-namespace support

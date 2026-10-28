@@ -51,7 +51,7 @@ jobs:
             # Detect from changed values.yaml files in the PR
             BASE_SHA="${{ github.event.pull_request.base.sha }}"
             changed=$(git diff --name-only "$BASE_SHA" HEAD -- 'charts/**/values.yaml' \
-              | awk -F/ 'NF >= 3 {print $2}' | sort -u | tr '\n' ',' | sed 's/,$//')
+              | awk -F/ 'NF >= 3 && $2 != "common" {print $2}' | sort -u | tr '\n' ',' | sed 's/,$//')
             echo "charts=$changed" >> $GITHUB_OUTPUT
           fi
 
@@ -63,6 +63,10 @@ jobs:
             chart=$(echo "$chart" | xargs)
             [[ -z "$chart" ]] && continue
             dir="charts/$chart"
+            if grep -Eq '^type:[[:space:]]*library[[:space:]]*$' "$dir/Chart.yaml"; then
+              echo "Skipping $chart: library chart has no configurable values"
+              continue
+            fi
             if [[ ! -f "$dir/values.yaml" ]]; then
               echo "Skipping $chart: no values.yaml"
               continue

@@ -34,7 +34,7 @@ so the database survives pod restarts:
 persistence:
   enabled: true
   size: 1Gi
-  storageClass: longhorn
+  storageClassName: longhorn
 ```
 
 The PVC is annotated `helm.sh/resource-policy: keep` so it survives `helm uninstall`.

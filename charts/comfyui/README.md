@@ -47,11 +47,11 @@ GPU scheduling (`runtimeClassName`, `nodeSelector`, `tolerations`, `resources`) 
 | `resources` | CPU/memory/GPU requests and limits (e.g. `nvidia.com/gpu: "1"`) | `{}` |
 | `persistence.enabled` | Create (or reuse) a PVC for the models directory | `false` |
 | `persistence.existingClaim` | Reuse an existing PVC instead of creating one | `""` |
-| `persistence.storageClassName` | StorageClass for the created PVC | `""` |
-| `persistence.accessMode` | PVC access mode | `ReadWriteOnce` |
+| `persistence.storageClassName` | StorageClass for the created PVC; `null` uses cluster default, `""` disables dynamic provisioning | `null` |
+| `persistence.accessModes` | PVC access modes | `[ReadWriteOnce]` |
 | `persistence.size` | PVC storage request | `200Gi` |
 | `persistence.mountPath` | Where the models volume is mounted | `/app/models` |
-| `outputPersistence.*` | Optional PVC for generated images; supports `enabled`, `existingClaim`, `storageClassName`, `accessMode`, `size`, and `mountPath` | disabled; `/app/output` |
+| `outputPersistence.*` | Optional PVC for generated images; supports `enabled`, `existingClaim`, `storageClassName`, `accessModes`, `size`, and `mountPath` | disabled; `/app/output` |
 | `userPersistence.*` | Optional PVC for user settings and workflows; supports the same fields | disabled; `/app/user` |
 | `inputPersistence.*` | Optional PVC for uploaded workflow inputs; supports the same fields | disabled; `/app/input` |
 | `tempPersistence.*` | Optional PVC for intermediate execution files and previews; supports the same fields | disabled; `/app/temp` |
