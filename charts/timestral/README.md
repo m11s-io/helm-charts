@@ -7,11 +7,11 @@ Deploys the Timestral forecasting API as a single Kubernetes Deployment with an 
 
 ## Image and model
 
-Image tags follow the upstream package version (`1.0.0-cpu` or `1.0.0-cuda`).
+Image tags follow the upstream package version (`1.0.0-cpu`, `1.0.0-cuda`, or `1.0.0-rocm`).
 By default, `image.tag` is empty and the image uses chart `appVersion` (the CPU variant).
 Set `image.tag` to select another tag, or `image.digest` to pin a published image; the digest takes precedence.
 
-The chart defaults to Timestral-209M at pinned revision `9874d252ab0aae16f7f7c999f98f98d6ad7d8365`. The image version identifies the inference package; choose the checkpoint with `model.id` and `model.revision`. The same CPU or CUDA image can load any compatible Timestral size. For example, select Timestral-123M with:
+The chart defaults to Timestral-209M at pinned revision `9874d252ab0aae16f7f7c999f98f98d6ad7d8365`. The image version identifies the inference package; choose the checkpoint with `model.id` and `model.revision`. The same CPU, CUDA, or ROCm image can load any compatible Timestral size. For example, select Timestral-123M with:
 
 ```yaml
 model:
@@ -69,6 +69,16 @@ nodeSelector:
 #     operator: Exists
 #     effect: NoSchedule
 ```
+
+## AMD ROCm
+
+Use the ROCm image with a compatible AMD host driver and the AMD Kubernetes device plugin. PyTorch uses `model.device: cuda` for AMD GPUs too. Request `amd.com/gpu: 1`; no NVIDIA runtime class is needed. Configure node selectors, tolerations, and any supplemental device groups to match your cluster. The image must match your GPU architecture and host driver compatibility.
+
+```sh
+helm upgrade --install timestral m11s/timestral -f rocm-values.yaml
+```
+
+Use the shipped [ROCm values example](examples/rocm-values.yaml) as `rocm-values.yaml`, and pin `image.digest` to your published ROCm image for release deployments. The example retains the chart's nonroot, read-only filesystem defaults. ROCm compilation caches use `/tmp`; model weights use `/models`.
 
 ## Cache and credentials
 
