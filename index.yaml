@@ -7395,6 +7395,49 @@ entries:
         url: https://keys.openpgp.org/search?q=hello%40m11s.io
     apiVersion: v2
     appVersion: 5.1.8
+    created: "2026-10-28T09:34:31.904261084Z"
+    dependencies:
+    - name: m11s-common
+      repository: file://../common
+      version: 0.2.0
+    description: Deploy Shlink, a self-hosted URL shortener
+    digest: 5745078b9cda278bb47b671c87d1064c7a84b331fe81340dfb12787a5bb6ec3d
+    home: https://shlink.io
+    icon: https://shlink.io/images/shlink-logo-blue.svg
+    maintainers:
+    - name: m11s
+      url: https://m11s.io
+    name: shlink
+    sources:
+    - https://github.com/shlinkio/shlink
+    - https://github.com/m11s-io/helm-charts
+    type: application
+    urls:
+    - https://github.com/m11s-io/helm-charts/releases/download/shlink-0.4.2/shlink-0.4.2.tgz
+    version: 0.4.2
+  - annotations:
+      artifacthub.io/changes: |-
+        - kind: fixed
+          description: "Correct the Artifact Hub image annotation and synchronize image metadata with chart defaults."
+        - kind: changed
+          description: "Bump Shlink to 5.1.6"
+        - kind: fixed
+          description: "Fix service selector to exclude web-client pods (app.kubernetes.io/component: api)"
+      artifacthub.io/images: |
+        - name: shlink
+          image: shlinkio/shlink:5.1.8
+        - name: shlink-web-client
+          image: shlinkio/shlink-web-client:stable
+      artifacthub.io/links: |
+        - name: source
+          url: https://github.com/shlinkio/shlink
+        - name: docs
+          url: https://shlink.io/documentation/install-docker-image/
+      artifacthub.io/signKey: |
+        fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
+        url: https://keys.openpgp.org/search?q=hello%40m11s.io
+    apiVersion: v2
+    appVersion: 5.1.8
     created: "2026-10-28T09:32:27.220409374Z"
     dependencies:
     - name: m11s-common
@@ -8562,4 +8605,4 @@ entries:
     urls:
     - https://github.com/m11s-io/helm-charts/releases/download/whoami-0.1.0/whoami-0.1.0.tgz
     version: 0.1.0
-generated: "2026-10-28T09:32:27.618460529Z"
+generated: "2026-10-28T09:34:31.904605349Z"
