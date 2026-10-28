@@ -39,7 +39,8 @@ model:
 runtime:
   image:
     repository: openvino/model_server
-    tag: 2026.3.1
+    # Optional override; defaults to chart appVersion.
+    tag: ""
     pullPolicy: IfNotPresent
   port: 8000
   logLevel: INFO

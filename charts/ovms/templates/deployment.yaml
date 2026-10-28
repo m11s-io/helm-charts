@@ -39,7 +39,7 @@ spec:
       {{- end }}
       containers:
         - name: ovms
-          image: "{{ .Values.runtime.image.repository }}:{{ .Values.runtime.image.tag }}"
+          image: "{{ .Values.runtime.image.repository }}:{{ .Values.runtime.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.runtime.image.pullPolicy }}
           args:
             - --source_model

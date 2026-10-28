@@ -8,7 +8,8 @@ Deploys the Timestral forecasting API as a single Kubernetes Deployment with an 
 ## Image and model
 
 Image tags follow the upstream package version (`1.0.0-cpu` or `1.0.0-cuda`).
-Set `image.digest` to pin a published image; it takes precedence over `image.tag`.
+By default, `image.tag` is empty and the image uses chart `appVersion` (the CPU variant).
+Set `image.tag` to select another tag, or `image.digest` to pin a published image; the digest takes precedence.
 
 The chart defaults to Timestral-209M at pinned revision `9874d252ab0aae16f7f7c999f98f98d6ad7d8365`. The image version identifies the inference package; choose the checkpoint with `model.id` and `model.revision`. The same CPU or CUDA image can load any compatible Timestral size. For example, select Timestral-123M with:
 

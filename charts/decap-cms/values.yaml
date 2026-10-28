@@ -1,8 +1,8 @@
 image:
   # image.repository is the container image repository
   repository: m11s/decap-cms
-  # image.tag pins the image tag and digest; set empty to use chart appVersion
-  tag: "0.2.11-s3@sha256:7f34b0f4d8ca99b9d56cd524e346a2b71076f685b10ce9053d15bfd20d09b831"
+  # image.tag overrides the image tag; defaults to the chart appVersion
+  tag: ""
   # image.pullPolicy is the image pull policy
   pullPolicy: IfNotPresent
 

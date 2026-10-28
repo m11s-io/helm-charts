@@ -38,6 +38,19 @@ helm repo update
 helm install my-release m11s/<chart-name>
 ```
 
+## Image versions
+
+Each chart uses `Chart.yaml`’s `appVersion` as the default primary image tag.
+Leave `image.tag` empty to follow it, or set an explicit tag (optionally with
+`@sha256:…`) to override it. OVMS uses `runtime.image.tag` for the same purpose.
+Timestral defaults to the CPU variant and also supports `image.digest`.
+Sidecars have independent explicit tags.
+
+Renovate updates annotated `appVersion` fields and explicit sidecar image tags;
+it leaves empty overrides untouched. Run `python3 scripts/check-image-defaults.py`
+with Helm and the helm-unittest plugin installed to check this convention across
+all charts.
+
 ## Publishing
 
 Charts are maintained in the private monorepo and published here via CI.

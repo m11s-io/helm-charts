@@ -44,8 +44,10 @@ jobs:
           fi
 
       - name: Install helm-unittest
-        if: steps.list-changed.outputs.changed == 'true'
         run: helm plugin install https://github.com/helm-unittest/helm-unittest --verify=false
+
+      - name: Check primary image defaults across all charts
+        run: python3 scripts/check-image-defaults.py
 
       - name: Register chart dependency repositories
         if: steps.list-changed.outputs.changed == 'true'

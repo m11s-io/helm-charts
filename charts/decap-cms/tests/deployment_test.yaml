@@ -13,11 +13,11 @@ tests:
           path: spec.template.spec.containers[0].image
           value: m11s/decap-cms:9.9.9-s3
         template: deployment.yaml
-  - it: pins the default CMS image by digest
+  - it: uses the chart appVersion for the default CMS image
     asserts:
       - matchRegex:
           path: spec.template.spec.containers[0].image
-          pattern: '^m11s/decap-cms:[^@]+@sha256:[a-f0-9]{64}$'
+          pattern: '^m11s/decap-cms:[^@]+$'
         template: deployment.yaml
       - equal:
           path: spec.template.spec.containers[0].imagePullPolicy

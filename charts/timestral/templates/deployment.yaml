@@ -40,7 +40,7 @@ spec:
       {{- end }}
       containers:
         - name: timestral
-          image: {{- if .Values.image.digest }} {{ printf "%s@%s" .Values.image.repository .Values.image.digest | quote }}{{- else }} {{ printf "%s:%s" .Values.image.repository .Values.image.tag | quote }}{{- end }}
+          image: {{- if .Values.image.digest }} {{ printf "%s@%s" .Values.image.repository .Values.image.digest | quote }}{{- else }} {{ printf "%s:%s" .Values.image.repository (.Values.image.tag | default .Chart.AppVersion) | quote }}{{- end }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             - {name: MODEL_ID, value: {{ .Values.model.id | quote }}}

@@ -18,7 +18,8 @@ affinity: {}
 
 image:
   repository: m11s/timestral
-  tag: 1.0.0-cpu
+  # Optional override; defaults to chart appVersion (the CPU image).
+  tag: ""
   # Set to a published sha256 digest for release deployments. When set, the
   # rendered image uses repository@digest and ignores tag.
   digest: ""  # @schema pattern: ^(|sha256:[a-f0-9]{64})$
