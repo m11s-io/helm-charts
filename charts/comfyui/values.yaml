@@ -2,7 +2,7 @@ image:
   # image.repository is the container image repository
   repository: m11s/comfyui
   # image.tag pins the image tag and digest; set empty to use chart appVersion
-  tag: "0.43.0-gguf@sha256:bbeec2e7211778c1e816f60f9730471713b951abb67658237f5f9b43ef4827a1"
+  tag: "0.43.0-gguf@sha256:a802122b105c8cf533d8827f40edb718744c931d0c1c2bd1ef0247d44ed5febc"
   # image.pullPolicy is the image pull policy
   pullPolicy: IfNotPresent
 
