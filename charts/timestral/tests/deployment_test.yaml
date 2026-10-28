@@ -138,6 +138,26 @@ tests:
     asserts:
       - notExists:
           path: spec.template.spec.runtimeClassName
+  - it: renders the shipped AMD ROCm configuration with secure defaults
+    values:
+      - ../examples/rocm-values.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: m11s/timestral:1.0.0-rocm
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: MODEL_DEVICE
+            value: cuda
+      - equal:
+          path: spec.template.spec.containers[0].resources.limits["amd.com/gpu"]
+          value: 1
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.readOnlyRootFilesystem
+          value: true
+      - notExists:
+          path: spec.template.spec.runtimeClassName
 
   - it: sets hostUsers when configured
     set:

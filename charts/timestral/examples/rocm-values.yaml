@@ -1,0 +1,13 @@
+# Requires a compatible AMD host driver and the AMD Kubernetes device plugin.
+image:
+  tag: 1.0.0-rocm
+model:
+  # PyTorch ROCm uses the cuda device API too.
+  device: cuda
+resources:
+  requests:
+    cpu: "2"
+    memory: 2Gi
+  limits:
+    memory: 6Gi
+    amd.com/gpu: 1
