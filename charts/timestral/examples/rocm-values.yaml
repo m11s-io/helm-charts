@@ -4,11 +4,10 @@ image:
 model:
   # PyTorch ROCm uses the cuda device API too.
   device: cuda
-runtime:
-  resources:
-    requests:
-      cpu: "2"
-      memory: 2Gi
-    limits:
-      memory: 6Gi
-      amd.com/gpu: 1
+resources:
+  requests:
+    cpu: "2"
+    memory: 2Gi
+  limits:
+    memory: 6Gi
+    amd.com/gpu: 1

@@ -1,0 +1,61 @@
+suite: decap-cms httproute hostnames
+templates:
+  - httproute.yaml
+
+tests:
+  - it: derives hostnames from tenant values when the route list is empty
+    set:
+      httpRoute.enabled: true
+      httpRoute.parentRefs:
+        - name: public
+          namespace: gateway
+      tenants:
+        - slug: one
+          hostname: one.example.com
+          gitlabRepo: m11s/one
+          gitlabBranch: main
+          gitlabAppId: one
+          uploadUrl: https://one.example.com/upload
+        - slug: two
+          hostname: two.example.com
+          gitlabRepo: m11s/two
+          gitlabBranch: main
+          gitlabAppId: two
+          uploadUrl: https://two.example.com/upload
+    asserts:
+      - equal:
+          path: spec.hostnames
+          value:
+            - one.example.com
+            - two.example.com
+
+  - it: uses explicit route hostnames in preference to tenant hostnames
+    set:
+      httpRoute.enabled: true
+      httpRoute.parentRefs:
+        - name: public
+      httpRoute.hostnames:
+        - route.example.com
+      tenants:
+        - slug: one
+          hostname: one.example.com
+          gitlabRepo: m11s/one
+          gitlabBranch: main
+          gitlabAppId: one
+          uploadUrl: https://one.example.com/upload
+    asserts:
+      - equal:
+          path: spec.hostnames
+          value:
+            - route.example.com
+
+  - it: omits hostnames when both sources are empty
+    set:
+      httpRoute.enabled: true
+      httpRoute.parentRefs:
+        - name: public
+      existingTenantsConfigMap: external-tenants
+      tenants: []
+    asserts:
+      - notExists:
+          path: spec.hostnames

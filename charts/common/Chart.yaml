@@ -1,0 +1,5 @@
+apiVersion: v2
+name: m11s-common
+description: Shared template helpers for m11s application charts
+type: library
+version: 0.2.0

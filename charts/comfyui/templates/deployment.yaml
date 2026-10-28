@@ -10,9 +10,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "comfyui.fullname" . }}
+  name: {{ include "m11s-common.fullname" . }}
   labels:
-    {{- include "comfyui.labels" . | nindent 4 }}
+    {{- include "m11s-common.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   {{- with .Values.strategy }}
@@ -21,7 +21,7 @@ spec:
   {{- end }}
   selector:
     matchLabels:
-      {{- include "comfyui.selectorLabels" . | nindent 6 }}
+      {{- include "m11s-common.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -29,10 +29,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "comfyui.selectorLabels" . | nindent 8 }}
-        {{- if .Values.comfyMcp.enabled }}
-        app.kubernetes.io/component: comfy-mcp
-        {{- end }}
+        {{- include "m11s-common.podLabels" (dict "root" . "component" (ternary "comfy-mcp" "" .Values.comfyMcp.enabled)) | nindent 8 }}
     spec:
       {{- if ne .Values.hostUsers nil }}
       hostUsers: {{ .Values.hostUsers }}
@@ -41,7 +38,8 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "comfyui.serviceAccountName" . }}
+      serviceAccountName: {{ include "m11s-common.serviceAccountName" . }}
+      automountServiceAccountToken: {{ .Values.serviceAccount.automountServiceAccountToken }}
       {{- with .Values.runtimeClassName }}
       runtimeClassName: {{ . }}
       {{- end }}
@@ -52,7 +50,7 @@ spec:
       {{- end }}
       containers:
         - name: comfyui
-          image: {{ include "comfyui.image" . }}
+          image: {{ include "m11s-common.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}

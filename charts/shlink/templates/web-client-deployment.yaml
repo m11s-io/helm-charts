@@ -2,22 +2,31 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "shlink.fullname" . }}-web-client
+  name: {{ include "m11s-common.fullname" . }}-web-client
   labels:
-    {{- include "shlink.labels" . | nindent 4 }}
+    {{- include "m11s-common.labels" . | nindent 4 }}
     app.kubernetes.io/component: web-client
 spec:
   replicas: 1
   selector:
     matchLabels:
-      {{- include "shlink.selectorLabels" . | nindent 6 }}
+      {{- include "m11s-common.selectorLabels" . | nindent 6 }}
       app.kubernetes.io/component: web-client
   template:
     metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       labels:
-        {{- include "shlink.selectorLabels" . | nindent 8 }}
-        app.kubernetes.io/component: web-client
+        {{- include "m11s-common.podLabels" (dict "root" . "component" "web-client") | nindent 8 }}
     spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "m11s-common.serviceAccountName" . }}
+      automountServiceAccountToken: {{ .Values.serviceAccount.automountServiceAccountToken }}
       {{- if ne .Values.hostUsers nil }}
       hostUsers: {{ .Values.hostUsers }}
       {{- end }}

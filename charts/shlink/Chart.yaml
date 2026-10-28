@@ -2,7 +2,7 @@ apiVersion: v2
 name: shlink
 description: Deploy Shlink, a self-hosted URL shortener
 type: application
-version: 0.3.4
+version: 0.4.2
 # renovate: datasource=docker depName=shlinkio/shlink
 appVersion: "5.1.8"
 home: https://shlink.io
@@ -34,3 +34,8 @@ annotations:
       description: "Bump Shlink to 5.1.6"
     - kind: fixed
       description: "Fix service selector to exclude web-client pods (app.kubernetes.io/component: api)"
+
+dependencies:
+  - name: m11s-common
+    version: 0.2.0
+    repository: file://../common

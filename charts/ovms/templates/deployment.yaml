@@ -7,16 +7,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "ovms.fullname" . }}
+  name: {{ include "m11s-common.fullname" . }}
   labels:
-    {{- include "ovms.labels" . | nindent 4 }}
+    {{- include "m11s-common.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   strategy:
     type: Recreate
   selector:
     matchLabels:
-      {{- include "ovms.selectorLabels" . | nindent 6 }}
+      {{- include "m11s-common.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -24,13 +24,13 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "ovms.selectorLabels" . | nindent 8 }}
-        {{- with .Values.podLabels }}{{ toYaml . | nindent 8 }}{{- end }}
+        {{- include "m11s-common.podLabels" (dict "root" .) | nindent 8 }}
     spec:
       {{- if ne .Values.hostUsers nil }}
       hostUsers: {{ .Values.hostUsers }}
       {{- end }}
-      automountServiceAccountToken: false
+      serviceAccountName: {{ include "m11s-common.serviceAccountName" . }}
+      automountServiceAccountToken: {{ .Values.serviceAccount.automountServiceAccountToken }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       {{- with .Values.imagePullSecrets }}
@@ -39,8 +39,8 @@ spec:
       {{- end }}
       containers:
         - name: ovms
-          image: "{{ .Values.runtime.image.repository }}:{{ .Values.runtime.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.runtime.image.pullPolicy }}
+          image: {{ include "m11s-common.image" . | quote }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           args:
             - --source_model
             - {{ .Values.model.source | quote }}
@@ -71,9 +71,9 @@ spec:
             httpGet: {path: /v2/health/live, port: ovms-http}
             {{- toYaml .Values.runtime.livenessProbe | nindent 12 }}
           resources:
-            {{- toYaml .Values.runtime.resources | nindent 12 }}
+            {{- toYaml .Values.resources | nindent 12 }}
           securityContext:
-            {{- toYaml .Values.runtime.securityContext | nindent 12 }}
+            {{- toYaml .Values.securityContext | nindent 12 }}
           volumeMounts:
             - {name: model-cache, mountPath: /models}
             - {name: tmp, mountPath: /tmp}

@@ -122,6 +122,10 @@
         "image": {
             "type": "object",
             "properties": {
+                "digest": {
+                    "type": "string",
+                    "pattern": "^(|sha256:[a-f0-9]{64})$"
+                },
                 "pullPolicy": {
                     "type": "string"
                 },
@@ -139,8 +143,11 @@
         "inputPersistence": {
             "type": "object",
             "properties": {
-                "accessMode": {
-                    "type": "string"
+                "accessModes": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "enabled": {
                     "type": "boolean"
@@ -155,7 +162,10 @@
                     "type": "string"
                 },
                 "storageClassName": {
-                    "type": "string"
+                    "type": [
+                        "string",
+                        "null"
+                    ]
                 }
             }
         },
@@ -316,8 +326,11 @@
         "outputPersistence": {
             "type": "object",
             "properties": {
-                "accessMode": {
-                    "type": "string"
+                "accessModes": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "enabled": {
                     "type": "boolean"
@@ -332,15 +345,21 @@
                     "type": "string"
                 },
                 "storageClassName": {
-                    "type": "string"
+                    "type": [
+                        "string",
+                        "null"
+                    ]
                 }
             }
         },
         "persistence": {
             "type": "object",
             "properties": {
-                "accessMode": {
-                    "type": "string"
+                "accessModes": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "enabled": {
                     "type": "boolean"
@@ -355,11 +374,17 @@
                     "type": "string"
                 },
                 "storageClassName": {
-                    "type": "string"
+                    "type": [
+                        "string",
+                        "null"
+                    ]
                 }
             }
         },
         "podAnnotations": {
+            "type": "object"
+        },
+        "podLabels": {
             "type": "object"
         },
         "podSecurityContext": {
@@ -466,6 +491,9 @@
                 "annotations": {
                     "type": "object"
                 },
+                "automountServiceAccountToken": {
+                    "type": "boolean"
+                },
                 "create": {
                     "type": "boolean"
                 },
@@ -510,8 +538,11 @@
         "tempPersistence": {
             "type": "object",
             "properties": {
-                "accessMode": {
-                    "type": "string"
+                "accessModes": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "enabled": {
                     "type": "boolean"
@@ -526,7 +557,10 @@
                     "type": "string"
                 },
                 "storageClassName": {
-                    "type": "string"
+                    "type": [
+                        "string",
+                        "null"
+                    ]
                 }
             }
         },
@@ -539,8 +573,11 @@
         "userPersistence": {
             "type": "object",
             "properties": {
-                "accessMode": {
-                    "type": "string"
+                "accessModes": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "enabled": {
                     "type": "boolean"
@@ -555,7 +592,10 @@
                     "type": "string"
                 },
                 "storageClassName": {
-                    "type": "string"
+                    "type": [
+                        "string",
+                        "null"
+                    ]
                 }
             }
         }

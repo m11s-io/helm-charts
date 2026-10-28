@@ -1,18 +1,3 @@
-{{- if .Values.comfyMcp.enabled }}
-apiVersion: v1
-kind: Service
-metadata:
-  name: {{ include "comfyui.comfyMcpFullname" . }}
-  labels:
-    {{- include "comfyui.labels" . | nindent 4 }}
-    app.kubernetes.io/component: comfy-mcp
-spec:
-  type: {{ .Values.comfyMcp.service.type }}
-  ports:
-    - name: mcp
-      port: {{ .Values.comfyMcp.service.port }}
-      targetPort: mcp
-      protocol: TCP
-  selector:
-    {{- include "comfyui.comfyMcpSelectorLabels" . | nindent 4 }}
-{{- end }}
+{{- if .Values.comfyMcp.enabled -}}
+{{- include "m11s-common.service" (dict "root" . "name" (include "comfyui.comfyMcpFullname" .) "type" .Values.comfyMcp.service.type "port" .Values.comfyMcp.service.port "targetPort" "mcp" "portName" "mcp" "extraSelector" (dict "app.kubernetes.io/component" "comfy-mcp") "extraLabels" (dict "app.kubernetes.io/component" "comfy-mcp")) -}}
+{{- end -}}

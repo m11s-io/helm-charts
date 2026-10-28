@@ -1,40 +1,8 @@
-{{- if .Values.httpRoute.enabled }}
-{{- if not .Values.httpRoute.parentRefs }}
-{{- fail "httpRoute.parentRefs must contain at least one Gateway reference when httpRoute.enabled is true" }}
-{{- end }}
-{{- $hostnames := .Values.httpRoute.hostnames | default list }}
-{{- if and (eq .Values.fider.hostMode "multi") .Values.fider.hostDomain }}
-{{- $loginHost := printf "login.%s" .Values.fider.hostDomain }}
-{{- if not (has $loginHost $hostnames) }}
-{{- $hostnames = append $hostnames $loginHost }}
-{{- end }}
-{{- end }}
-apiVersion: gateway.networking.k8s.io/v1
-kind: HTTPRoute
-metadata:
-  name: {{ include "fider.fullname" . }}
-  labels:
-    {{- include "fider.labels" . | nindent 4 }}
-    {{- with .Values.httpRoute.labels }}
-    {{- toYaml . | nindent 4 }}
-    {{- end }}
-  {{- with .Values.httpRoute.annotations }}
-  annotations:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
-spec:
-  parentRefs:
-    {{- toYaml .Values.httpRoute.parentRefs | nindent 4 }}
-  {{- with $hostnames }}
-  hostnames:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
-  rules:
-    - matches:
-        - path:
-            type: PathPrefix
-            value: /
-      backendRefs:
-        - name: {{ include "fider.fullname" . }}
-          port: {{ .Values.service.port }}
-{{- end }}
+{{- if .Values.httpRoute.enabled -}}
+{{- $hostnames := .Values.httpRoute.hostnames | default list -}}
+{{- if and (eq .Values.fider.hostMode "multi") .Values.fider.hostDomain -}}
+{{- $loginHost := printf "login.%s" .Values.fider.hostDomain -}}
+{{- if not (has $loginHost $hostnames) -}}{{- $hostnames = append $hostnames $loginHost -}}{{- end -}}
+{{- end -}}
+{{- include "m11s-common.httpRoute" (dict "root" . "hostnames" $hostnames) -}}
+{{- end -}}

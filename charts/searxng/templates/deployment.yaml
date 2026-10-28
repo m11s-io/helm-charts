@@ -3,14 +3,14 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "searxng.fullname" . }}
+  name: {{ include "m11s-common.fullname" . }}
   labels:
-    {{- include "searxng.labels" . | nindent 4 }}
+    {{- include "m11s-common.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{- include "searxng.selectorLabels" . | nindent 6 }}
+      {{- include "m11s-common.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       annotations:
@@ -19,18 +19,22 @@ spec:
         {{- toYaml . | nindent 8 }}
         {{- end }}
       labels:
-        {{- include "searxng.selectorLabels" . | nindent 8 }}
+        {{- include "m11s-common.podLabels" (dict "root" .) | nindent 8 }}
     spec:
       {{- if ne .Values.hostUsers nil }}
       hostUsers: {{ .Values.hostUsers }}
       {{- end }}
-      serviceAccountName: {{ include "searxng.serviceAccountName" . }}
-      automountServiceAccountToken: false
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "m11s-common.serviceAccountName" . }}
+      automountServiceAccountToken: {{ .Values.serviceAccount.automountServiceAccountToken }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: searxng
-          image: {{ include "searxng.image" . }}
+          image: {{ include "m11s-common.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
@@ -94,11 +98,11 @@ spec:
       volumes:
         - name: config
           configMap:
-            name: {{ include "searxng.fullname" . }}
+            name: {{ include "m11s-common.fullname" . }}
         - name: data
           {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
-            claimName: {{ .Values.persistence.existingClaim | default (include "searxng.fullname" .) }}
+            claimName: {{ .Values.persistence.existingClaim | default (include "m11s-common.fullname" .) }}
           {{- else }}
           emptyDir: {}
           {{- end }}

@@ -1,0 +1,54 @@
+suite: whoami shared HTTPRoute
+templates:
+  - httproute.yaml
+
+tests:
+  - it: emits nothing when disabled
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: renders configured Gateway, hostnames, and backend port
+    set:
+      httpRoute.enabled: true
+      httpRoute.parentRefs:
+        - name: edge
+          namespace: gateway
+      httpRoute.hostnames:
+        - example.com
+    asserts:
+      - equal:
+          path: spec.parentRefs[0].name
+          value: edge
+      - equal:
+          path: spec.hostnames[0]
+          value: example.com
+      - equal:
+          path: spec.rules[0].backendRefs[0].name
+          value: RELEASE-NAME-whoami
+      - equal:
+          path: spec.rules[0].backendRefs[0].port
+          value: 80
+
+  - it: rejects enabled routes without a parent Gateway
+    set:
+      httpRoute.enabled: true
+    asserts:
+      - failedTemplate:
+          errorMessage: httpRoute.parentRefs must contain at least one Gateway reference when httpRoute.enabled is true
+
+  - it: merges custom labels without overriding chart identity
+    set:
+      httpRoute.enabled: true
+      httpRoute.parentRefs:
+        - name: edge
+      httpRoute.labels:
+        app.kubernetes.io/name: conflicting-name
+        team: analytics
+    asserts:
+      - equal:
+          path: metadata.labels["app.kubernetes.io/name"]
+          value: whoami
+      - equal:
+          path: metadata.labels.team
+          value: analytics

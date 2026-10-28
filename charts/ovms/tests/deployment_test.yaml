@@ -104,3 +104,12 @@ tests:
     asserts:
       - notExists:
           path: spec.template.spec.hostUsers
+
+  - it: gives image.digest precedence over tag
+    set:
+      image.tag: 9999.0.0
+      image.digest: sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: openvino/model_server@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa

@@ -3,6 +3,8 @@ image:
   repository: shlinkio/shlink
   # image.tag overrides the image tag; defaults to the chart appVersion
   tag: ""
+  # image.digest overrides tag when set
+  digest: ""  # @schema pattern: ^(|sha256:[a-f0-9]{64})$
   # image.pullPolicy is the image pull policy
   pullPolicy: IfNotPresent
 
@@ -10,6 +12,7 @@ image:
 nameOverride: ""
 # fullnameOverride overrides the full release name used for all resources
 fullnameOverride: ""
+imagePullSecrets: []
 
 # replicaCount is the number of Shlink pod replicas
 replicaCount: 1
@@ -185,10 +188,10 @@ data:
   # data.enabled mounts a PersistentVolumeClaim at /etc/shlink/data (GeoLite2 DB, Doctrine proxies, lock files);
   # when false an emptyDir is used and all data is regenerated on every pod restart
   enabled: true
-  # data.storageClass is the StorageClass for the PVC; uses the cluster default when empty
-  storageClass: ""
-  # data.accessMode is the PVC access mode
-  accessMode: ReadWriteOnce
+  # data.storageClassName is the StorageClass for the PVC; null uses the cluster default and "" disables dynamic provisioning
+  storageClassName: null  # @schema type:[string, null]
+  # data.accessModes lists PVC access modes
+  accessModes: [ReadWriteOnce]
   # data.size is the PVC storage request
   size: 1Gi
 
@@ -198,7 +201,7 @@ webClient:
   image:
     repository: shlinkio/shlink-web-client
     # Independent web client version; defaults to stable.
-    tag: "stable"
+    tag: "stable@sha256:dc8bf3565a25bd0602ff11ee352920830ce457ab58a2b2c62f2ebb23e8c8b9ee"
     pullPolicy: IfNotPresent
   # webClient.serverUrl is the public URL of the Shlink API as seen from the user's browser (required when enabled)
   serverUrl: ""
@@ -244,6 +247,8 @@ serviceAccount:
   name: ""
   # serviceAccount.annotations are extra annotations added to the ServiceAccount
   annotations: {}
+  # Controls Kubernetes API token mounting for Pods using this account.
+  automountServiceAccountToken: false
 
 # podSecurityContext sets the security context for the Shlink pod
 podSecurityContext:
@@ -276,6 +281,7 @@ extraEnvFrom: []
 
 # podAnnotations are extra annotations added to the Shlink pod
 podAnnotations: {}
+podLabels: {}
 # nodeSelector constrains the Shlink pod to nodes matching the given labels
 # hostUsers sets spec.hostUsers on the pod. Requires user-namespace support
 # (stable in Kubernetes 1.37; alpha/beta earlier) and a userns-capable runtime.

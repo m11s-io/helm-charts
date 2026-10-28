@@ -10,15 +10,14 @@
 {{- fail "modelDownload.models[].destination must be a relative path without '..'" }}
 {{- end }}
 {{- end }}
-{{- $workloadImageTag := default .Chart.AppVersion .Values.image.tag }}
-{{- $workloadImage := printf "%s:%s" .Values.image.repository $workloadImageTag }}
+{{- $workloadImage := include "m11s-common.image" . }}
 apiVersion: batch/v1
 kind: Job
 metadata:
-  {{- $modelSpecHash := printf "%s:%s:%s" .Chart.Version (.Values.modelDownload.models | toJson) (dict "prune" .Values.modelDownload.prune "environment" .Values.modelDownload.environment "token" .Values.modelDownload.huggingFaceToken "image" .Values.modelDownload.image | toJson) | sha256sum | trunc 8 }}
-  name: {{ include "comfyui.fullname" . }}-model-download-{{ $modelSpecHash }}
+  {{- $modelSpecHash := printf "%s:%s:%s" .Chart.Version (.Values.modelDownload.models | toJson) (dict "prune" .Values.modelDownload.prune "environment" .Values.modelDownload.environment "token" .Values.modelDownload.huggingFaceToken "image" .Values.modelDownload.image "workloadImage" $workloadImage | toJson) | sha256sum | trunc 8 }}
+  name: {{ include "m11s-common.fullname" . }}-model-download-{{ $modelSpecHash }}
   labels:
-    {{- include "comfyui.labels" . | nindent 4 }}
+    {{- include "m11s-common.labels" . | nindent 4 }}
     app.kubernetes.io/component: model-download
 spec:
   backoffLimit: {{ .Values.modelDownload.backoffLimit }}
@@ -27,15 +26,23 @@ spec:
   {{- end }}
   template:
     metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       labels:
-        {{- include "comfyui.selectorLabels" . | nindent 8 }}
-        app.kubernetes.io/component: model-download
+        {{- include "m11s-common.podLabels" (dict "root" . "component" "model-download") | nindent 8 }}
     spec:
       {{- if ne .Values.hostUsers nil }}
       hostUsers: {{ .Values.hostUsers }}
       {{- end }}
       restartPolicy: Never
-      serviceAccountName: {{ include "comfyui.serviceAccountName" . }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "m11s-common.serviceAccountName" . }}
+      automountServiceAccountToken: {{ .Values.serviceAccount.automountServiceAccountToken }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:

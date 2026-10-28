@@ -36,36 +36,42 @@ model:
   # There is no CUDA target - OpenVINO does not run on NVIDIA GPUs.
   device: CPU
 
+image:
+  repository: openvino/model_server
+  tag: ""
+  pullPolicy: IfNotPresent
+  digest: ""  # @schema pattern: ^(|sha256:[a-f0-9]{64})$
+resources:
+  requests: {cpu: "2", memory: 2Gi}
+  limits: {memory: 4Gi}
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities: {drop: [ALL]}
 runtime:
-  image:
-    repository: openvino/model_server
-    # Optional override; defaults to chart appVersion.
-    tag: ""
-    pullPolicy: IfNotPresent
   port: 8000
   logLevel: INFO
   # Extra arguments appended verbatim, for task-specific tuning
   # (e.g. ["--max_num_seqs", "64"]).
   extraArgs: []
-  resources:
-    requests: {cpu: "2", memory: 2Gi}
-    limits: {memory: 4Gi}
   # Generous by default: a cold start downloads the model before serving.
   startupProbe: {periodSeconds: 10, failureThreshold: 180}
   readinessProbe: {periodSeconds: 10, failureThreshold: 3}
   livenessProbe: {initialDelaySeconds: 30, periodSeconds: 30, failureThreshold: 3}
-  securityContext:
-    allowPrivilegeEscalation: false
-    readOnlyRootFilesystem: true
-    capabilities: {drop: [ALL]}
 
 persistence:
   enabled: true
   existingClaim: ""
   nameOverride: ""
-  storageClass: ""
+  storageClassName: null  # @schema type:[string, null]
   accessModes: [ReadWriteOnce]
   size: 2Gi
+
+serviceAccount:
+  create: true
+  name: ""
+  annotations: {}
+  automountServiceAccountToken: false
 
 service:
   type: ClusterIP

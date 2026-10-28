@@ -8,7 +8,7 @@ Short domain: {{ if .Values.shlink.isHttpsEnabled }}https{{ else }}http{{ end }}
   https://{{ . }}
 {{- end }}
 {{- else }}
-  kubectl port-forward -n {{ .Release.Namespace }} svc/{{ include "shlink.fullname" . }} 8080:8080
+  kubectl port-forward -n {{ .Release.Namespace }} svc/{{ include "m11s-common.fullname" . }} 8080:8080
   Then visit http://localhost:8080
 {{- end }}
 
@@ -19,4 +19,4 @@ Short domain: {{ if .Values.shlink.isHttpsEnabled }}https{{ else }}http{{ end }}
 3. Useful commands:
    helm status {{ .Release.Name }} -n {{ .Release.Namespace }}
    helm get values {{ .Release.Name }} -n {{ .Release.Namespace }}
-   kubectl logs -n {{ .Release.Namespace }} deploy/{{ include "shlink.fullname" . }} -f
+   kubectl logs -n {{ .Release.Namespace }} deploy/{{ include "m11s-common.fullname" . }} -f

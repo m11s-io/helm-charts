@@ -2,7 +2,7 @@ apiVersion: v2
 name: fider
 description: Deploy Fider, a self-hosted user feedback platform
 type: application
-version: 0.4.2
+version: 0.5.1
 # renovate: datasource=docker depName=getfider/fider
 appVersion: "v0.38.2"
 home: https://fider.io
@@ -26,3 +26,8 @@ annotations:
   artifacthub.io/changes: |-
     - kind: fixed
       description: "Correct the Artifact Hub image annotation and synchronize image metadata with chart defaults."
+
+dependencies:
+  - name: m11s-common
+    version: 0.2.0
+    repository: file://../common

@@ -52,6 +52,14 @@ jobs:
         # runner is irrelevant. Required for charts/searxng's valkey dependency.
         run: helm repo add valkey https://valkey.io/valkey-helm/
 
+      - name: Build application chart dependencies
+        run: |
+          for chart in charts/*; do
+            [[ -f "$chart/Chart.yaml" ]] || continue
+            grep -q '^type: library$' "$chart/Chart.yaml" && continue
+            helm dependency build --skip-refresh "$chart"
+          done
+
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@df287104677278f869ca5480bd260358397cc3f9 # v1.8.0
         with:
