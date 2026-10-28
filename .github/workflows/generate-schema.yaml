@@ -63,6 +63,10 @@ jobs:
             chart=$(echo "$chart" | xargs)
             [[ -z "$chart" ]] && continue
             dir="charts/$chart"
+            if grep -Eq '^type:[[:space:]]*library[[:space:]]*$' "$dir/Chart.yaml"; then
+              echo "Skipping $chart: library chart has no configurable values"
+              continue
+            fi
             if [[ ! -f "$dir/values.yaml" ]]; then
               echo "Skipping $chart: no values.yaml"
               continue
