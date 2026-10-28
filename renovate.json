@@ -60,13 +60,6 @@
       "pinDigests": false
     },
     {
-      "description": "Track Helm image values only for the maintained images in the affected charts",
-      "matchManagers": [
-        "helm-values"
-      ],
-      "enabled": false
-    },
-    {
       "matchManagers": [
         "helm-values"
       ],
