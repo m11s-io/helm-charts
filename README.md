@@ -48,8 +48,7 @@ versions.
 
 Renovate updates annotated `appVersion` fields and explicit sidecar image tags;
 it leaves empty overrides untouched. Run `python3 scripts/check-image-defaults.py`
-with Helm and the helm-unittest plugin installed to check this convention across
-all charts.
+with Helm installed to check this convention across all charts.
 
 ## Publishing
 
@@ -88,7 +87,12 @@ existing names and defaults; set `existingClaim` where offered to reuse a claim.
 Build dependencies before rendering or linting application charts:
 
 ```bash
-helm dependency build --skip-refresh charts/whoami
+helm repo add valkey https://valkey.io/valkey-helm/
+for chart in charts/*; do
+  grep -q '^type: library$' "$chart/Chart.yaml" && continue
+  helm dependency build --skip-refresh "$chart"
+done
+# Requires the helm-unittest plugin.
 helm unittest charts/*
 python3 scripts/check-image-defaults.py
 helm lint charts/whoami --strict
