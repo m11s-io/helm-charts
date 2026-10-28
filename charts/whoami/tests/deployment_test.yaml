@@ -99,7 +99,10 @@ tests:
 
   - it: adds user pod labels without changing selectors
     set:
-      podLabels.team: analytics
+      podLabels:
+        team: analytics
+        app.kubernetes.io/name: changed
+        app.kubernetes.io/instance: changed
     asserts:
       - equal:
           path: spec.template.metadata.labels.team
@@ -107,6 +110,38 @@ tests:
       - equal:
           path: spec.selector.matchLabels["app.kubernetes.io/name"]
           value: whoami
+
+      - equal:
+          path: spec.template.metadata.labels["app.kubernetes.io/name"]
+          value: whoami
+      - equal:
+          path: spec.template.metadata.labels["app.kubernetes.io/instance"]
+          value: RELEASE-NAME
+
+  - it: uses the chart appVersion for the default image
+    chart:
+      appVersion: v9.9.9
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: traefik/whoami:v9.9.9
+
+  - it: preserves an explicit tag and digest
+    set:
+      image.tag: v8.8.8@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: traefik/whoami:v8.8.8@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+
+  - it: gives an explicit digest precedence over the tag
+    set:
+      image.tag: v8.8.8
+      image.digest: sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: traefik/whoami@sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
 
   - it: supports custom ServiceAccount names and token mounting
     set:
