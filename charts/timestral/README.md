@@ -30,8 +30,7 @@ image:
   digest: sha256:REPLACE_WITH_PUBLISHED_DIGEST
 model:
   device: cpu
-runtime:
-  resources:
+resources:
     requests:
       cpu: "2"
       memory: 2Gi
@@ -54,8 +53,7 @@ image:
   digest: sha256:REPLACE_WITH_PUBLISHED_DIGEST
 model:
   device: cuda
-runtime:
-  resources:
+resources:
     requests:
       cpu: "4"
       memory: 8Gi

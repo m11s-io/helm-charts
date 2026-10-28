@@ -46,6 +46,10 @@
         "image": {
             "type": "object",
             "properties": {
+                "digest": {
+                    "type": "string",
+                    "pattern": "^(|sha256:[a-f0-9]{64})$"
+                },
                 "pullPolicy": {
                     "type": "string"
                 },
@@ -56,6 +60,9 @@
                     "type": "string"
                 }
             }
+        },
+        "imagePullSecrets": {
+            "type": "array"
         },
         "limiter": {
             "type": "object",
@@ -118,8 +125,11 @@
         "persistence": {
             "type": "object",
             "properties": {
-                "accessMode": {
-                    "type": "string"
+                "accessModes": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "enabled": {
                     "type": "boolean"
@@ -130,12 +140,18 @@
                 "size": {
                     "type": "string"
                 },
-                "storageClass": {
-                    "type": "string"
+                "storageClassName": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
                 }
             }
         },
         "podAnnotations": {
+            "type": "object"
+        },
+        "podLabels": {
             "type": "object"
         },
         "podSecurityContext": {
@@ -260,6 +276,9 @@
             "properties": {
                 "annotations": {
                     "type": "object"
+                },
+                "automountServiceAccountToken": {
+                    "type": "boolean"
                 },
                 "create": {
                     "type": "boolean"

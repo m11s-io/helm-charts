@@ -1,0 +1,51 @@
+suite: fider httproute contract
+templates:
+  - httproute.yaml
+
+set:
+  fider.baseURL: https://feedback.example.com
+  fider.existingSecret.name: fider-secret
+  db.existingSecret.name: db-secret
+  email.noreply: noreply@example.com
+  httpRoute.enabled: true
+  httpRoute.parentRefs:
+    - name: public
+      namespace: gateway
+
+tests:
+  - it: requires a Gateway parent reference
+    set:
+      httpRoute.parentRefs: []
+    asserts:
+      - failedTemplate:
+          errorMessage: httpRoute.parentRefs must contain at least one Gateway reference when httpRoute.enabled is true
+
+  - it: keeps multi host routing and derives the login hostname
+    set:
+      fider.hostMode: multi
+      fider.hostDomain: feedback.example.com
+      httpRoute.hostnames:
+        - feedback.example.com
+    asserts:
+      - contains:
+          path: spec.hostnames
+          content: feedback.example.com
+      - contains:
+          path: spec.hostnames
+          content: login.feedback.example.com
+      - equal:
+          path: spec.rules[0].backendRefs[0].name
+          value: RELEASE-NAME-fider
+      - equal:
+          path: spec.rules[0].backendRefs[0].port
+          value: 3000
+
+  - it: does not add a multi host login hostname in single host mode
+    set:
+      httpRoute.hostnames:
+        - feedback.example.com
+    asserts:
+      - equal:
+          path: spec.hostnames
+          value:
+            - feedback.example.com

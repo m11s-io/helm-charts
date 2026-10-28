@@ -2,7 +2,7 @@ apiVersion: v2
 name: comfyui
 description: Deploy ComfyUI, a node-based visual AI engine for image and video generation on GPU nodes
 type: application
-version: 0.12.10
+version: 0.13.0
 # renovate: datasource=docker depName=m11s/comfyui
 appVersion: "0.43.0-gguf"
 home: https://github.com/comfyanonymous/ComfyUI
@@ -112,3 +112,8 @@ annotations:
       description: "Broaden description from image/video generation to visual AI, matching upstream's own framing"
     - kind: added
       description: "Set artifacthub.io/category to ai-machine-learning"
+
+dependencies:
+  - name: m11s-common
+    version: 0.1.0
+    repository: file://../common

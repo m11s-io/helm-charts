@@ -1,0 +1,68 @@
+suite: fider deployment contract
+templates:
+  - deployment.yaml
+
+set:
+  fider.baseURL: https://feedback.example.com
+  fider.existingSecret.name: fider-secret
+  db.existingSecret.name: db-secret
+  email.noreply: noreply@example.com
+
+tests:
+  - it: requires baseURL in single host mode
+    set:
+      fider.baseURL: ""
+    asserts:
+      - failedTemplate:
+          errorMessage: fider.baseURL is required when hostMode is single
+
+  - it: renders the single host URL
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].env[0].value
+          value: https://feedback.example.com
+
+  - it: requires hostDomain in multi host mode
+    set:
+      fider.hostMode: multi
+    asserts:
+      - failedTemplate:
+          errorMessage: fider.hostDomain is required when hostMode is multi
+
+  - it: renders multi host domain
+    set:
+      fider.hostMode: multi
+      fider.hostDomain: feedback.example.com
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].env[3].value
+          value: feedback.example.com
+
+  - it: rejects an unknown hostMode
+    set:
+      fider.hostMode: invalid
+    asserts:
+      - failedTemplate:
+          errorMessage: fider.hostMode must be either single or multi
+
+  - it: uses appVersion by default for the image
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: getfider/fider:v0.38.2
+
+  - it: respects a configured primary image tag
+    set:
+      image.tag: v0.40.0
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: getfider/fider:v0.40.0
+
+  - it: honors configurable service-account token mounting
+    set:
+      serviceAccount.automountServiceAccountToken: true
+    asserts:
+      - equal:
+          path: spec.template.spec.automountServiceAccountToken
+          value: true

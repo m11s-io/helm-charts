@@ -1,0 +1,6 @@
+dependencies:
+- name: m11s-common
+  repository: file://../common
+  version: 0.1.0
+digest: sha256:ee42ca0e1c11dc9fd08bae4124c46695f3adc2b9ec3edab81b86368ef7ba464a
+generated: "2026-10-28T10:21:31.134828+02:00"

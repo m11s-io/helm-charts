@@ -2,7 +2,7 @@ OpenVINO Model Server is serving {{ .Values.model.name | default .Values.model.s
 for task "{{ .Values.model.task }}" on device {{ .Values.model.device }}.
 
 Base URL:
-  http://{{ include "ovms.fullname" . }}.{{ .Release.Namespace }}.svc:{{ .Values.service.port }}
+  http://{{ include "m11s-common.fullname" . }}.{{ .Release.Namespace }}.svc:{{ .Values.service.port }}
 
 {{- if eq .Values.model.task "rerank" }}
 Endpoint: POST /v3/rerank

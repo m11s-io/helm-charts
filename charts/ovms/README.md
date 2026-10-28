@@ -51,8 +51,8 @@ Key values:
 | `model.name` | `model.source` | Name clients address the model by |
 | `model.task` | `rerank` | OVMS task graph to build |
 | `model.device` | `CPU` | OpenVINO target device |
-| `runtime.image.repository` | `openvino/model_server` | OVMS image |
-| `runtime.image.tag` | `""` | Optional override; defaults to chart `appVersion` |
+| `image.repository` | `openvino/model_server` | OVMS image |
+| `image.tag` | `""` | Optional override; defaults to chart `appVersion` |
 | `runtime.extraArgs` | `[]` | Extra CLI args appended verbatim |
 | `persistence.size` | `2Gi` | Model-cache capacity |
 | `persistence.existingClaim` | `""` | Reuse an existing PVC |

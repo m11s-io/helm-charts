@@ -1,14 +1,14 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "shlink.fullname" . }}
+  name: {{ include "m11s-common.fullname" . }}
   labels:
-    {{- include "shlink.labels" . | nindent 4 }}
+    {{- include "m11s-common.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{- include "shlink.selectorLabels" . | nindent 6 }}
+      {{- include "m11s-common.selectorLabels" . | nindent 6 }}
       app.kubernetes.io/component: api
   template:
     metadata:
@@ -17,18 +17,23 @@ spec:
         {{- toYaml . | nindent 8 }}
         {{- end }}
       labels:
-        {{- include "shlink.selectorLabels" . | nindent 8 }}
+        {{- include "m11s-common.podLabelsWithComponent" . | nindent 8 }}
         app.kubernetes.io/component: api
     spec:
       {{- if ne .Values.hostUsers nil }}
       hostUsers: {{ .Values.hostUsers }}
       {{- end }}
-      serviceAccountName: {{ include "shlink.serviceAccountName" . }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "m11s-common.serviceAccountName" . }}
+      automountServiceAccountToken: {{ .Values.serviceAccount.automountServiceAccountToken }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: shlink
-          image: {{ include "shlink.image" . }}
+          image: {{ include "m11s-common.image" (dict "root" . "image" .Values.image) }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
@@ -254,7 +259,7 @@ spec:
         - name: data
           {{- if .Values.data.enabled }}
           persistentVolumeClaim:
-            claimName: {{ include "shlink.fullname" . }}
+            claimName: {{ include "m11s-common.fullname" . }}
           {{- else }}
           emptyDir: {}
           {{- end }}

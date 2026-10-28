@@ -54,6 +54,10 @@
         "image": {
             "type": "object",
             "properties": {
+                "digest": {
+                    "type": "string",
+                    "pattern": "^(|sha256:[a-f0-9]{64})$"
+                },
                 "pullPolicy": {
                     "type": "string"
                 },
@@ -65,6 +69,9 @@
                 }
             }
         },
+        "imagePullSecrets": {
+            "type": "array"
+        },
         "nameOverride": {
             "type": "string"
         },
@@ -72,6 +79,9 @@
             "type": "object"
         },
         "podAnnotations": {
+            "type": "object"
+        },
+        "podLabels": {
             "type": "object"
         },
         "podSecurityContext": {
@@ -162,6 +172,9 @@
             "properties": {
                 "annotations": {
                     "type": "object"
+                },
+                "automountServiceAccountToken": {
+                    "type": "boolean"
                 },
                 "create": {
                     "type": "boolean"

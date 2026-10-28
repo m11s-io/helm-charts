@@ -1,14 +1,14 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "fider.fullname" . }}
+  name: {{ include "m11s-common.fullname" . }}
   labels:
-    {{- include "fider.labels" . | nindent 4 }}
+    {{- include "m11s-common.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{- include "fider.selectorLabels" . | nindent 6 }}
+      {{- include "m11s-common.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       annotations:
@@ -16,17 +16,22 @@ spec:
         {{- toYaml . | nindent 8 }}
         {{- end }}
       labels:
-        {{- include "fider.selectorLabels" . | nindent 8 }}
+        {{- include "m11s-common.podLabels" . | nindent 8 }}
     spec:
       {{- if ne .Values.hostUsers nil }}
       hostUsers: {{ .Values.hostUsers }}
       {{- end }}
-      serviceAccountName: {{ include "fider.serviceAccountName" . }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "m11s-common.serviceAccountName" . }}
+      automountServiceAccountToken: {{ .Values.serviceAccount.automountServiceAccountToken }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: fider
-          image: {{ include "fider.image" . }}
+          image: {{ include "m11s-common.image" (dict "root" . "image" .Values.image) }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}

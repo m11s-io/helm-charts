@@ -17,3 +17,22 @@ tests:
     set: {persistence.enabled: false}
     asserts:
       - hasDocuments: {count: 0}
+
+  - it: uses the cluster default provisioner when storageClassName is null
+    asserts:
+      - notExists:
+          path: spec.storageClassName
+  - it: permits explicitly disabling dynamic provisioning with an empty class
+    set: {persistence.storageClassName: ""}
+    asserts:
+      - exists:
+          path: spec.storageClassName
+      - equal:
+          path: spec.storageClassName
+          value: ""
+  - it: renders a configured storage class name
+    set: {persistence.storageClassName: fast-ssd}
+    asserts:
+      - equal:
+          path: spec.storageClassName
+          value: fast-ssd

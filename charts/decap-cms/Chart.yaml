@@ -2,7 +2,7 @@ apiVersion: v2
 name: decap-cms
 description: Deploy a multi-tenant Decap CMS with optional S3 or MinIO uploads, served by path prefix
 type: application
-version: 0.4.6
+version: 0.5.0
 # renovate: datasource=docker depName=m11s/decap-cms
 appVersion: "0.2.11-s3"
 home: https://decapcms.org
@@ -33,3 +33,8 @@ annotations:
       description: "Pin maintained images by digest and track image rebuilds through Renovate."
     - kind: fixed
       description: "Encode uploaded object URLs so filenames with spaces render correctly in Markdown"
+
+dependencies:
+  - name: m11s-common
+    version: 0.1.0
+    repository: file://../common

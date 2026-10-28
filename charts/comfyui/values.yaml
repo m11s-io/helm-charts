@@ -3,6 +3,8 @@ image:
   repository: m11s/comfyui
   # image.tag overrides the image tag; defaults to the chart appVersion
   tag: ""
+  # image.digest overrides tag when set
+  digest: ""  # @schema pattern: ^(|sha256:[a-f0-9]{64})$
   # image.pullPolicy is the image pull policy
   pullPolicy: IfNotPresent
 
@@ -63,6 +65,8 @@ serviceAccount:
   name: ""
   # serviceAccount.annotations are extra annotations added to the ServiceAccount
   annotations: {}
+  # Controls Kubernetes API token mounting for Pods using this account.
+  automountServiceAccountToken: false
 
 # podSecurityContext sets the security context for the comfyui pod.
 # uid/gid match the comfyui user created in m11s-github/docker-images/comfyui.
@@ -127,9 +131,9 @@ persistence:
   # persistence.existingClaim reuses an existing PVC instead of creating one
   existingClaim: ""
   # persistence.storageClassName is the StorageClass for the created PVC
-  storageClassName: ""
-  # persistence.accessMode is the PVC access mode
-  accessMode: ReadWriteOnce
+  storageClassName: null  # @schema type:[string, null]
+  # persistence.accessModes lists PVC access modes
+  accessModes: [ReadWriteOnce]
   # persistence.size is the PVC storage request
   size: 200Gi
   # persistence.mountPath is where the models volume is mounted in the container
@@ -141,8 +145,8 @@ persistence:
 outputPersistence:
   enabled: false
   existingClaim: ""
-  storageClassName: ""
-  accessMode: ReadWriteOnce
+  storageClassName: null  # @schema type:[string, null]
+  accessModes: [ReadWriteOnce]
   size: 20Gi
   mountPath: /app/output
 
@@ -150,8 +154,8 @@ outputPersistence:
 userPersistence:
   enabled: false
   existingClaim: ""
-  storageClassName: ""
-  accessMode: ReadWriteOnce
+  storageClassName: null  # @schema type:[string, null]
+  accessModes: [ReadWriteOnce]
   size: 5Gi
   mountPath: /app/user
 
@@ -161,8 +165,8 @@ userPersistence:
 inputPersistence:
   enabled: false
   existingClaim: ""
-  storageClassName: ""
-  accessMode: ReadWriteOnce
+  storageClassName: null  # @schema type:[string, null]
+  accessModes: [ReadWriteOnce]
   size: 20Gi
   mountPath: /app/input
 
@@ -172,8 +176,8 @@ inputPersistence:
 tempPersistence:
   enabled: false
   existingClaim: ""
-  storageClassName: ""
-  accessMode: ReadWriteOnce
+  storageClassName: null  # @schema type:[string, null]
+  accessModes: [ReadWriteOnce]
   size: 20Gi
   mountPath: /app/temp
 
@@ -243,6 +247,7 @@ httpRoute:
 
 # podAnnotations are extra annotations added to the comfyui pod
 podAnnotations: {}
+podLabels: {}
 # nodeSelector constrains the comfyui pod to nodes matching the given labels
 # hostUsers sets spec.hostUsers on the pod. Requires user-namespace support
 # (stable in Kubernetes 1.37; alpha/beta earlier) and a userns-capable runtime.

@@ -1,14 +1,14 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "whoami.fullname" . }}
+  name: {{ include "m11s-common.fullname" . }}
   labels:
-    {{- include "whoami.labels" . | nindent 4 }}
+    {{- include "m11s-common.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{- include "whoami.selectorLabels" . | nindent 6 }}
+      {{- include "m11s-common.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       annotations:
@@ -16,17 +16,22 @@ spec:
         {{- toYaml . | nindent 8 }}
         {{- end }}
       labels:
-        {{- include "whoami.selectorLabels" . | nindent 8 }}
+        {{- include "m11s-common.podLabels" . | nindent 8 }}
     spec:
       {{- if ne .Values.hostUsers nil }}
       hostUsers: {{ .Values.hostUsers }}
       {{- end }}
-      serviceAccountName: {{ include "whoami.serviceAccountName" . }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "m11s-common.serviceAccountName" . }}
+      automountServiceAccountToken: {{ .Values.serviceAccount.automountServiceAccountToken }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: whoami
-          image: {{ include "whoami.image" . }}
+          image: {{ include "m11s-common.image" (dict "root" . "image" .Values.image) }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
