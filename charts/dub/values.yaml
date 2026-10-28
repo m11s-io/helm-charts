@@ -2,7 +2,7 @@
 image:
   repository: m11s/dub
   # image.tag overrides the image tag; defaults to the chart appVersion
-  tag: ""
+  tag: "@sha256:5b8cc1b5f97df0a91c0f2a897c058e7c38a0c3b0377c60bf0972ffa41045b022"
   # image.pullPolicy is the image pull policy
   pullPolicy: IfNotPresent
 

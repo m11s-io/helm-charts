@@ -2,7 +2,7 @@ apiVersion: v2
 name: dub
 description: Deploy Dub, a self-hosted link management platform
 type: application
-version: 0.2.6
+version: 0.2.7
 # renovate: datasource=docker depName=m11s/dub
 appVersion: "0.1.0"
 home: https://dub.co
