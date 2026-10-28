@@ -135,21 +135,6 @@
       "automerge": false
     },
     {
-      "description": "Update OVMS image values and appVersion together",
-      "matchDatasources": [
-        "docker"
-      ],
-      "matchPackageNames": [
-        "openvino/model_server"
-      ],
-      "matchFileNames": [
-        "charts/ovms/**"
-      ],
-      "versioning": "docker",
-      "groupName": "ovms chart images",
-      "automerge": false
-    },
-    {
       "description": "SearXNG publishes date-stamped tags with a git SHA suffix; the SHA is not orderable, so it is matched but excluded from comparison",
       "matchPackageNames": [
         "searxng/searxng"
