@@ -1,4 +1,4 @@
 {{- if .Values.comfyMcp.httpRoute.enabled -}}
 {{- if not .Values.comfyMcp.enabled -}}{{- fail "comfyMcp.httpRoute.enabled requires comfyMcp.enabled" -}}{{- end -}}
-{{- include "m11s-common.httpRoute" (dict "root" . "route" .Values.comfyMcp.httpRoute "name" (include "comfyui.comfyMcpFullname" .) "backendName" (include "comfyui.comfyMcpFullname" .) "hostnames" .Values.comfyMcp.httpRoute.hostnames "port" .Values.comfyMcp.service.port "path" "/mcp" "pathType" "Exact" "extraLabels" (dict "app.kubernetes.io/component" "comfy-mcp")) -}}
+{{- include "m11s-common.httpRoute" (dict "root" . "route" .Values.comfyMcp.httpRoute "name" (include "comfyui.comfyMcpFullname" .) "port" .Values.comfyMcp.service.port "path" "/mcp" "pathType" "Exact" "extraLabels" (dict "app.kubernetes.io/component" "comfy-mcp")) -}}
 {{- end -}}

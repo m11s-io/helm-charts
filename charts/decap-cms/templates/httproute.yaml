@@ -1,3 +1,1 @@
-{{- if .Values.httpRoute.enabled -}}
-{{- include "m11s-common.httpRoute" (dict "root" . "name" (include "m11s-common.fullname" .) "hostnames" (include "decap-cms.httpRouteHostnames" . | fromYamlArray) "port" .Values.service.port) -}}
-{{- end -}}
+{{- include "m11s-common.httpRoute" (dict "root" . "hostnames" (include "decap-cms.httpRouteHostnames" . | fromYamlArray)) -}}

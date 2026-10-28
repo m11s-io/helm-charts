@@ -19,8 +19,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "m11s-common.podLabelsWithComponent" . | nindent 8 }}
-        app.kubernetes.io/component: web-client
+        {{- include "m11s-common.podLabels" (dict "root" . "component" "web-client") | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:

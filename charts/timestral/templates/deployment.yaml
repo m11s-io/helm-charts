@@ -25,7 +25,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "m11s-common.podLabels" . | nindent 8 }}
+        {{- include "m11s-common.podLabels" (dict "root" .) | nindent 8 }}
     spec:
       {{- with .Values.runtimeClassName }}
       runtimeClassName: {{ . | quote }}
@@ -43,7 +43,7 @@ spec:
       {{- end }}
       containers:
         - name: timestral
-          image: {{ include "m11s-common.image" (dict "root" . "image" .Values.image) | quote }}
+          image: {{ include "m11s-common.image" . | quote }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             - {name: MODEL_ID, value: {{ .Values.model.id | quote }}}

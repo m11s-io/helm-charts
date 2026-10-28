@@ -16,7 +16,7 @@ spec:
         {{- toYaml . | nindent 8 }}
         {{- end }}
       labels:
-        {{- include "m11s-common.podLabels" . | nindent 8 }}
+        {{- include "m11s-common.podLabels" (dict "root" .) | nindent 8 }}
     spec:
       {{- if ne .Values.hostUsers nil }}
       hostUsers: {{ .Values.hostUsers }}
@@ -31,7 +31,7 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: whoami
-          image: {{ include "m11s-common.image" (dict "root" . "image" .Values.image) }}
+          image: {{ include "m11s-common.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}

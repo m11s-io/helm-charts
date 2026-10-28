@@ -29,10 +29,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "m11s-common.podLabelsWithComponent" . | nindent 8 }}
-        {{- if .Values.comfyMcp.enabled }}
-        app.kubernetes.io/component: comfy-mcp
-        {{- end }}
+        {{- include "m11s-common.podLabels" (dict "root" . "component" (ternary "comfy-mcp" "" .Values.comfyMcp.enabled)) | nindent 8 }}
     spec:
       {{- if ne .Values.hostUsers nil }}
       hostUsers: {{ .Values.hostUsers }}
@@ -53,7 +50,7 @@ spec:
       {{- end }}
       containers:
         - name: comfyui
-          image: {{ include "m11s-common.image" (dict "root" . "image" .Values.image) }}
+          image: {{ include "m11s-common.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}

@@ -36,3 +36,19 @@ tests:
     asserts:
       - failedTemplate:
           errorMessage: httpRoute.parentRefs must contain at least one Gateway reference when httpRoute.enabled is true
+
+  - it: merges custom labels without overriding chart identity
+    set:
+      httpRoute.enabled: true
+      httpRoute.parentRefs:
+        - name: edge
+      httpRoute.labels:
+        app.kubernetes.io/name: conflicting-name
+        team: analytics
+    asserts:
+      - equal:
+          path: metadata.labels["app.kubernetes.io/name"]
+          value: whoami
+      - equal:
+          path: metadata.labels.team
+          value: analytics

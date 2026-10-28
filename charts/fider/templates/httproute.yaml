@@ -4,5 +4,5 @@
 {{- $loginHost := printf "login.%s" .Values.fider.hostDomain -}}
 {{- if not (has $loginHost $hostnames) -}}{{- $hostnames = append $hostnames $loginHost -}}{{- end -}}
 {{- end -}}
-{{- include "m11s-common.httpRoute" (dict "root" . "name" (include "m11s-common.fullname" .) "hostnames" $hostnames "port" .Values.service.port) -}}
+{{- include "m11s-common.httpRoute" (dict "root" . "hostnames" $hostnames) -}}
 {{- end -}}

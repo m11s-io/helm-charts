@@ -1,0 +1,40 @@
+suite: comfyui MCP networking
+templates:
+  - comfy-mcp-service.yaml
+  - comfy-mcp-httproute.yaml
+set:
+  comfyMcp.enabled: true
+  comfyMcp.httpRoute.enabled: true
+  comfyMcp.httpRoute.parentRefs:
+    - name: edge
+  comfyMcp.httpRoute.labels:
+    app.kubernetes.io/component: conflicting-component
+    team: analytics
+tests:
+  - it: keeps the independent MCP service name, port, and component selector
+    template: comfy-mcp-service.yaml
+    asserts:
+      - equal:
+          path: metadata.name
+          value: RELEASE-NAME-comfyui-mcp
+      - equal:
+          path: spec.ports[0]
+          value: {name: mcp, port: 8080, targetPort: mcp, protocol: TCP}
+      - equal:
+          path: spec.selector["app.kubernetes.io/component"]
+          value: comfy-mcp
+  - it: keeps the MCP route component and exact path while merging custom labels
+    template: comfy-mcp-httproute.yaml
+    asserts:
+      - equal:
+          path: metadata.labels["app.kubernetes.io/component"]
+          value: comfy-mcp
+      - equal:
+          path: metadata.labels.team
+          value: analytics
+      - equal:
+          path: spec.rules[0].matches[0].path
+          value: {type: Exact, value: /mcp}
+      - equal:
+          path: spec.rules[0].backendRefs[0]
+          value: {name: RELEASE-NAME-comfyui-mcp, port: 8080}
