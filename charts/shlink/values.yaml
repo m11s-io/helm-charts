@@ -201,7 +201,7 @@ webClient:
   image:
     repository: shlinkio/shlink-web-client
     # Independent web client version; defaults to stable.
-    tag: "stable"
+    tag: "stable@sha256:dc8bf3565a25bd0602ff11ee352920830ce457ab58a2b2c62f2ebb23e8c8b9ee"
     pullPolicy: IfNotPresent
   # webClient.serverUrl is the public URL of the Shlink API as seen from the user's browser (required when enabled)
   serverUrl: ""

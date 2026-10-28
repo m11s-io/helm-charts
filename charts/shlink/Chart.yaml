@@ -2,7 +2,7 @@ apiVersion: v2
 name: shlink
 description: Deploy Shlink, a self-hosted URL shortener
 type: application
-version: 0.4.1
+version: 0.4.2
 # renovate: datasource=docker depName=shlinkio/shlink
 appVersion: "5.1.8"
 home: https://shlink.io
