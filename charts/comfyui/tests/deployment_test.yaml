@@ -3,6 +3,58 @@ templates:
   - deployment.yaml
 
 tests:
+  - it: defaults to the explicitly named CUDA GGUF image
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: m11s/comfyui:0.43.0-cuda-gguf
+
+  - it: renders the AMD example without NVIDIA requirements
+    values:
+      - ../ci/rocm-values.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: m11s/comfyui:0.43.0-rocm
+      - notExists:
+          path: spec.template.spec.runtimeClassName
+      - equal:
+          path: spec.template.spec.containers[0].resources.requests
+          value:
+            cpu: "2"
+            memory: 6Gi
+            amd.com/gpu: "1"
+      - equal:
+          path: spec.template.spec.containers[0].resources.limits
+          value:
+            memory: 10Gi
+            amd.com/gpu: "1"
+      - equal:
+          path: spec.template.spec.nodeSelector
+          value:
+            accelerator.m11s.io/type: amd
+      - contains:
+          path: spec.template.spec.tolerations
+          content:
+            key: tier.m11s.io
+            operator: Equal
+            value: gpu
+            effect: NoSchedule
+      - equal:
+          path: spec.template.spec.securityContext.runAsUser
+          value: 10001
+
+  - it: passes supplemental device groups through without changing the user
+    set:
+      podSecurityContext.supplementalGroups: [109]
+    asserts:
+      - equal:
+          path: spec.template.spec.securityContext.supplementalGroups
+          value: [109]
+      - equal:
+          path: spec.template.spec.securityContext.runAsNonRoot
+          value: true
+
   - it: preserves an explicit image tag and digest
     set:
       image.tag: "9.9.9-gguf@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"

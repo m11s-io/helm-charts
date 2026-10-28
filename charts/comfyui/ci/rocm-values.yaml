@@ -1,0 +1,22 @@
+# Candidate example: use a published, hardware-accepted digest before deployment.
+image:
+  tag: 0.43.0-rocm
+
+runtimeClassName: ""
+nodeSelector:
+  accelerator.m11s.io/type: amd
+
+tolerations:
+  - key: tier.m11s.io
+    operator: Equal
+    value: gpu
+    effect: NoSchedule
+
+resources:
+  requests:
+    cpu: "2"
+    memory: 6Gi
+    amd.com/gpu: "1"
+  limits:
+    memory: 10Gi
+    amd.com/gpu: "1"

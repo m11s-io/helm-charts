@@ -163,14 +163,45 @@ persistence:
   size: 200Gi
 ```
 
+## AMD ROCm
+
+The chart uses the same templates for both GPU backends. Start with
+[`ci/rocm-values.yaml`](ci/rocm-values.yaml):
+
+```bash
+helm upgrade --install comfyui-amd m11s/comfyui \
+  --namespace comfyui-amd --create-namespace \
+  -f rocm-values.yaml
+```
+
+Download the example file locally before running this command. Its ROCm image
+is a candidate until published and validated on the target GPU; set `image.digest`
+to the accepted published digest for deployment. ROCm GGUF is a separate variant
+and is not implied by the generic ROCm example.
+
+Use `amd.com/gpu` requests/limits, an AMD node selector and the GPU node's
+actual toleration. Leave `runtimeClassName` empty unless the AMD runtime setup
+requires one. The chart passes `podSecurityContext.supplementalGroups` through
+if observed device ownership requires extra groups; no fixed group IDs are
+assumed. Non-root UID/GID 10001 and the existing security controls remain enabled.
+
+Use a separate release/namespace and independent models, output and user PVCs
+when running alongside NVIDIA. Never reuse another node's local model PVC.
+The download Job inherits image, placement and pod security settings, uses its
+own CPU/memory requests and does not reserve a GPU. When model downloading and
+pruning are enabled, they operate on that release's model PVC. Check node
+capacity for the Job, inference container and optional MCP sidecar together.
+
+
 ## Source
 
 - Chart: [github.com/m11s-io/helm-charts](https://github.com/m11s-io/helm-charts)
 - Image: [github.com/m11s-io/docker-images](https://github.com/m11s-io/docker-images/tree/main/comfyui)
 - Upstream: [github.com/comfyanonymous/ComfyUI](https://github.com/comfyanonymous/ComfyUI)
 
-Image tags follow the upstream ComfyUI version, with `-gguf` for the default
-variant. The optional MCP sidecar follows the upstream Comfy MCP version.
+Image tags follow the upstream ComfyUI version: `-cuda` and `-cuda-gguf`
+for NVIDIA, `-rocm` and (when available) `-rocm-gguf` for AMD. The default
+is `-cuda-gguf`. New image builds do not assign legacy unsuffixed or `-gguf` aliases. The optional MCP sidecar follows the upstream Comfy MCP version.
 The main image follows `appVersion`; the MCP sidecar tracks rebuilds through digest updates.
 
 ### Hugging Face proxy downloads

@@ -3,6 +3,42 @@ templates:
   - model-download-job.yaml
 
 tests:
+  - it: downloads on the AMD node with its own CPU resources and model volume
+    values:
+      - ../ci/rocm-values.yaml
+    set:
+      fullnameOverride: comfyui-amd
+      persistence.enabled: true
+      modelDownload.enabled: true
+      modelDownload.prune: true
+      modelDownload.models:
+        - destination: diffusion_models/example.safetensors
+          repo: example-org/example-model
+          revision: 0123456789abcdef0123456789abcdef01234567
+          file: example.safetensors
+          sha256: 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: m11s/comfyui:0.43.0-rocm
+      - equal:
+          path: spec.template.spec.nodeSelector
+          value:
+            accelerator.m11s.io/type: amd
+      - notExists:
+          path: spec.template.spec.runtimeClassName
+      - equal:
+          path: spec.template.spec.containers[0].resources.requests
+          value:
+            cpu: 250m
+            memory: 512Mi
+      - equal:
+          path: spec.template.spec.volumes[0].persistentVolumeClaim.claimName
+          value: comfyui-amd-models
+      - equal:
+          path: spec.template.spec.securityContext.runAsUser
+          value: 10001
+
   - it: does not render a model download Job by default
     asserts:
       - hasDocuments:
