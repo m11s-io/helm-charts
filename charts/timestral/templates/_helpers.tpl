@@ -1,1 +1,0 @@
-{{- define "timestral.claimName" -}}{{- .Values.persistence.existingClaim | default (.Values.persistence.nameOverride | default (printf "%s-model-cache" (include "m11s-common.fullname" .))) -}}{{- end -}}
