@@ -1,0 +1,14 @@
+{{- if .Values.customNodes.enabled }}
+{{- include "comfyui.validateCustomNodes" . }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "m11s-common.fullname" . }}-custom-nodes
+  labels:
+    {{- include "m11s-common.labels" . | nindent 4 }}
+data:
+  config.json: |
+    {{- dict "repositories" .Values.customNodes.repositories "url" (printf "http://127.0.0.1:%v" .Values.service.port) | toJson | nindent 4 }}
+  custom_nodes.py: |
+    {{- .Files.Get "files/custom_nodes.py" | nindent 4 }}
+{{- end }}

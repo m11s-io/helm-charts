@@ -20,7 +20,7 @@ tests:
     asserts:
       - equal:
           path: spec.template.spec.containers[0].image
-          value: m11s/comfyui:0.43.0-rocm
+          value: m11s/comfyui@sha256:4d71e5cd275e27f55411b9832d3f8b13d3b4c1eefc0de7124d59381f449c1036
       - equal:
           path: spec.template.spec.nodeSelector
           value:

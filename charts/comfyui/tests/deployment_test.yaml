@@ -3,19 +3,13 @@ templates:
   - deployment.yaml
 
 tests:
-  - it: defaults to the explicitly named CUDA GGUF image
-    asserts:
-      - equal:
-          path: spec.template.spec.containers[0].image
-          value: m11s/comfyui:0.43.0-cuda-gguf
-
   - it: renders the AMD example without NVIDIA requirements
     values:
       - ../ci/rocm-values.yaml
     asserts:
       - equal:
           path: spec.template.spec.containers[0].image
-          value: m11s/comfyui:0.43.0-rocm
+          value: m11s/comfyui@sha256:4d71e5cd275e27f55411b9832d3f8b13d3b4c1eefc0de7124d59381f449c1036
       - notExists:
           path: spec.template.spec.runtimeClassName
       - equal:
@@ -57,6 +51,7 @@ tests:
 
   - it: preserves an explicit image tag and digest
     set:
+      image.digest: ""
       image.tag: "9.9.9-gguf@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
     asserts:
       - equal:
@@ -67,6 +62,7 @@ tests:
     chart:
       appVersion: 9.9.9-gguf
     set:
+      image.digest: ""
       image.tag: ""
     asserts:
       - equal:
@@ -82,7 +78,7 @@ tests:
           value: 1
       - matchRegex:
           path: spec.template.spec.containers[0].image
-          pattern: '^m11s/comfyui:[^@]+$'
+          pattern: '^m11s/comfyui:[^@]+@sha256:[a-f0-9]{64}$'
       - equal:
           path: spec.template.spec.containers[0].imagePullPolicy
           value: IfNotPresent

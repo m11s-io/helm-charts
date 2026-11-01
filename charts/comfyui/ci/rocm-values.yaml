@@ -1,7 +1,7 @@
-# Rendering fixture only: the validation-only image workflow does not publish this tag.
-# Deployment requires an explicit published, hardware-accepted image.digest override.
+# Published ROCm image. Adapt placement to the target AMD GPU node.
 image:
   tag: 0.43.0-rocm
+  digest: sha256:4d71e5cd275e27f55411b9832d3f8b13d3b4c1eefc0de7124d59381f449c1036
 
 runtimeClassName: ""
 nodeSelector:

@@ -82,3 +82,8 @@ jobs:
               echo "No tests found for $chart, skipping"
             fi
           done <<< "${{ steps.list-changed.outputs.changedCharts }}"
+
+      - name: Test ComfyUI custom-node installer
+        # chart-testing prepends its own pip-less venv to PATH. Exercise the
+        # setup-python interpreter, matching the pip-equipped workload image.
+        run: '"${pythonLocation}/bin/python" -m unittest discover -s charts/comfyui/tests -p "test_*.py"'
