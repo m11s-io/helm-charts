@@ -2,7 +2,7 @@ image:
   # image.repository is the container image repository
   repository: m11s/comfyui
   # image.tag overrides the image tag; defaults to the chart appVersion
-  tag: "0.43.0-cuda@sha256:35a3d64564919e45872c61cec4fc1d3a4cf8740cc32834056fe93ccaa6d66e5e"
+  tag: "0.43.0-cuda@sha256:264de7d9fa56d80b67a5fc8a710cee58d5c5a2a9ea05e66b5aad1e06c9134e67"
   # image.digest overrides tag when set
   digest: ""  # @schema pattern: ^(|sha256:[a-f0-9]{64})$
   # image.pullPolicy is the image pull policy

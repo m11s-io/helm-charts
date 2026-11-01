@@ -2,7 +2,7 @@ apiVersion: v2
 name: comfyui
 description: Deploy ComfyUI, a node-based visual AI engine for image and video generation on GPU nodes
 type: application
-version: 0.14.0
+version: 0.14.1
 # renovate: datasource=docker depName=m11s/comfyui
 appVersion: "0.43.0-cuda"
 home: https://github.com/comfyanonymous/ComfyUI
@@ -21,7 +21,7 @@ annotations:
     url: https://keys.openpgp.org/search?q=hello%40m11s.io
   artifacthub.io/images: |
     - name: comfyui
-      image: m11s/comfyui:0.43.0-cuda@sha256:35a3d64564919e45872c61cec4fc1d3a4cf8740cc32834056fe93ccaa6d66e5e
+      image: m11s/comfyui:0.43.0-cuda@sha256:264de7d9fa56d80b67a5fc8a710cee58d5c5a2a9ea05e66b5aad1e06c9134e67
     - name: comfy-mcp
       image: m11s/comfy-mcp:0.10.0@sha256:822d532b617345d3a407d40018c93ec08cbc4db743b108f118aa48851c496175
   artifacthub.io/links: |
