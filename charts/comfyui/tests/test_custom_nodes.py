@@ -79,6 +79,26 @@ class CustomNodesTests(unittest.TestCase):
             self.module.prepare_environment(root)
             self.assertFalse((root / 'venv' / 'stale').exists())
 
+    def test_nested_environment_processes_parent_site_path_files(self):
+        # CI tooling can expose packages through .pth files in its venv. Merely
+        # listing the parent site-packages path does not load those files.
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            base = root / 'base'
+            subprocess.run([sys.executable, '-m', 'venv', '--system-site-packages', '--without-pip', str(base)], check=True)
+            python = str(base / 'bin/python')
+            site = Path(subprocess.check_output([python, '-c', "import sysconfig; print(sysconfig.get_path('purelib'))"], text=True).strip())
+            extra = root / 'extra'
+            metadata = extra / 'fixture_base-1.0.dist-info'
+            metadata.mkdir(parents=True)
+            (metadata / 'METADATA').write_text('Metadata-Version: 2.1\nName: fixture-base\nVersion: 1.0\n')
+            (site / 'fixture.pth').write_text(str(extra) + '\n')
+            code = "import runpy; m=runpy.run_path(__import__('sys').argv[1]); m['prepare_environment'](__import__('pathlib').Path(__import__('sys').argv[2]))"
+            result = subprocess.run([python, '-c', code, str(SCRIPT), str(root / 'extensions')], capture_output=True, text=True)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            packages = self.module.distributions(str(root / 'extensions/venv/bin/python'))
+            self.assertEqual(packages['fixture-base']['version'], '1.0')
+
     def test_readiness_requires_classes_even_when_http_is_healthy(self):
         class Handler(BaseHTTPRequestHandler):
             nodes = {}
