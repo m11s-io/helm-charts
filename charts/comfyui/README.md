@@ -26,7 +26,7 @@ helm repo add m11s https://m11s-io.github.io/helm-charts
 helm repo update
 helm install comfyui m11s/comfyui -n comfyui --create-namespace \
   --set runtimeClassName=nvidia \
-  --set nodeSelector."workload\.example\.io/comfyui"=true \
+  --set-string nodeSelector."workload\.example\.io/comfyui"=true \
   --set resources.limits."nvidia\.com/gpu"=1 \
   --set resources.requests."nvidia\.com/gpu"=1
 ```
@@ -40,6 +40,12 @@ GPU scheduling (`runtimeClassName`, `nodeSelector`, `tolerations`, `resources`) 
 | `hostUsers` | Set `spec.hostUsers` for user namespaces (requires a userns-capable cluster/runtime; stable in Kubernetes 1.37) | `null` |
 | `image.repository` | Container image repository | `m11s/comfyui` |
 | `image.tag` | Tag or tag-and-digest override; empty uses chart appVersion | Pinned generic CUDA image |
+| `image.digest` | Image digest override; takes precedence over the tag | `""` |
+| `customNodes.enabled` | Install pinned plugins before startup | `false` |
+| `customNodes.repositories` | Plugin names, HTTPS repositories, commit revisions, optional requirements and expected node classes | `[]` |
+| `customNodes.resources` | Installer CPU/memory requests and limits | See `values.yaml` |
+| `customNodes.environment` | Installer package-index/proxy settings | `{}` |
+| `customNodes.envFrom` | Installer environment from existing Secrets or ConfigMaps | `[]` |
 | `replicaCount` | Number of pod replicas | `1` |
 | `strategy` | Deployment update strategy | `{type: Recreate}` |
 | `service.type` | Kubernetes Service type | `ClusterIP` |
@@ -101,8 +107,8 @@ relative to `persistence.mountPath`. Pin every `revision` to the source
 repository's 40-character commit SHA and provide its SHA-256 hash.
 
 `modelDownload.prune` is disabled by default. When enabled, the Job
-removes model files not listed in `modelDownload.models` after all configured
-downloads complete successfully.
+removes undeclared model files within the categories listed in
+`modelDownload.models`, after all configured downloads complete successfully.
 
 For private or gated repositories, or to use Hugging Face's authenticated rate
 limit, create a [fine-grained read token](https://huggingface.co/docs/hub/security-tokens)
@@ -129,6 +135,26 @@ modelDownload:
       file: split_files/diffusion_models/example.safetensors
       sha256: 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
 ```
+
+### Hugging Face proxy downloads
+
+`modelDownload.environment` configures the download Job independently of the
+ComfyUI container's `environment` setting. Values must be strings:
+
+```yaml
+modelDownload:
+  environment:
+    HF_ENDPOINT: https://nexus.example.com/repository/huggingface-proxy
+    HF_HUB_DISABLE_XET: "1"
+    HF_HUB_DOWNLOAD_TIMEOUT: "300"
+    HF_HUB_ETAG_TIMEOUT: "1800"
+```
+
+Keep credentials in `modelDownload.huggingFaceToken`, not `environment`. When
+using an authenticated Nexus endpoint, that Secret must contain a Nexus-issued
+token, not an upstream Hugging Face token. Model revisions and SHA-256 checks
+are unchanged. Changing Job environment, image or token Secret reference creates
+a new Job name. Rotating the contents of the same Secret does not create a Job.
 
 ## Probes
 
@@ -163,36 +189,6 @@ persistence:
   storageClassName: local-path
   size: 200Gi
 ```
-
-## Source
-
-- Chart: [github.com/m11s-io/helm-charts](https://github.com/m11s-io/helm-charts)
-- Image: [github.com/m11s-io/docker-images](https://github.com/m11s-io/docker-images/tree/main/comfyui)
-- Upstream: [github.com/comfyanonymous/ComfyUI](https://github.com/comfyanonymous/ComfyUI)
-
-Image tags follow the upstream ComfyUI version, with `-cuda` for the default
-backend. The optional MCP sidecar follows the upstream Comfy MCP version.
-The main image follows `appVersion`; the MCP sidecar tracks rebuilds through digest updates.
-
-### Hugging Face proxy downloads
-
-`modelDownload.environment` configures the download Job independently of the
-ComfyUI container's `environment` setting. Values must be strings:
-
-```yaml
-modelDownload:
-  environment:
-    HF_ENDPOINT: https://nexus.example.com/repository/huggingface-proxy
-    HF_HUB_DISABLE_XET: "1"
-    HF_HUB_DOWNLOAD_TIMEOUT: "300"
-    HF_HUB_ETAG_TIMEOUT: "1800"
-```
-
-Keep credentials in `modelDownload.huggingFaceToken`, not `environment`. When
-using an authenticated Nexus endpoint, that Secret must contain a Nexus-issued
-token, not an upstream Hugging Face token. Model revisions and SHA-256 checks
-are unchanged. Changing Job environment, image or token Secret reference creates
-a new Job name. Rotating the contents of the same Secret does not create a Job.
 
 ## Custom nodes
 
@@ -240,7 +236,7 @@ Use `customNodes.resources` for installer CPU/memory limits. No GPU is requested
 by the installer. Removing a repository and replacing the Pod removes its files
 and dependencies automatically. Helm rollback reconstructs the previous values.
 
-### AMD ROCm
+## AMD ROCm
 
 Use [`ci/rocm-values.yaml`](ci/rocm-values.yaml) as a starting point. It selects
 an explicitly pinned, published ROCm image, requests `amd.com/gpu`, and leaves
@@ -267,3 +263,13 @@ requests CPU/memory without reserving a GPU.
 
 Image publication validates packaging and CPU startup, not target AMD GPU
 inference. Verify device access and a representative workflow on that hardware.
+
+## Source
+
+- Chart: [github.com/m11s-io/helm-charts](https://github.com/m11s-io/helm-charts)
+- Image: [github.com/m11s-io/docker-images](https://github.com/m11s-io/docker-images/tree/main/comfyui)
+- Upstream: [github.com/comfyanonymous/ComfyUI](https://github.com/comfyanonymous/ComfyUI)
+
+Image tags follow the upstream ComfyUI version, with `-cuda` for the default
+backend. The optional MCP sidecar follows the upstream Comfy MCP version.
+The main image follows `appVersion`; the MCP sidecar tracks rebuilds through digest updates.
