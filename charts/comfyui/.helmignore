@@ -2,3 +2,6 @@
 .git
 .gitignore
 /*.tgz
+
+__pycache__
+*.pyc

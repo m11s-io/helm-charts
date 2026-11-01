@@ -5,6 +5,7 @@ templates:
 tests:
   - it: preserves an explicit image tag and digest
     set:
+      image.digest: ""
       image.tag: "9.9.9-gguf@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
     asserts:
       - equal:
@@ -15,6 +16,7 @@ tests:
     chart:
       appVersion: 9.9.9-gguf
     set:
+      image.digest: ""
       image.tag: ""
     asserts:
       - equal:
@@ -30,7 +32,7 @@ tests:
           value: 1
       - matchRegex:
           path: spec.template.spec.containers[0].image
-          pattern: '^m11s/comfyui:[^@]+$'
+          pattern: '^m11s/comfyui:[^@]+@sha256:[a-f0-9]{64}$'
       - equal:
           path: spec.template.spec.containers[0].imagePullPolicy
           value: IfNotPresent

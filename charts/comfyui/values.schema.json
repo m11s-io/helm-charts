@@ -87,6 +87,84 @@
                 }
             }
         },
+        "customNodes": {
+            "type": "object",
+            "properties": {
+                "enabled": {
+                    "type": "boolean"
+                },
+                "envFrom": {
+                    "type": "array",
+                    "items": {
+                        "type": "object"
+                    }
+                },
+                "environment": {
+                    "type": "object"
+                },
+                "repositories": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "name",
+                            "repository",
+                            "revision"
+                        ],
+                        "properties": {
+                            "expectedNodes": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            "name": {
+                                "type": "string",
+                                "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]*$"
+                            },
+                            "repository": {
+                                "type": "string",
+                                "pattern": "^https://[^/@]+/[^ ?#]+$"
+                            },
+                            "requirements": {
+                                "type": "string"
+                            },
+                            "revision": {
+                                "type": "string",
+                                "pattern": "^[a-fA-F0-9]{40}$"
+                            }
+                        }
+                    }
+                },
+                "resources": {
+                    "type": "object",
+                    "properties": {
+                        "limits": {
+                            "type": "object",
+                            "properties": {
+                                "cpu": {
+                                    "type": "string"
+                                },
+                                "memory": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "requests": {
+                            "type": "object",
+                            "properties": {
+                                "cpu": {
+                                    "type": "string"
+                                },
+                                "memory": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "environment": {
             "type": "object"
         },
