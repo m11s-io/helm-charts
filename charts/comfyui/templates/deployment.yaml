@@ -1,3 +1,8 @@
+{{- include "comfyui.validateCustomNodes" . }}
+{{- $expectedNodes := list }}
+{{- range .Values.customNodes.repositories }}
+{{- $expectedNodes = concat $expectedNodes (.expectedNodes | default list) }}
+{{- end }}
 {{- $persistencePaths := dict }}
 {{- range $name, $config := dict "persistence" .Values.persistence "outputPersistence" .Values.outputPersistence "userPersistence" .Values.userPersistence "inputPersistence" .Values.inputPersistence "tempPersistence" .Values.tempPersistence }}
 {{- if $config.enabled }}
@@ -24,9 +29,14 @@ spec:
       {{- include "m11s-common.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
+      {{- if or .Values.podAnnotations .Values.customNodes.enabled }}
       annotations:
+        {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- if .Values.customNodes.enabled }}
+        checksum/custom-nodes: {{ include (print $.Template.BasePath "/custom-nodes-configmap.yaml") . | sha256sum }}
+        {{- end }}
       {{- end }}
       labels:
         {{- include "m11s-common.podLabels" (dict "root" . "component" (ternary "comfy-mcp" "" .Values.comfyMcp.enabled)) | nindent 8 }}
@@ -48,10 +58,39 @@ spec:
       {{- with .Values.terminationGracePeriodSeconds }}
       terminationGracePeriodSeconds: {{ . }}
       {{- end }}
+      {{- if .Values.customNodes.enabled }}
+      initContainers:
+        - name: custom-nodes
+          image: {{ include "m11s-common.image" . }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/opt/venv/bin/python", "/etc/comfyui-extensions/custom_nodes.py", "install"]
+          securityContext:
+            {{- toYaml (merge (dict "runAsUser" .Values.podSecurityContext.runAsUser) (deepCopy .Values.securityContext)) | nindent 12 }}
+          env:
+            - name: NVIDIA_VISIBLE_DEVICES
+              value: void
+            {{- range $key, $value := .Values.customNodes.environment }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
+          {{- with .Values.customNodes.envFrom }}
+          envFrom:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.customNodes.resources | nindent 12 }}
+          volumeMounts:
+            - {name: custom-nodes, mountPath: /opt/comfyui-extensions}
+            - {name: custom-nodes-config, mountPath: /etc/comfyui-extensions, readOnly: true}
+      {{- end }}
       containers:
         - name: comfyui
           image: {{ include "m11s-common.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if .Values.customNodes.enabled }}
+          command: ["/opt/venv/bin/python", "/etc/comfyui-extensions/custom_nodes.py", "run"]
+          args: ["--", "--listen", "0.0.0.0", "--port", {{ .Values.service.port | quote }}]
+          {{- end }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           ports:
@@ -75,7 +114,13 @@ spec:
           {{- end }}
           {{- with .Values.readinessProbe }}
           readinessProbe:
+            {{- if and $.Values.customNodes.enabled (gt (len $expectedNodes) 0) }}
+            {{- toYaml (omit . "httpGet" "tcpSocket" "exec" "grpc") | nindent 12 }}
+            exec:
+              command: ["/opt/venv/bin/python", "/etc/comfyui-extensions/custom_nodes.py", "ready"]
+            {{- else }}
             {{- toYaml . | nindent 12 }}
+            {{- end }}
           {{- end }}
           {{- with .Values.lifecycle }}
           lifecycle:
@@ -83,8 +128,12 @@ spec:
           {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          {{- if or .Values.persistence.enabled .Values.outputPersistence.enabled .Values.userPersistence.enabled .Values.inputPersistence.enabled .Values.tempPersistence.enabled }}
+          {{- if or .Values.customNodes.enabled (or .Values.persistence.enabled .Values.outputPersistence.enabled .Values.userPersistence.enabled .Values.inputPersistence.enabled .Values.tempPersistence.enabled) }}
           volumeMounts:
+            {{- if .Values.customNodes.enabled }}
+            - {name: custom-nodes, mountPath: /opt/comfyui-extensions}
+            - {name: custom-nodes-config, mountPath: /etc/comfyui-extensions, readOnly: true}
+            {{- end }}
             {{- if .Values.persistence.enabled }}
             - name: models
               mountPath: {{ .Values.persistence.mountPath }}
@@ -137,8 +186,15 @@ spec:
           resources:
             {{- toYaml .Values.comfyMcp.resources | nindent 12 }}
         {{- end }}
-      {{- if or .Values.persistence.enabled .Values.outputPersistence.enabled .Values.userPersistence.enabled .Values.inputPersistence.enabled .Values.tempPersistence.enabled }}
+      {{- if or .Values.customNodes.enabled (or .Values.persistence.enabled .Values.outputPersistence.enabled .Values.userPersistence.enabled .Values.inputPersistence.enabled .Values.tempPersistence.enabled) }}
       volumes:
+        {{- if .Values.customNodes.enabled }}
+        - name: custom-nodes
+          emptyDir: {}
+        - name: custom-nodes-config
+          configMap:
+            name: {{ include "m11s-common.fullname" . }}-custom-nodes
+        {{- end }}
         {{- if .Values.persistence.enabled }}
         - name: models
           persistentVolumeClaim:

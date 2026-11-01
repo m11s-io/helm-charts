@@ -3,13 +3,14 @@
 [![Docker Pulls](https://img.shields.io/docker/pulls/m11s/comfyui.svg)](https://hub.docker.com/r/m11s/comfyui/)
 [![Build](https://github.com/m11s-io/docker-images/actions/workflows/build.yaml/badge.svg)](https://github.com/m11s-io/docker-images/actions/workflows/build.yaml)
 
-[ComfyUI](https://github.com/comfyanonymous/ComfyUI) is a modular, node-based visual AI engine — image, video, audio, and 3D generation, not just Stable Diffusion. Upstream publishes no official container image, so this chart deploys [m11s/comfyui](https://github.com/m11s-io/docker-images/tree/main/comfyui), built from ComfyUI source on a CUDA runtime base.
+[ComfyUI](https://github.com/comfyanonymous/ComfyUI) is a modular, node-based visual AI engine — image, video, audio, and 3D generation, not just Stable Diffusion. Upstream publishes no official container image, so this chart deploys [m11s/comfyui](https://github.com/m11s-io/docker-images/tree/main/comfyui), built from ComfyUI source with CUDA or ROCm dependencies.
 
 This chart targets a single GPU-bound replica per release and uses the `Recreate`
 update strategy by default, which is suited to nodes with one GPU.
 
-The default image includes the ComfyUI-GGUF extension and follows chart `appVersion`. Use a custom `image.tag`
-if a required custom node needs a different runtime.
+The default image is generic CUDA ComfyUI, without bundled community plugins.
+Select extensions through `customNodes`; GGUF users upgrading from earlier
+chart versions must explicitly configure ComfyUI-GGUF as shown below.
 
 ## Optional Comfy MCP HTTP service
 
@@ -38,7 +39,7 @@ GPU scheduling (`runtimeClassName`, `nodeSelector`, `tolerations`, `resources`) 
 |---|---|---|
 | `hostUsers` | Set `spec.hostUsers` for user namespaces (requires a userns-capable cluster/runtime; stable in Kubernetes 1.37) | `null` |
 | `image.repository` | Container image repository | `m11s/comfyui` |
-| `image.tag` | Optional tag or tag-and-digest override; empty uses chart appVersion | `""` |
+| `image.tag` | Tag or tag-and-digest override; empty uses chart appVersion | Pinned generic CUDA image |
 | `replicaCount` | Number of pod replicas | `1` |
 | `strategy` | Deployment update strategy | `{type: Recreate}` |
 | `service.type` | Kubernetes Service type | `ClusterIP` |
@@ -169,8 +170,8 @@ persistence:
 - Image: [github.com/m11s-io/docker-images](https://github.com/m11s-io/docker-images/tree/main/comfyui)
 - Upstream: [github.com/comfyanonymous/ComfyUI](https://github.com/comfyanonymous/ComfyUI)
 
-Image tags follow the upstream ComfyUI version, with `-gguf` for the default
-variant. The optional MCP sidecar follows the upstream Comfy MCP version.
+Image tags follow the upstream ComfyUI version, with `-cuda` for the default
+backend. The optional MCP sidecar follows the upstream Comfy MCP version.
 The main image follows `appVersion`; the MCP sidecar tracks rebuilds through digest updates.
 
 ### Hugging Face proxy downloads
@@ -192,3 +193,70 @@ using an authenticated Nexus endpoint, that Secret must contain a Nexus-issued
 token, not an upstream Hugging Face token. Model revisions and SHA-256 checks
 are unchanged. Changing Job environment, image or token Secret reference creates
 a new Job name. Rotating the contents of the same Secret does not create a Job.
+
+## Custom nodes
+
+The chart can install pinned custom-node repositories before ComfyUI starts:
+
+```yaml
+customNodes:
+  enabled: true
+  repositories:
+    - name: ComfyUI-GGUF
+      repository: https://github.com/city96/ComfyUI-GGUF.git
+      revision: 6ea2651e7df66d7585f6ffee804b20e92fb38b8a
+      requirements: requirements.txt
+      expectedNodes: [UnetLoaderGGUF, CLIPLoaderGGUF]
+```
+
+Repository names must be unique safe directory names and revisions full Git
+commit hashes. Omit `requirements` for plugins requiring no additional packages.
+A same-image, non-root init container fetches repositories and installs declared
+requirements together into a shared virtual environment. Existing image package
+versions and locations are protected; incompatible requirements stop startup.
+Plugins needing additional OS libraries require an image containing them.
+
+Repositories and the environment use an `emptyDir`: they are rebuilt for every
+new Pod, so startup requires access to Git and package indexes. Container retries
+clear the previous partial installation. No plugin PVC or Manager is needed.
+The image must provide `/app/main.py`, `/app/custom_nodes`, and `/opt/venv/bin/python`.
+Bundled nodes remain available; installing a repository already present under the
+same directory name is rejected. Do not combine a GGUF image with declared GGUF.
+
+`customNodes.environment` configures installer-only proxy/package-index settings;
+`customNodes.envFrom` accepts existing Secret references for credentials. Do not
+put credentials in repository URLs or plaintext values. Plugin requirements and
+normal prestartup/import code are executable third-party code. The installer does
+not separately invoke `install.py` or initialize submodules. Source commits are
+pinned; transitive dependency resolution is not a complete lockfile.
+
+When `expectedNodes` is supplied, readiness requires all listed class names in
+`/object_info`. The default HTTP startup/liveness checks remain unchanged. The
+readiness action is replaced while its configured timing is retained; custom
+readiness actions must be removed before enabling `expectedNodes`.
+Changing repository configuration or installer code triggers a Pod rollout.
+
+Use `customNodes.resources` for installer CPU/memory limits. No GPU is requested
+by the installer. Removing a repository and replacing the Pod removes its files
+and dependencies automatically. Helm rollback reconstructs the previous values.
+
+### AMD ROCm
+
+The same custom-node configuration works with the ROCm image layout. After the
+ROCm image is published, select its tag explicitly (and its published digest for
+production); set `image.digest` empty if overriding a separately configured digest:
+
+```yaml
+image:
+  tag: 0.43.0-rocm
+  digest: ""
+resources:
+  requests:
+    amd.com/gpu: "1"
+  limits:
+    amd.com/gpu: "1"
+```
+
+Choose the AMD node labels and device-plugin/runtime settings for your cluster.
+Do not carry over NVIDIA-specific `runtimeClassName: nvidia` or GPU requests.
+Image publication validates packaging and CPU startup, not AMD GPU inference.

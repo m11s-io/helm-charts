@@ -82,3 +82,6 @@ jobs:
               echo "No tests found for $chart, skipping"
             fi
           done <<< "${{ steps.list-changed.outputs.changedCharts }}"
+
+      - name: Test ComfyUI custom-node installer
+        run: python -m unittest discover -s charts/comfyui/tests -p 'test_*.py'

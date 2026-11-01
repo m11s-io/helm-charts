@@ -1,0 +1,73 @@
+suite: custom node installation
+templates:
+  - deployment.yaml
+  - custom-nodes-configmap.yaml
+tests:
+  - it: leaves installation and runtime commands untouched by default
+    template: deployment.yaml
+    asserts:
+      - notExists:
+          path: spec.template.spec.initContainers
+      - notExists:
+          path: spec.template.spec.containers[0].command
+  - it: installs using the workload image and a shared ephemeral volume
+    template: deployment.yaml
+    set:
+      image.digest: ""
+      image.tag: generic@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+      customNodes.enabled: true
+      customNodes.repositories:
+        - name: ComfyUI-GGUF
+          repository: https://github.com/city96/ComfyUI-GGUF.git
+          revision: 6ea2651e7df66d7585f6ffee804b20e92fb38b8a
+          requirements: requirements.txt
+          expectedNodes: [UnetLoaderGGUF]
+    asserts:
+      - equal:
+          path: spec.template.spec.initContainers[0].image
+          value: m11s/comfyui:generic@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+      - equal:
+          path: spec.template.spec.initContainers[0].securityContext.runAsUser
+          value: 10001
+      - equal:
+          path: spec.template.spec.volumes[0]
+          value: {name: custom-nodes, emptyDir: {}}
+      - equal:
+          path: spec.template.spec.containers[0].command[2]
+          value: run
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.exec.command[2]
+          value: ready
+      - notExists:
+          path: spec.template.spec.containers[0].readinessProbe.httpGet
+      - exists:
+          path: spec.template.spec.containers[0].livenessProbe.httpGet
+      - exists:
+          path: spec.template.metadata.annotations["checksum/custom-nodes"]
+  - it: rejects an enabled empty repository list
+    template: deployment.yaml
+    set:
+      customNodes.enabled: true
+    asserts:
+      - failedTemplate:
+          errorMessage: customNodes.enabled requires at least one repository
+  - it: rejects unsafe directory names
+    template: deployment.yaml
+    set:
+      customNodes.enabled: true
+      customNodes.repositories:
+        - name: ../escape
+          repository: https://github.com/org/repo.git
+          revision: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    asserts:
+      - failedTemplate: {}
+  - it: rejects duplicate names
+    template: deployment.yaml
+    set:
+      customNodes.enabled: true
+      customNodes.repositories:
+        - {name: plugin, repository: 'https://github.com/org/repo.git', revision: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa}
+        - {name: plugin, repository: 'https://github.com/org/repo.git', revision: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa}
+    asserts:
+      - failedTemplate:
+          errorMessage: customNodes repository names must be unique

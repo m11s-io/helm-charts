@@ -2,11 +2,29 @@ image:
   # image.repository is the container image repository
   repository: m11s/comfyui
   # image.tag overrides the image tag; defaults to the chart appVersion
-  tag: ""
+  tag: "0.43.0-cuda@sha256:35a3d64564919e45872c61cec4fc1d3a4cf8740cc32834056fe93ccaa6d66e5e"
   # image.digest overrides tag when set
   digest: ""  # @schema pattern: ^(|sha256:[a-f0-9]{64})$
   # image.pullPolicy is the image pull policy
   pullPolicy: IfNotPresent
+
+# Install pinned plugins into an ephemeral environment before ComfyUI starts.
+# Requires the m11s image layout (/app and /opt/venv). Use a generic image when
+# declaring GGUF here; a plugin already bundled in the image is rejected.
+customNodes:
+  enabled: false
+  repositories: []  # @schema item: object; itemRequired: [name,repository,revision]; itemProperties: {name: {type: string, pattern: "^[A-Za-z0-9][A-Za-z0-9_-]*$"}, repository: {type: string, pattern: "^https://[^/@]+/[^ ?#]+$"}, revision: {type: string, pattern: "^[a-fA-F0-9]{40}$"}, requirements: {type: string}, expectedNodes: {type: array, items: {type: string}}}
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: "1"
+      memory: 1Gi
+  # Installer-only package-index/proxy settings; do not override Python paths.
+  environment: {}
+  # Existing Secrets for installer credentials. These are not mounted in ComfyUI.
+  envFrom: []  # @schema item: object
 
 imagePullSecrets: []
 # nameOverride overrides the chart name portion of the release name

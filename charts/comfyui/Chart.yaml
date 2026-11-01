@@ -2,9 +2,9 @@ apiVersion: v2
 name: comfyui
 description: Deploy ComfyUI, a node-based visual AI engine for image and video generation on GPU nodes
 type: application
-version: 0.13.2
+version: 0.14.0
 # renovate: datasource=docker depName=m11s/comfyui
-appVersion: "0.43.0-gguf"
+appVersion: "0.43.0-cuda"
 home: https://github.com/comfyanonymous/ComfyUI
 icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/comfyui.svg
 sources:
@@ -21,7 +21,7 @@ annotations:
     url: https://keys.openpgp.org/search?q=hello%40m11s.io
   artifacthub.io/images: |
     - name: comfyui
-      image: m11s/comfyui:0.43.0-gguf
+      image: m11s/comfyui:0.43.0-cuda@sha256:35a3d64564919e45872c61cec4fc1d3a4cf8740cc32834056fe93ccaa6d66e5e
     - name: comfy-mcp
       image: m11s/comfy-mcp:0.10.0@sha256:822d532b617345d3a407d40018c93ec08cbc4db743b108f118aa48851c496175
   artifacthub.io/links: |
@@ -30,6 +30,10 @@ annotations:
     - name: image source
       url: https://github.com/m11s-io/docker-images
   artifacthub.io/changes: |-
+    - kind: added
+      description: "Install pinned custom nodes through a same-image init container and isolated Python environment."
+    - kind: changed
+      description: "Use the generic CUDA image; GGUF is selected through customNodes instead of an image variant."
     - kind: changed
       description: "Pin the rebuilt ComfyUI 0.42.5-gguf image digest."
     - kind: fixed
