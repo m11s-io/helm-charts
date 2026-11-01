@@ -23,7 +23,7 @@ annotations:
     - name: comfyui
       image: m11s/comfyui:0.43.0-cuda-gguf
     - name: comfy-mcp
-      image: m11s/comfy-mcp:0.10.0@sha256:f2b904ba81cadc1476055b0f4dc731716b5e8dd476d169b3d2a06483e9acb8c9
+      image: m11s/comfy-mcp:0.10.0@sha256:822d532b617345d3a407d40018c93ec08cbc4db743b108f118aa48851c496175
   artifacthub.io/links: |
     - name: source
       url: https://github.com/comfyanonymous/ComfyUI

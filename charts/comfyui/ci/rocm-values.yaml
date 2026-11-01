@@ -1,4 +1,5 @@
-# Candidate example: use a published, hardware-accepted digest before deployment.
+# Rendering fixture only: the validation-only image workflow does not publish this tag.
+# Deployment requires an explicit published, hardware-accepted image.digest override.
 image:
   tag: 0.43.0-rocm
 

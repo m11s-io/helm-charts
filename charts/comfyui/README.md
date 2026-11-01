@@ -163,7 +163,12 @@ persistence:
   size: 200Gi
 ```
 
-## AMD ROCm
+## AMD ROCm candidate (not yet deployable)
+
+The image workflow currently sets `validation_only: true` for `comfyui-rocm`,
+so it does not publish `m11s/comfyui:0.43.0-rocm`. The example below is for
+rendering and scheduling validation; it is not a working public-image install.
+Publication and validation on the target AMD GPU are release prerequisites.
 
 The chart uses the same templates for both GPU backends. Start with
 [`ci/rocm-values.yaml`](ci/rocm-values.yaml):
@@ -171,12 +176,12 @@ The chart uses the same templates for both GPU backends. Start with
 ```bash
 helm upgrade --install comfyui-amd m11s/comfyui \
   --namespace comfyui-amd --create-namespace \
-  -f rocm-values.yaml
+  -f rocm-values.yaml \
+  --set-string image.digest="${ROCM_IMAGE_DIGEST:?Set a published, hardware-accepted sha256 digest}"
 ```
 
-Download the example file locally before running this command. Its ROCm image
-is a candidate until published and validated on the target GPU; set `image.digest`
-to the accepted published digest for deployment. ROCm GGUF is a separate variant
+Download the example file locally before running this command. Set `ROCM_IMAGE_DIGEST` only after the image is published and validated on
+the target GPU. The digest override is used by both inference and model downloads. ROCm GGUF is a separate variant
 and is not implied by the generic ROCm example.
 
 Use `amd.com/gpu` requests/limits, an AMD node selector and the GPU node's
@@ -191,7 +196,6 @@ The download Job inherits image, placement and pod security settings, uses its
 own CPU/memory requests and does not reserve a GPU. When model downloading and
 pruning are enabled, they operate on that release's model PVC. Check node
 capacity for the Job, inference container and optional MCP sidecar together.
-
 
 ## Source
 
