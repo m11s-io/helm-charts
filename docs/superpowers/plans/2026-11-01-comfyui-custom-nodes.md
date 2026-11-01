@@ -56,3 +56,5 @@ Files: docker-images/comfyui/Dockerfile.gguf (delete), verify_image.py, README.m
 - Ruling: user expanded scope to publish ROCm normally on main; removed validation-only gating and documented backend selection. Hardware acceptance remains distinct from publishing.
 - Ruling: plugin environment inherits base distributions explicitly via .pth, because nested venv system-site-packages alone is insufficient. Local fixture verifies exact metadata visibility and package origin preservation.
 - No pushes, publication, or cluster deployments performed. Preserve unrelated working-tree edits and original named Renovate stash.
+
+- Follow-up CI: the first real-container runtime check passed for both plugins. Installer unit CI exposed .pth processing and global-package inheritance differences; regression tests now cover an isolated parent venv, and the child explicitly inherits parent site directories without implicit global packages.

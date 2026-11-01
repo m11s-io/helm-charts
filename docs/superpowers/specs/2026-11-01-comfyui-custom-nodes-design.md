@@ -56,11 +56,11 @@ commit. Reject a repository directory already present in the image's default
 custom-node directory rather than loading two copies (notably bundled GGUF).
 Fetch failures stop installation with the repository name and operation logged.
 
-Create a venv with `--system-site-packages` using the workload Python. It
-must explicitly expose `/opt/venv` site-packages: a nested venv can
-otherwise inherit only the interpreter's base environment, not the parent venv.
-Derive the parent site-packages path from the workload interpreter and add it via
-a .pth file in the shared environment. Verify visibility using package metadata
+Create a venv without implicit system site-packages using the workload Python.
+Explicitly expose the parent interpreter’s visible site-package directories
+through a .pth file that invokes site.addsitedir, including the parent’s own .pth
+processing. This preserves isolated CUDA/CI environments and the ROCm parent’s
+intentional access to AMD base packages without adding hidden global packages. Verify visibility using package metadata
 before dependency installation. This behavior requires a real-image spike before
 the implementation is accepted.
 
