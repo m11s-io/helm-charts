@@ -85,7 +85,7 @@ class CustomNodesTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             base = root / 'base'
-            subprocess.run([sys.executable, '-m', 'venv', '--system-site-packages', '--without-pip', str(base)], check=True)
+            subprocess.run([sys.executable, '-m', 'venv', '--without-pip', str(base)], check=True)
             python = str(base / 'bin/python')
             site = Path(subprocess.check_output([python, '-c', "import sysconfig; print(sysconfig.get_path('purelib'))"], text=True).strip())
             extra = root / 'extra'

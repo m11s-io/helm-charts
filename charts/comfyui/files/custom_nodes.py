@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 import re
 import shutil
+import site
 import subprocess
 import sys
 import urllib.parse
@@ -75,17 +76,21 @@ def prepare_environment(root):
                 child.unlink()
     root.mkdir(parents=True, exist_ok=True)
     baseline = distributions(sys.executable)
-    venv.EnvBuilder(system_site_packages=True, with_pip=False, symlinks=True).create(root / 'venv')
+    venv.EnvBuilder(system_site_packages=False, with_pip=False, symlinks=True).create(root / 'venv')
     python = root / 'venv/bin/python'
     # Nested venvs inherit the base interpreter, not the image's /opt/venv.
-    import sysconfig
-    parent_paths = list(dict.fromkeys([sysconfig.get_path('purelib'), sysconfig.get_path('platlib')]))
+    parent_paths = site.getsitepackages()
+    if site.ENABLE_USER_SITE:
+        parent_paths.append(site.getusersitepackages())
+    parent_paths = list(dict.fromkeys(parent_paths))
     child_site = subprocess.check_output([str(python), '-c', "import sysconfig; print(sysconfig.get_path('purelib'))"], text=True).strip()
     Path(child_site, 'image-packages.pth').write_text(
         'import site; ' + '; '.join(f'site.addsitedir({path!r})' for path in parent_paths) + '\n')
     inherited = distributions(python)
     if inherited != baseline:
-        raise RuntimeError('shared environment does not expose the exact image distributions')
+        raise RuntimeError('shared environment differs from image distributions: ' +
+                           ', '.join(sorted(name for name in baseline.keys() | inherited.keys()
+                                            if baseline.get(name) != inherited.get(name))))
     (root / 'constraints.txt').write_text(''.join(f"{name}=={value['version']}\n" for name, value in sorted(baseline.items())))
     (root / 'baseline.json').write_text(json.dumps(baseline))
     return str(python)
