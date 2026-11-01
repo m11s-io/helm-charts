@@ -26,7 +26,7 @@ Interface: installer CLI takes JSON config and extension root; readiness CLI che
 - [x] Add failing fixture-based tests for validation, checkout pinning, environment inheritance, constraints, retry cleanup, and HTTP readiness.
 - [x] Implement installer with subprocess argument arrays and structured configuration.
 - [x] Run installer tests.
-- [ ] Real-image non-root GGUF registration: blocked by Docker Desktop read-only storage; CI test added.
+- [x] Real-image non-root GGUF and Krea conditioning registration passed in GitHub Actions across separate installer/runtime containers.
 
 ### Task 2: Chart integration
 Files: values.yaml, values.schema.json, templates/deployment.yaml, templates/custom-nodes-configmap.yaml, tests/custom-nodes_test.yaml, README.md, Chart.yaml, CI workflow.
@@ -51,7 +51,7 @@ Files: docker-images/comfyui/Dockerfile.gguf (delete), verify_image.py, README.m
 - Chart unit tests: 37 passed; installer tests: 4 passed; image repository tests: 41 passed.
 - Chart lint and rendering with PLT values passed. Shell integration-test syntax and workflow YAML parsing passed.
 - Fresh reviewer found old GitOps chart version and a weak conflict test; both corrected. Conflict test now proves a local wheel installs unconstrained and is rejected with constraints.
-- Runtime image pull failed during CUDA layer extraction: Docker Desktop reported read-only filesystem. Real-image/GPU validation remains pending; the checked-in CI runtime test covers separate installer/runtime containers and GGUF plus conditioning class registration.
+- Runtime image pull failed during CUDA layer extraction: Docker Desktop reported read-only filesystem. The subsequent GitHub Actions runtime test passed across separate installer/runtime containers, registering both plugins. GPU inference remains a separate hardware check.
 - Registry resource-layout check has existing errors in unrelated app/resource paths. Catalog rendering produced only the intended ComfyUI 0.14.0 change; check-rendered reports that uncommitted expected diff.
 - Ruling: user expanded scope to publish ROCm normally on main; removed validation-only gating and documented backend selection. Hardware acceptance remains distinct from publishing.
 - Ruling: plugin environment inherits base distributions explicitly via .pth, because nested venv system-site-packages alone is insufficient. Local fixture verifies exact metadata visibility and package origin preservation.
