@@ -69,7 +69,7 @@ redis:
       # redis.srh.image.repository is the sidecar image repository
       repository: m11s/redis-http-proxy
       # redis.srh.image.tag is the sidecar image tag
-      tag: "0.1.0@sha256:8ad23b808eb90b9f9a1221be7aaffc2bab5012338600e4b923c16aefc6f3e2b4"
+      tag: "0.1.0@sha256:2bd1a7900ad53593835b4e4e9b1fbe3b56f28a38f8b1e188e2e1d2ae2fc232ac"
       # redis.srh.image.pullPolicy is the sidecar image pull policy
       pullPolicy: IfNotPresent
     # redis.srh.connectionString is the Redis URL the sidecar connects to. Example: redis://my-redis:6379
