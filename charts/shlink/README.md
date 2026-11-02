@@ -27,14 +27,14 @@ Shlink supports two mutually exclusive backends — pick one:
 
 **Option A — SQLite (default, no external DB required)**
 
-SQLite stores data in `/etc/shlink/data` inside the container. Enable persistence
-so the database survives pod restarts:
+SQLite stores data in `/etc/shlink/data`. Persistence is enabled by default
+through `data`:
 
 ```yaml
-persistence:
+data:
   enabled: true
   size: 1Gi
-  storageClassName: longhorn
+  storageClassName: null
 ```
 
 The PVC is annotated `helm.sh/resource-policy: keep` so it survives `helm uninstall`.
@@ -42,7 +42,8 @@ The PVC is annotated `helm.sh/resource-policy: keep` so it survives `helm uninst
 **Option B — External database (recommended for production)**
 
 Set `db.driver` to `postgres`, `mysql`, or `mssql` and point at your database server.
-No PVC is needed when using an external database.
+The data PVC also holds GeoLite and runtime files; set `data.enabled: false`
+to use ephemeral storage for those files.
 
 ```yaml
 db:

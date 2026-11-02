@@ -8,7 +8,7 @@
 ## Installation
 
 ```bash
-helm repo add m11s https://m11s-io.github.io/charts
+helm repo add m11s https://m11s-io.github.io/helm-charts
 helm repo update
 helm install whoami m11s/whoami -n whoami --create-namespace
 ```
@@ -17,7 +17,7 @@ helm install whoami m11s/whoami -n whoami --create-namespace
 
 | Parameter | Description | Default |
 |---|---|---|
-| `hostUsers` | Set `spec.hostUsers` for user namespaces (requires a userns-capable cluster/runtime; stable in Kubernetes 1.37) | `null` |
+| `hostUsers` | Set `spec.hostUsers` for user namespaces; requires cluster and runtime support | `null` |
 | `whoami.port` | Port whoami listens on inside the container | `80` |
 | `whoami.name` | Display name printed in responses (useful with multiple replicas) | `""` |
 | `whoami.verbose` | Enable verbose request logging | `false` |
@@ -43,12 +43,6 @@ helm install whoami m11s/whoami -n whoami --create-namespace
 | `/echo` | WebSocket echo |
 
 ## Examples
-
-### Basic install
-
-```bash
-helm install whoami m11s/whoami -n whoami --create-namespace
-```
 
 ### Multiple named replicas with HTTPRoute
 
@@ -79,5 +73,5 @@ kubectl run -it --rm --restart=Never curl --image=curlimages/curl -- \
 
 ## Source
 
-- Chart: [github.com/m11s-io/charts](https://github.com/m11s-io/charts)
+- Chart: [github.com/m11s-io/helm-charts](https://github.com/m11s-io/helm-charts)
 - Upstream: [github.com/traefik/whoami](https://github.com/traefik/whoami)

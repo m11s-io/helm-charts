@@ -8,7 +8,7 @@
 ## Installation
 
 ```bash
-helm repo add m11s https://m11s-io.github.io/charts
+helm repo add m11s https://m11s-io.github.io/helm-charts
 helm repo update
 helm install dub m11s/dub -n dub --create-namespace -f values.yaml
 ```
@@ -140,5 +140,5 @@ httpRoute:
 
 ## Source
 
-- Chart: [github.com/m11s-io/charts](https://github.com/m11s-io/charts)
+- Chart: [github.com/m11s-io/helm-charts](https://github.com/m11s-io/helm-charts)
 - Upstream: [github.com/dubinc/dub](https://github.com/dubinc/dub)

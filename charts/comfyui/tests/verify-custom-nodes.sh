@@ -2,7 +2,12 @@
 # Exercise the init/runtime filesystem boundary with the published generic image.
 set -euo pipefail
 chart=$(cd "$(dirname "$0")/.." && pwd)
-image=${COMFYUI_TEST_IMAGE:-m11s/comfyui:0.43.0-cuda@sha256:35a3d64564919e45872c61cec4fc1d3a4cf8740cc32834056fe93ccaa6d66e5e}
+image=${COMFYUI_TEST_IMAGE:-}
+if [[ -z "$image" ]]; then
+  image=$(helm template runtime "$chart" --show-only templates/deployment.yaml |
+    awk '$1 == "image:" {gsub(/"/, "", $2); if (!image) image=$2} END {print image}')
+  [[ -n "$image" ]] || { echo 'Could not resolve ComfyUI image' >&2; exit 1; }
+fi
 work=$(mktemp -d)
 container="comfyui-extensions-test-$$"
 cleanup() {

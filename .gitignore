@@ -33,3 +33,7 @@ service-account*.json
 !.env.template
 !*.example.tfvars
 !*.example.tfvars.json
+
+# Python test artifacts
+__pycache__/
+*.pyc

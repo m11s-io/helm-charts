@@ -1,6 +1,11 @@
 .DS_Store
-.git/
+.git
 .gitignore
 .helmignore
+/*.tgz
+tests/
+ci/
+__pycache__/
+*.pyc
 *.swp
 *.tmp

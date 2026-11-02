@@ -1,6 +1,11 @@
 .DS_Store
 .git
 .gitignore
-# Anchored to the chart root so it does not exclude the packaged
-# subchart in charts/, which Helm needs to resolve dependencies.
+.helmignore
 /*.tgz
+tests/
+ci/
+__pycache__/
+*.pyc
+*.swp
+*.tmp

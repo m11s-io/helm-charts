@@ -8,7 +8,7 @@
 ## Installation
 
 ```bash
-helm repo add m11s https://m11s-io.github.io/charts
+helm repo add m11s https://m11s-io.github.io/helm-charts
 helm repo update
 helm install fider m11s/fider -n fider --create-namespace -f values.yaml
 ```
@@ -17,7 +17,7 @@ helm install fider m11s/fider -n fider --create-namespace -f values.yaml
 
 | Parameter | Description | Default |
 |---|---|---|
-| `hostUsers` | Set `spec.hostUsers` for user namespaces (requires a userns-capable cluster/runtime; stable in Kubernetes 1.37) | `null` |
+| `hostUsers` | Set `spec.hostUsers` for user namespaces; requires cluster and runtime support | `null` |
 | `fider.hostMode` | Host mode: `single` or `multi` | `single` |
 | `fider.baseURL` | Public URL of this Fider instance (required when `hostMode=single`) | `""` |
 | `fider.hostDomain` | Base domain for multi-tenant subdomain routing (required when `hostMode=multi`) | `""` |
@@ -60,14 +60,8 @@ The `fider.hostDomain` field is ignored in single mode.
 
 One Fider instance hosts many independent feedback boards. Each board is identified by its hostname. `fider.hostDomain` is **required** in this mode — it tells Fider which base domain it owns.
 
-Fider uses `hostDomain` to distinguish two tenant types:
-
-| Tenant type | Hostname pattern | Example |
-|---|---|---|
-| **Subdomain tenant** | `<slug>.<hostDomain>` | `acme.feedback.example.com` |
-| **Custom domain tenant** | anything else | `feedback.acme.io` |
-
-When a request arrives, Fider checks: does the hostname end with `.hostDomain`? If yes → subdomain tenant. If no → custom domain tenant. The `baseURL` field is not required in multi mode; Fider derives the tenant from the incoming request host.
+Subdomain tenants use `<slug>.<hostDomain>`; custom domains are matched against
+tenant records. `baseURL` is not required in multi mode.
 
 ```yaml
 fider:
@@ -108,5 +102,5 @@ The chart creates only an HTTPRoute. It does not create a Gateway, because Gatew
 
 ## Source
 
-- Chart: [github.com/m11s-io/charts](https://github.com/m11s-io/charts)
+- Chart: [github.com/m11s-io/helm-charts](https://github.com/m11s-io/helm-charts)
 - Upstream: [github.com/getfider/fider](https://github.com/getfider/fider)
