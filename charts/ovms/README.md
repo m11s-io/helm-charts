@@ -34,7 +34,7 @@ and `/v2/health/live` (KServe v2 API) regardless of task.
 Native OVMS clients must apply the model's own prompt template themselves. This
 matters for instruction-tuned rerankers such as Qwen3-Reranker, which expect a
 chat template around the query and each document — see
-[`rerank-proxy`](https://github.com/m11s-io/rerank-proxy) for a Jina-compatible
+[`jina-proxy`](https://github.com/m11s-io/jina-proxy) for a Jina-compatible
 adapter that does this.
 
 ## Devices
