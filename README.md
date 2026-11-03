@@ -2,11 +2,8 @@
 
 [![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/m11s)](https://artifacthub.io/packages/search?org=m11s)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Release Charts](https://github.com/m11s-io/helm-charts/actions/workflows/release.yml/badge.svg)](https://github.com/m11s-io/helm-charts/actions/workflows/release.yml)
 
 Helm charts for deploying open-source applications on Kubernetes. Browse the collection below or find the charts on [Artifact Hub](https://artifacthub.io/packages/search?org=m11s).
-
-## Available Charts
 
 | Chart | Artifact Hub | Description | Version |
 |-------|--------------|-------------|---------|
@@ -29,12 +26,12 @@ Helm charts for deploying open-source applications on Kubernetes. Browse the col
 ### Installing Charts
 
 ```bash
-# Add the Helm repository
-helm repo add m11s https://m11s-io.github.io/helm-charts
+# Add a Helm repository
+helm repo add <repository-name> <repository-url>
 helm repo update
 
 # Install a chart
-helm install my-release m11s/<chart-name>
+helm install <release-name> <repository-name>/<chart-name>
 ```
 
 ## Configuration
@@ -46,11 +43,11 @@ details.
 To inspect a chart's default values:
 
 ```bash
-helm show values m11s/<chart-name>
+helm show values <repository-name>/<chart-name>
 ```
 
 To install a chart with your own values:
 
 ```bash
-helm install my-release m11s/<chart-name> --values values.yaml
+helm install <release-name> <repository-name>/<chart-name> --values values.yaml
 ```
