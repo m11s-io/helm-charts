@@ -12,11 +12,3 @@
 | [searxng](charts/searxng/README.md) | Privacy-focused metasearch engine | [![Version](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/m11s-io/helm-charts/main/charts/searxng/Chart.yaml&label=&query=version&prefix=v)](https://artifacthub.io/packages/helm/m11s/searxng) |
 | [shlink](charts/shlink/README.md) | URL shortener | [![Version](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/m11s-io/helm-charts/main/charts/shlink/Chart.yaml&label=&query=version&prefix=v)](https://artifacthub.io/packages/helm/m11s/shlink) |
 | [whoami](charts/whoami/README.md) | HTTP request and system diagnostics | [![Version](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/m11s-io/helm-charts/main/charts/whoami/Chart.yaml&label=&query=version&prefix=v)](https://artifacthub.io/packages/helm/m11s/whoami) |
-
-## Install
-
-```sh
-helm repo add <repository-name> <repository-url>
-helm repo update
-helm install <release-name> <repository-name>/<chart-name>
-```
