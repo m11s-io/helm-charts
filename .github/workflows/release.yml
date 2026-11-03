@@ -72,7 +72,7 @@ jobs:
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         run: |
           umask 077
-          printf '%s' "$GPG_PASSPHRASE" > "$RUNNER_TEMP/passphrase.txt"
+          printf '%s\n' "$GPG_PASSPHRASE" > "$RUNNER_TEMP/passphrase.txt"
 
       - name: Export legacy GPG keyring
         if: ${{ !inputs.skip_release }}
