@@ -37,3 +37,7 @@ service-account*.json
 # Python test artifacts
 __pycache__/
 *.pyc
+
+# Local Superpowers plans, specs, reviews, and session files
+.superpowers/
+superpowers/
