@@ -2,52 +2,21 @@
 
 [![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/m11s)](https://artifacthub.io/packages/search?org=m11s)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+| Chart | Description | Version |
+|-------|-------------|---------|
+| [comfyui](charts/comfyui/README.md) | ComfyUI for NVIDIA and AMD GPUs | [![Version](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/m11s-io/helm-charts/main/charts/comfyui/Chart.yaml&label=&query=version&prefix=v)](https://artifacthub.io/packages/helm/m11s/comfyui) |
+| [decap&#8209;cms](charts/decap-cms/README.md) | Decap CMS with S3 media uploads | [![Version](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/m11s-io/helm-charts/main/charts/decap-cms/Chart.yaml&label=&query=version&prefix=v)](https://artifacthub.io/packages/helm/m11s/decap-cms) |
+| [dub](charts/dub/README.md) | Link management platform | [![Version](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/m11s-io/helm-charts/main/charts/dub/Chart.yaml&label=&query=version&prefix=v)](https://artifacthub.io/packages/helm/m11s/dub) |
+| [fider](charts/fider/README.md) | User feedback and feature voting | [![Version](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/m11s-io/helm-charts/main/charts/fider/Chart.yaml&label=&query=version&prefix=v)](https://artifacthub.io/packages/helm/m11s/fider) |
+| [ovms](charts/ovms/README.md) | OpenVINO inference server | [![Version](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/m11s-io/helm-charts/main/charts/ovms/Chart.yaml&label=&query=version&prefix=v)](https://artifacthub.io/packages/helm/m11s/ovms) |
+| [searxng](charts/searxng/README.md) | Privacy-focused metasearch engine | [![Version](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/m11s-io/helm-charts/main/charts/searxng/Chart.yaml&label=&query=version&prefix=v)](https://artifacthub.io/packages/helm/m11s/searxng) |
+| [shlink](charts/shlink/README.md) | URL shortener | [![Version](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/m11s-io/helm-charts/main/charts/shlink/Chart.yaml&label=&query=version&prefix=v)](https://artifacthub.io/packages/helm/m11s/shlink) |
+| [whoami](charts/whoami/README.md) | HTTP request and system diagnostics | [![Version](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/m11s-io/helm-charts/main/charts/whoami/Chart.yaml&label=&query=version&prefix=v)](https://artifacthub.io/packages/helm/m11s/whoami) |
 
-Helm charts for deploying open-source applications on Kubernetes. Browse the collection below or find the charts on [Artifact Hub](https://artifacthub.io/packages/search?org=m11s).
+## Install
 
-| Chart | Artifact Hub | Description | Version |
-|-------|--------------|-------------|---------|
-| [comfyui](./charts/comfyui) | [![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/m11s)](https://artifacthub.io/packages/helm/m11s/comfyui) | Node-based, modular visual AI engine for GPU nodes | ![Version](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/m11s-io/helm-charts/main/charts/comfyui/Chart.yaml&label=&query=version&prefix=v) |
-| [decap-cms](./charts/decap-cms) | [![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/m11s)](https://artifacthub.io/packages/helm/m11s/decap-cms) | Multi-tenant Decap CMS served by hostname | ![Version](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/m11s-io/helm-charts/main/charts/decap-cms/Chart.yaml&label=&query=version&prefix=v) |
-| [dub](./charts/dub) | [![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/m11s)](https://artifacthub.io/packages/helm/m11s/dub) | Self-hosted link management platform | ![Version](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/m11s-io/helm-charts/main/charts/dub/Chart.yaml&label=&query=version&prefix=v) |
-| [fider](./charts/fider) | [![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/m11s)](https://artifacthub.io/packages/helm/m11s/fider) | Self-hosted user feedback platform | ![Version](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/m11s-io/helm-charts/main/charts/fider/Chart.yaml&label=&query=version&prefix=v) |
-| [ovms](./charts/ovms) | [![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/m11s)](https://artifacthub.io/packages/helm/m11s/ovms) | OpenVINO Model Server for rerank, embeddings, or text generation | ![Version](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/m11s-io/helm-charts/main/charts/ovms/Chart.yaml&label=&query=version&prefix=v) |
-| [searxng](./charts/searxng) | [![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/m11s)](https://artifacthub.io/packages/helm/m11s/searxng) | Privacy-respecting metasearch engine | ![Version](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/m11s-io/helm-charts/main/charts/searxng/Chart.yaml&label=&query=version&prefix=v) |
-| [shlink](./charts/shlink) | [![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/m11s)](https://artifacthub.io/packages/helm/m11s/shlink) | Self-hosted URL shortener | ![Version](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/m11s-io/helm-charts/main/charts/shlink/Chart.yaml&label=&query=version&prefix=v) |
-| [whoami](./charts/whoami) | [![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/m11s)](https://artifacthub.io/packages/helm/m11s/whoami) | Tiny HTTP server that prints OS info and HTTP request details | ![Version](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/m11s-io/helm-charts/main/charts/whoami/Chart.yaml&label=&query=version&prefix=v) |
-
-## Quick Start
-
-### Prerequisites
-
-- Kubernetes 1.24+
-- Helm 3.8+
-
-### Installing Charts
-
-```bash
-# Add a Helm repository
+```sh
 helm repo add <repository-name> <repository-url>
 helm repo update
-
-# Install a chart
 helm install <release-name> <repository-name>/<chart-name>
-```
-
-## Configuration
-
-Each chart has its own README with installation instructions, configuration
-options, and requirements. Follow the links in the chart catalog above for
-details.
-
-To inspect a chart's default values:
-
-```bash
-helm show values <repository-name>/<chart-name>
-```
-
-To install a chart with your own values:
-
-```bash
-helm install <release-name> <repository-name>/<chart-name> --values values.yaml
 ```

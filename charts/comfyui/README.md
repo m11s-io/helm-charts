@@ -9,7 +9,8 @@ This chart targets a single GPU-bound replica per release and uses the `Recreate
 update strategy by default, which is suited to nodes with one GPU.
 
 The default image is generic CUDA ComfyUI, without bundled community plugins.
-Select extensions through `customNodes`, as shown below.
+Select extensions through `customNodes`; GGUF users upgrading from earlier
+chart versions must explicitly configure ComfyUI-GGUF as shown below.
 
 ## Optional Comfy MCP HTTP service
 
@@ -36,7 +37,7 @@ GPU scheduling (`runtimeClassName`, `nodeSelector`, `tolerations`, `resources`) 
 
 | Parameter | Description | Default |
 |---|---|---|
-| `hostUsers` | Set `spec.hostUsers` for user namespaces; requires cluster and runtime support | `null` |
+| `hostUsers` | Set `spec.hostUsers` for user namespaces (requires a userns-capable cluster/runtime; stable in Kubernetes 1.37) | `null` |
 | `image.repository` | Container image repository | `m11s/comfyui` |
 | `image.tag` | Tag or tag-and-digest override; empty uses chart appVersion | Pinned generic CUDA image |
 | `image.digest` | Image digest override; takes precedence over the tag | `""` |
@@ -204,20 +205,36 @@ customNodes:
       expectedNodes: [UnetLoaderGGUF, CLIPLoaderGGUF]
 ```
 
-Use unique repository names and full Git commit hashes. Set `requirements` only
-when a plugin needs additional Python packages. Plugins needing OS libraries
-require an image containing them.
+Repository names must be unique safe directory names and revisions full Git
+commit hashes. Omit `requirements` for plugins requiring no additional packages.
+A same-image, non-root init container fetches repositories and installs declared
+requirements together into a shared virtual environment. Existing image package
+versions and locations are protected; incompatible requirements stop startup.
+Plugins needing additional OS libraries require an image containing them.
 
-Plugins and their Python environment are rebuilt on each new Pod, so startup
-requires access to Git and package indexes. Do not declare a plugin already
-bundled in the image.
+Repositories and the environment use an `emptyDir`: they are rebuilt for every
+new Pod, so startup requires access to Git and package indexes. Container retries
+clear the previous partial installation. No plugin PVC or Manager is needed.
+The image must provide `/app/main.py`, `/app/custom_nodes`, and `/opt/venv/bin/python`.
+Bundled nodes remain available; installing a repository already present under the
+same directory name is rejected. Do not combine a GGUF image with declared GGUF.
 
-Use `customNodes.environment` for installer proxy and package-index settings,
-`customNodes.envFrom` for Secret references, and `customNodes.resources` for
-CPU and memory limits. Keep credentials out of repository URLs and values files.
+`customNodes.environment` configures installer-only proxy/package-index settings;
+`customNodes.envFrom` accepts existing Secret references for credentials. Do not
+put credentials in repository URLs or plaintext values. Plugin requirements and
+normal prestartup/import code are executable third-party code. The installer does
+not separately invoke `install.py` or initialize submodules. Source commits are
+pinned; transitive dependency resolution is not a complete lockfile.
 
-`expectedNodes` makes readiness wait for the listed classes in `/object_info`.
-Remove custom readiness actions before enabling it.
+When `expectedNodes` is supplied, readiness requires all listed class names in
+`/object_info`. The default HTTP startup/liveness checks remain unchanged. The
+readiness action is replaced while its configured timing is retained; custom
+readiness actions must be removed before enabling `expectedNodes`.
+Changing repository configuration or installer code triggers a Pod rollout.
+
+Use `customNodes.resources` for installer CPU/memory limits. No GPU is requested
+by the installer. Removing a repository and replacing the Pod removes its files
+and dependencies automatically. Helm rollback reconstructs the previous values.
 
 ## AMD ROCm
 
@@ -232,15 +249,27 @@ helm upgrade --install comfyui-amd m11s/comfyui \
   -f rocm-values.yaml
 ```
 
-The same `customNodes` configuration works with either backend. Set GPU requests
-and runtime settings for the selected backend. Use separate PVCs when running
-AMD and NVIDIA releases alongside each other.
+The same `customNodes` configuration works with either backend, including GGUF;
+there is no separate GGUF image variant. `image.digest` takes precedence over
+`image.tag` for both inference and model downloads. Update the digest when
+selecting another image; clear it to deliberately use a tag without a digest.
 
-`image.digest` overrides `image.tag`; update or clear it when selecting another
-image. Verify device access and a representative workflow on the target GPU.
+Do not carry over NVIDIA runtime classes or GPU requests. The pod remains
+non-root; set `podSecurityContext.supplementalGroups` only if the target AMD
+device ownership requires extra groups, using the observed group IDs.
+Use independent models, output, and user PVCs when running alongside NVIDIA.
+The model-download Job follows the release's image and node placement and
+requests CPU/memory without reserving a GPU.
+
+Image publication validates packaging and CPU startup, not target AMD GPU
+inference. Verify device access and a representative workflow on that hardware.
 
 ## Source
 
 - Chart: [github.com/m11s-io/helm-charts](https://github.com/m11s-io/helm-charts)
 - Image: [github.com/m11s-io/docker-images](https://github.com/m11s-io/docker-images/tree/main/comfyui)
 - Upstream: [github.com/comfyanonymous/ComfyUI](https://github.com/comfyanonymous/ComfyUI)
+
+Image tags follow the upstream ComfyUI version, with `-cuda` for the default
+backend. The optional MCP sidecar follows the upstream Comfy MCP version.
+The main image follows `appVersion`; the MCP sidecar tracks rebuilds through digest updates.
