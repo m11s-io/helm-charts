@@ -9,14 +9,13 @@ on:
   workflow_dispatch:
     inputs:
       skip_release:
-        description: 'Dry-run: skip publishing (useful for testing the workflow)'
+        description: 'Dry-run: validate and package charts without publishing'
         required: false
         type: boolean
         default: false
 
 jobs:
   release:
-    if: github.event.inputs.skip_release != 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -24,24 +23,6 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
-
-      - name: Configure Git
-        run: |
-          git config user.name "$GITHUB_ACTOR"
-          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
-
-      - name: Import GPG key
-        uses: crazy-max/ghaction-import-gpg@2dc316deee8e90f13e1a351ab510b4d5bc0c82cd # v7 # pinned by dependabot
-        id: import_gpg
-        with:
-          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-          passphrase: ${{ secrets.GPG_PASSPHRASE }}
-
-      - name: Write GPG passphrase file
-        run: echo "${{ secrets.GPG_PASSPHRASE }}" > /tmp/passphrase.txt
-
-      - name: Export legacy GPG keyring
-        run: gpg --export-secret-keys > ~/.gnupg/secring.gpg
 
       - name: Set up Helm
         uses: azure/setup-helm@9bc31f4ebc9c6b171d7bfbaa5d006ae7abdb4310 # v5.0.1
@@ -60,7 +41,45 @@ jobs:
             helm dependency build --skip-refresh "$chart"
           done
 
+      - name: Validate and package application charts
+        run: |
+          for chart in charts/*; do
+            grep -q '^type: library$' "$chart/Chart.yaml" && continue
+            values=()
+            [[ ! -f "$chart/ci/default-values.yaml" ]] || values=(-f "$chart/ci/default-values.yaml")
+            helm lint "$chart" --strict "${values[@]}"
+            helm template check "$chart" "${values[@]}" > /dev/null
+            helm package "$chart" --destination "$RUNNER_TEMP/chart-packages"
+          done
+
+      - name: Configure Git
+        if: ${{ !inputs.skip_release }}
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
+      - name: Import GPG key
+        if: ${{ !inputs.skip_release }}
+        uses: crazy-max/ghaction-import-gpg@2dc316deee8e90f13e1a351ab510b4d5bc0c82cd # v7 # pinned by dependabot
+        id: import_gpg
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
+
+      - name: Write GPG passphrase file
+        if: ${{ !inputs.skip_release }}
+        env:
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        run: |
+          umask 077
+          printf '%s' "$GPG_PASSPHRASE" > "$RUNNER_TEMP/passphrase.txt"
+
+      - name: Export legacy GPG keyring
+        if: ${{ !inputs.skip_release }}
+        run: gpg --export-secret-keys > ~/.gnupg/secring.gpg
+
       - name: Run chart-releaser
+        if: ${{ !inputs.skip_release }}
         uses: helm/chart-releaser-action@df287104677278f869ca5480bd260358397cc3f9 # v1.8.0
         with:
           # renovate: datasource=github-releases depName=helm/chart-releaser
@@ -71,8 +90,8 @@ jobs:
           CR_SIGN: "true"
           CR_KEY: "${{ steps.import_gpg.outputs.email }}"
           CR_KEYRING: "~/.gnupg/secring.gpg"
-          CR_PASSPHRASE_FILE: "/tmp/passphrase.txt"
+          CR_PASSPHRASE_FILE: "${{ runner.temp }}/passphrase.txt"
 
       - name: Cleanup
-        if: always()
-        run: rm -f /tmp/passphrase.txt
+        if: ${{ always() && !inputs.skip_release }}
+        run: rm -f "$RUNNER_TEMP/passphrase.txt"

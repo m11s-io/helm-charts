@@ -1,0 +1,9 @@
+fider:
+  baseURL: https://feedback.ci-test.example.com
+  existingSecret:
+    name: fider-auth
+db:
+  existingSecret:
+    name: fider-db
+email:
+  noreply: noreply@ci-test.example.com

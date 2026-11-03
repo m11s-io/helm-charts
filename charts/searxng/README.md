@@ -34,7 +34,7 @@ searxng:
 
 | Parameter | Description | Default |
 |---|---|---|
-| `hostUsers` | Set `spec.hostUsers` for user namespaces (requires a userns-capable cluster/runtime; stable in Kubernetes 1.37) | `null` |
+| `hostUsers` | Set `spec.hostUsers` for user namespaces; requires cluster and runtime support | `null` |
 | `searxng.baseURL` | Public URL of this instance (required) | `""` |
 | `searxng.instanceName` | Instance name shown in the web UI | `SearXNG` |
 | `searxng.imageProxy` | Proxy image results instead of hotlinking them | `true` |
@@ -99,11 +99,8 @@ variables rather than written into the ConfigMap, keeping credentials out of it.
 
 ## Rate limiting
 
-The limiter is SearXNG's bot-detection layer. It is **disabled by default** and requires a Valkey
-database — upstream's `searx/limiter.py` and `searx/botdetection/*` are the only code paths that
-use Valkey, so there is no reason to run one without it.
-
-Enable both together:
+Rate limiting is disabled by default and requires bundled or external Valkey.
+To enable bundled Valkey:
 
 ```yaml
 limiter:
@@ -117,39 +114,17 @@ or external Valkey.
 
 ### Trusted proxies
 
-> [!IMPORTANT]
-> Behind a gateway or ingress, set `limiter.trustedProxies` to the CIDR the proxy's traffic
-> actually arrives from.
-
-Without it every request appears to originate from the proxy, so the limiter treats all traffic as
-one client and throttles everyone at once.
-
-Which CIDR that is depends on where the proxy runs:
-
-| Proxy | Source the backend sees | Set `trustedProxies` to |
-|---|---|---|
-| Pod-based (NGINX Ingress, Traefik, Envoy Gateway) | the proxy pod's IP | the cluster **pod** CIDR |
-| Host-networked (Cilium Gateway API, `hostNetwork` proxies) | the node's IP | the **node** network CIDR |
-
-Cilium implements Gateway API through its own Envoy, which runs in the host network namespace, so
-the backend sees a node address even when `gatewayAPI.hostNetwork.enabled` is `false` — that flag
-controls how the listener is exposed, not where the proxy runs.
+Behind a gateway or ingress, set `limiter.trustedProxies` to the source CIDRs
+seen by SearXNG. These may be proxy pod or node addresses, depending on your
+network configuration. An incorrect value can cause all users to be throttled
+as one client.
 
 ```yaml
 limiter:
   enabled: true
   trustedProxies:
-    - 10.10.0.0/16   # node network, for a host-networked proxy such as Cilium Gateway
+    - 10.10.0.0/16  # Replace with your proxy source CIDR.
 ```
-
-Verify rather than assume — the failure mode is silent until traffic ramps up. After deploying,
-confirm which address arrives:
-
-```bash
-kubectl logs -n searxng deploy/searxng | grep -i "limiter\|botdetection"
-```
-
-If the limiter is throttling all users together, `trustedProxies` does not cover the real source.
 
 ### External Valkey
 

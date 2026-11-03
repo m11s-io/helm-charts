@@ -2,10 +2,6 @@
 
 [![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/m11s)](https://artifacthub.io/packages/search?org=m11s)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Release Charts](https://github.com/m11s-io/helm-charts/actions/workflows/release.yml/badge.svg)](https://github.com/m11s-io/helm-charts/actions/workflows/release.yml)
-
-## Available Charts
-
 | Chart | Description | Version |
 |-------|-------------|---------|
 | [comfyui](charts/comfyui/README.md) | ComfyUI for NVIDIA and AMD GPUs | [![Version](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/m11s-io/helm-charts/main/charts/comfyui/Chart.yaml&label=&query=version&prefix=v)](https://artifacthub.io/packages/helm/m11s/comfyui) |
@@ -17,14 +13,10 @@
 | [shlink](charts/shlink/README.md) | URL shortener | [![Version](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/m11s-io/helm-charts/main/charts/shlink/Chart.yaml&label=&query=version&prefix=v)](https://artifacthub.io/packages/helm/m11s/shlink) |
 | [whoami](charts/whoami/README.md) | HTTP request and system diagnostics | [![Version](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/m11s-io/helm-charts/main/charts/whoami/Chart.yaml&label=&query=version&prefix=v)](https://artifacthub.io/packages/helm/m11s/whoami) |
 
-Select a chart for usage and configuration, or a version badge to view it on Artifact Hub.
-
 ## Install
 
 ```sh
-helm repo add m11s https://m11s-io.github.io/helm-charts
+helm repo add <repository-name> <repository-url>
 helm repo update
-helm install comfyui m11s/comfyui
+helm install <release-name> <repository-name>/<chart-name>
 ```
-
-[Maintaining charts](docs/maintaining.md)
