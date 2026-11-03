@@ -14,8 +14,12 @@ on:
         type: boolean
         default: false
 
+permissions:
+  contents: read
+
 jobs:
   release:
+    timeout-minutes: 60
     runs-on: ubuntu-latest
     permissions:
       contents: write
