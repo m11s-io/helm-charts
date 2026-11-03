@@ -23,6 +23,50 @@ entries:
         url: https://keys.openpgp.org/search?q=hello%40m11s.io
     apiVersion: v2
     appVersion: 0.43.0-cuda
+    created: "2026-11-03T14:30:25.683212567Z"
+    dependencies:
+    - name: m11s-common
+      repository: file://../common
+      version: 0.2.0
+    description: Deploy ComfyUI, a node-based visual AI engine for image and video
+      generation on GPU nodes
+    digest: 97e1dc7eec62a2a243e9e1800f74c3e441994c229e6f29c4d2931b9034cb5b66
+    home: https://github.com/comfyanonymous/ComfyUI
+    icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/comfyui.svg
+    maintainers:
+    - name: m11s
+      url: https://m11s.io
+    name: comfyui
+    sources:
+    - https://github.com/comfyanonymous/ComfyUI
+    - https://github.com/m11s-io/docker-images
+    - https://github.com/m11s-io/helm-charts
+    type: application
+    urls:
+    - https://github.com/m11s-io/helm-charts/releases/download/comfyui-0.14.3/comfyui-0.14.3.tgz
+    version: 0.14.3
+  - annotations:
+      artifacthub.io/category: ai-machine-learning
+      artifacthub.io/changes: |-
+        - kind: added
+          description: "Add a pinned ROCm scheduling example and AMD deployment and downloader tests."
+        - kind: changed
+          description: "Clarify backend selection, plugin configuration, and model-download behavior."
+      artifacthub.io/images: |
+        - name: comfyui
+          image: m11s/comfyui:0.43.0-cuda@sha256:264de7d9fa56d80b67a5fc8a710cee58d5c5a2a9ea05e66b5aad1e06c9134e67
+        - name: comfy-mcp
+          image: m11s/comfy-mcp:0.10.0@sha256:822d532b617345d3a407d40018c93ec08cbc4db743b108f118aa48851c496175
+      artifacthub.io/links: |
+        - name: source
+          url: https://github.com/comfyanonymous/ComfyUI
+        - name: image source
+          url: https://github.com/m11s-io/docker-images
+      artifacthub.io/signKey: |
+        fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
+        url: https://keys.openpgp.org/search?q=hello%40m11s.io
+    apiVersion: v2
+    appVersion: 0.43.0-cuda
     created: "2026-11-01T22:01:54.487280032Z"
     dependencies:
     - name: m11s-common
@@ -5095,6 +5139,49 @@ entries:
         url: https://keys.openpgp.org/search?q=hello%40m11s.io
     apiVersion: v2
     appVersion: 0.2.11-s3
+    created: "2026-11-03T14:30:25.818543449Z"
+    dependencies:
+    - name: m11s-common
+      repository: file://../common
+      version: 0.2.0
+    description: Deploy a multi-tenant Decap CMS with optional S3 or MinIO uploads,
+      served by path prefix
+    digest: bed689b4175c6afb3d9c68355cd2d1ed0826edc4268f75dccfe4a53111694a3f
+    home: https://decapcms.org
+    icon: https://decapcms.org/img/decap-logo.svg
+    maintainers:
+    - name: m11s
+      url: https://m11s.io
+    name: decap-cms
+    sources:
+    - https://github.com/decaporg/decap-cms
+    - https://github.com/m11s-io/docker-images
+    - https://github.com/m11s-io/helm-charts
+    type: application
+    urls:
+    - https://github.com/m11s-io/helm-charts/releases/download/decap-cms-0.5.2/decap-cms-0.5.2.tgz
+    version: 0.5.2
+  - annotations:
+      artifacthub.io/changes: |-
+        - kind: fixed
+          description: "Correct the Artifact Hub image annotation and synchronize image metadata with chart defaults."
+        - kind: fixed
+          description: "Pin maintained images by digest and track image rebuilds through Renovate."
+        - kind: fixed
+          description: "Encode uploaded object URLs so filenames with spaces render correctly in Markdown"
+      artifacthub.io/images: |
+        - name: decap-cms
+          image: m11s/decap-cms:0.2.11-s3
+        - name: s3-upload-proxy
+          image: m11s/s3-upload-proxy:0.1.3@sha256:d4178f7181e2927ea51a7c93470e26a08ac9134a56a82dc173aeb37968e68071
+      artifacthub.io/links: |
+        - name: source
+          url: https://github.com/decaporg/decap-cms
+      artifacthub.io/signKey: |
+        fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
+        url: https://keys.openpgp.org/search?q=hello%40m11s.io
+    apiVersion: v2
+    appVersion: 0.2.11-s3
     created: "2026-10-28T09:32:25.93101663Z"
     dependencies:
     - name: m11s-common
@@ -6106,6 +6193,49 @@ entries:
         url: https://keys.openpgp.org/search?q=hello%40m11s.io
     apiVersion: v2
     appVersion: 0.1.0
+    created: "2026-11-03T14:30:25.963146105Z"
+    dependencies:
+    - name: m11s-common
+      repository: file://../common
+      version: 0.2.0
+    description: Deploy Dub, a self-hosted link management platform
+    digest: 2fe5a2dad68541f16a8852151a8782f09931da7bba5961f409ff61c303b4272c
+    home: https://dub.co
+    icon: https://assets.dub.co/brand/logo.svg
+    maintainers:
+    - name: m11s
+      url: https://m11s.io
+    name: dub
+    sources:
+    - https://github.com/dubinc/dub
+    - https://github.com/m11s-io/helm-charts
+    type: application
+    urls:
+    - https://github.com/m11s-io/helm-charts/releases/download/dub-0.3.3/dub-0.3.3.tgz
+    version: 0.3.3
+  - annotations:
+      artifacthub.io/changes: |-
+        - kind: fixed
+          description: "Correct the Artifact Hub image annotation and synchronize image metadata with chart defaults."
+        - kind: fixed
+          description: "Pin maintained images by digest and track image rebuilds through Renovate."
+        - kind: added
+          description: "Initial chart release"
+      artifacthub.io/images: |
+        - name: dub
+          image: m11s/dub:0.1.0
+        - name: redis-http-proxy
+          image: m11s/redis-http-proxy:0.1.0@sha256:2bd1a7900ad53593835b4e4e9b1fbe3b56f28a38f8b1e188e2e1d2ae2fc232ac
+      artifacthub.io/links: |
+        - name: source
+          url: https://github.com/dubinc/dub
+        - name: docs
+          url: https://dub.co/docs/self-hosting
+      artifacthub.io/signKey: |
+        fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
+        url: https://keys.openpgp.org/search?q=hello%40m11s.io
+    apiVersion: v2
+    appVersion: 0.1.0
     created: "2026-11-01T20:02:43.391734494Z"
     dependencies:
     - name: m11s-common
@@ -6590,6 +6720,41 @@ entries:
         url: https://keys.openpgp.org/search?q=hello%40m11s.io
     apiVersion: v2
     appVersion: v0.38.2
+    created: "2026-11-03T14:30:26.210829736Z"
+    dependencies:
+    - name: m11s-common
+      repository: file://../common
+      version: 0.2.0
+    description: Deploy Fider, a self-hosted user feedback platform
+    digest: 040127e6d920c16f55cbcf061e01fd6c5daa08a594245ace3c6cf1c7995bc470
+    home: https://fider.io
+    icon: https://raw.githubusercontent.com/getfider/fider/main/favicon.png
+    maintainers:
+    - name: m11s
+      url: https://m11s.io
+    name: fider
+    sources:
+    - https://github.com/getfider/fider
+    - https://github.com/m11s-io/helm-charts
+    type: application
+    urls:
+    - https://github.com/m11s-io/helm-charts/releases/download/fider-0.5.2/fider-0.5.2.tgz
+    version: 0.5.2
+  - annotations:
+      artifacthub.io/changes: |-
+        - kind: fixed
+          description: "Correct the Artifact Hub image annotation and synchronize image metadata with chart defaults."
+      artifacthub.io/images: |
+        - name: fider
+          image: getfider/fider:v0.38.2
+      artifacthub.io/links: |
+        - name: source
+          url: https://github.com/getfider/fider
+      artifacthub.io/signKey: |
+        fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
+        url: https://keys.openpgp.org/search?q=hello%40m11s.io
+    apiVersion: v2
+    appVersion: v0.38.2
     created: "2026-10-28T09:32:26.353255205Z"
     dependencies:
     - name: m11s-common
@@ -6927,6 +7092,32 @@ entries:
       artifacthub.io/license: Apache-2.0
     apiVersion: v2
     appVersion: 2026.4.1
+    created: "2026-11-03T14:30:26.435514081Z"
+    dependencies:
+    - name: m11s-common
+      repository: file://../common
+      version: 0.2.0
+    description: Deploy OpenVINO Model Server for inference tasks including reranking,
+      embeddings, and text generation
+    digest: 8dc79e4135eba9933d7071e1636ec897f0f5765d81ffbe5ab9078ff88496340f
+    home: https://github.com/m11s-io/helm-charts/tree/main/charts/ovms
+    icon: https://raw.githubusercontent.com/m11s-io/helm-charts/main/charts/ovms/assets/icon.png
+    maintainers:
+    - name: m11s
+      url: https://github.com/m11s-io
+    name: ovms
+    sources:
+    - https://github.com/openvinotoolkit/model_server
+    - https://huggingface.co/OpenVINO
+    type: application
+    urls:
+    - https://github.com/m11s-io/helm-charts/releases/download/ovms-0.4.3/ovms-0.4.3.tgz
+    version: 0.4.3
+  - annotations:
+      artifacthub.io/category: ai-machine-learning
+      artifacthub.io/license: Apache-2.0
+    apiVersion: v2
+    appVersion: 2026.4.1
     created: "2026-10-28T09:32:26.795842358Z"
     dependencies:
     - name: m11s-common
@@ -7175,6 +7366,54 @@ entries:
     - https://github.com/m11s-io/helm-charts/releases/download/ovms-0.1.0/ovms-0.1.0.tgz
     version: 0.1.0
   searxng:
+  - annotations:
+      artifacthub.io/category: networking
+      artifacthub.io/changes: |-
+        - kind: fixed
+          description: "Correct the Artifact Hub image annotation and synchronize image metadata with chart defaults."
+        - kind: fixed
+          description: "Disable ServiceAccount token automount; SearXNG never calls the Kubernetes API"
+        - kind: added
+          description: "Initial chart release"
+      artifacthub.io/images: |
+        - name: searxng
+          image: searxng/searxng:2026.10.27-cb74e7f81
+        - name: valkey
+          image: docker.io/valkey/valkey:9.1.2
+      artifacthub.io/links: |
+        - name: source
+          url: https://github.com/searxng/searxng
+        - name: docs
+          url: https://docs.searxng.org/
+      artifacthub.io/signKey: |
+        fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
+        url: https://keys.openpgp.org/search?q=hello%40m11s.io
+    apiVersion: v2
+    appVersion: 2026.10.27-cb74e7f81
+    created: "2026-11-03T14:30:26.760269116Z"
+    dependencies:
+    - name: m11s-common
+      repository: file://../common
+      version: 0.2.0
+    - condition: valkey.enabled
+      name: valkey
+      repository: https://valkey.io/valkey-helm/
+      version: 0.12.0
+    description: Deploy SearXNG, a privacy-respecting metasearch engine
+    digest: e27f87b93285061f43fe016d15ef4fa2daf1147cadfa8b1b3b21f7c129f3c318
+    home: https://searxng.org
+    icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/searxng.svg
+    maintainers:
+    - name: m11s
+      url: https://m11s.io
+    name: searxng
+    sources:
+    - https://github.com/searxng/searxng
+    - https://github.com/m11s-io/helm-charts
+    type: application
+    urls:
+    - https://github.com/m11s-io/helm-charts/releases/download/searxng-0.4.2/searxng-0.4.2.tgz
+    version: 0.4.2
   - annotations:
       artifacthub.io/category: networking
       artifacthub.io/changes: |-
@@ -7833,6 +8072,49 @@ entries:
     - https://github.com/m11s-io/helm-charts/releases/download/searxng-0.1.0/searxng-0.1.0.tgz
     version: 0.1.0
   shlink:
+  - annotations:
+      artifacthub.io/changes: |-
+        - kind: fixed
+          description: "Correct the Artifact Hub image annotation and synchronize image metadata with chart defaults."
+        - kind: changed
+          description: "Bump Shlink to 5.1.6"
+        - kind: fixed
+          description: "Fix service selector to exclude web-client pods (app.kubernetes.io/component: api)"
+      artifacthub.io/images: |
+        - name: shlink
+          image: shlinkio/shlink:5.1.8
+        - name: shlink-web-client
+          image: shlinkio/shlink-web-client:stable
+      artifacthub.io/links: |
+        - name: source
+          url: https://github.com/shlinkio/shlink
+        - name: docs
+          url: https://shlink.io/documentation/install-docker-image/
+      artifacthub.io/signKey: |
+        fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
+        url: https://keys.openpgp.org/search?q=hello%40m11s.io
+    apiVersion: v2
+    appVersion: 5.1.8
+    created: "2026-11-03T14:30:26.911151688Z"
+    dependencies:
+    - name: m11s-common
+      repository: file://../common
+      version: 0.2.0
+    description: Deploy Shlink, a self-hosted URL shortener
+    digest: 9b316bad29ff4b955b7c501525ccb2e581a051756c9118ca23845d982475511c
+    home: https://shlink.io
+    icon: https://shlink.io/images/shlink-logo-blue.svg
+    maintainers:
+    - name: m11s
+      url: https://m11s.io
+    name: shlink
+    sources:
+    - https://github.com/shlinkio/shlink
+    - https://github.com/m11s-io/helm-charts
+    type: application
+    urls:
+    - https://github.com/m11s-io/helm-charts/releases/download/shlink-0.4.3/shlink-0.4.3.tgz
+    version: 0.4.3
   - annotations:
       artifacthub.io/changes: |-
         - kind: fixed
@@ -8676,6 +8958,44 @@ entries:
         url: https://keys.openpgp.org/search?q=hello%40m11s.io
     apiVersion: v2
     appVersion: v1.12.0
+    created: "2026-11-03T14:30:27.044910339Z"
+    dependencies:
+    - name: m11s-common
+      repository: file://../common
+      version: 0.2.0
+    description: Deploy Traefik Whoami, an HTTP server that reports runtime and request
+      details
+    digest: 5aa10f77fb8d0c2c37451830936e72421aec3937284ba431011d1839e0c74b36
+    home: https://github.com/traefik/whoami
+    icon: https://www.gravatar.com/avatar/27caca9bcd7fd7f7412ca5255c9ae2d0?s=120&r=g&d=404
+    maintainers:
+    - name: m11s
+      url: https://m11s.io
+    name: whoami
+    sources:
+    - https://github.com/traefik/whoami
+    - https://github.com/m11s-io/helm-charts
+    type: application
+    urls:
+    - https://github.com/m11s-io/helm-charts/releases/download/whoami-0.4.3/whoami-0.4.3.tgz
+    version: 0.4.3
+  - annotations:
+      artifacthub.io/changes: |-
+        - kind: fixed
+          description: "Correct the Artifact Hub image annotation and synchronize image metadata with chart defaults."
+        - kind: added
+          description: "Add helm-unittest tests and ci values"
+      artifacthub.io/images: |
+        - name: whoami
+          image: traefik/whoami:v1.12.0
+      artifacthub.io/links: |
+        - name: source
+          url: https://github.com/traefik/whoami
+      artifacthub.io/signKey: |
+        fingerprint: 6C1DF3F0731DDD4E9047086F039223E48A6FF51F
+        url: https://keys.openpgp.org/search?q=hello%40m11s.io
+    apiVersion: v2
+    appVersion: v1.12.0
     created: "2026-10-28T09:32:27.617731301Z"
     dependencies:
     - name: m11s-common
@@ -9066,4 +9386,4 @@ entries:
     urls:
     - https://github.com/m11s-io/helm-charts/releases/download/whoami-0.1.0/whoami-0.1.0.tgz
     version: 0.1.0
-generated: "2026-11-01T22:01:54.487806908Z"
+generated: "2026-11-03T14:30:27.045445396Z"
