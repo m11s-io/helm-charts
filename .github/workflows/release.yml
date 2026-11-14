@@ -87,7 +87,7 @@ jobs:
         uses: helm/chart-releaser-action@df287104677278f869ca5480bd260358397cc3f9 # v1.8.0
         with:
           # renovate: datasource=github-releases depName=helm/chart-releaser
-          version: v1.9.0
+          version: v1.10.0
           skip_existing: true
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
