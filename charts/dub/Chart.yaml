@@ -2,7 +2,7 @@ apiVersion: v2
 name: dub
 description: Deploy Dub, a self-hosted link management platform
 type: application
-version: 0.3.3
+version: 0.3.4
 # renovate: datasource=docker depName=m11s/dub
 appVersion: "0.1.0"
 home: https://dub.co
@@ -21,7 +21,7 @@ annotations:
     - name: dub
       image: m11s/dub:0.1.0
     - name: redis-http-proxy
-      image: m11s/redis-http-proxy:0.1.0@sha256:2bd1a7900ad53593835b4e4e9b1fbe3b56f28a38f8b1e188e2e1d2ae2fc232ac
+      image: m11s/redis-http-proxy:0.1.0@sha256:872076e10e121a1351474c2d3d7e988a64fff955b0314fe635b511404e6a475a
   artifacthub.io/links: |
     - name: source
       url: https://github.com/dubinc/dub
