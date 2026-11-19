@@ -2,9 +2,9 @@ apiVersion: v2
 name: fider
 description: Deploy Fider, a self-hosted user feedback platform
 type: application
-version: 0.5.2
+version: 0.5.3
 # renovate: datasource=docker depName=getfider/fider
-appVersion: "v0.38.2"
+appVersion: "v0.39.0"
 home: https://fider.io
 icon: https://raw.githubusercontent.com/getfider/fider/main/favicon.png
 sources:
