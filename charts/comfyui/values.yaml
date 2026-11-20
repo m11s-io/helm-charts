@@ -55,7 +55,7 @@ comfyMcp:
   enabled: false
   image:
     repository: m11s/comfy-mcp
-    tag: "0.10.0@sha256:822d532b617345d3a407d40018c93ec08cbc4db743b108f118aa48851c496175"
+    tag: "0.10.0@sha256:e4ef3f652c8575abc8d95df236083f5dde5c1ec4036af5bec29d9123d463ae91"
     pullPolicy: IfNotPresent
   service:
     type: ClusterIP
